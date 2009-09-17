@@ -13,5 +13,6 @@ cp -R java $TARGET/java
 cp README $TARGET
 cp setup_nctoolbox.m $TARGET
 rm -rf $(find $TARGET -name .svn)
+rm -rf $(find $TARGET -name .hg)
 ditto -c -k --keepParent -rsrc $TARGET nctoolbox-$(date "+%Y%m%d").zip
 rm -rf target
