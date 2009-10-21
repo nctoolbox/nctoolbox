@@ -41,7 +41,7 @@
 
 % Brian Schlining (brian@mbari.org)
 % 2009-05-12
-classdef ncdataset
+classdef ncdataset < handle
 
     properties (SetAccess = private)
         netcdf          % ucar.nc2.ncdataset.NetcdfDataset java instance
@@ -49,6 +49,8 @@ classdef ncdataset
     end
 
     methods
+        
+        %%
         function obj = ncdataset(url)
             % NCDATASET  Constructor. Instantiates a NetcdfDataset pointing to the 
             % datasource specified by 'url' and uses that as the underlying
@@ -76,6 +78,7 @@ classdef ncdataset
             end
         end
         
+        %%
         function s = size(obj, variable)
             % NCDATASET.SIZE  Returns the size of the variable in the persistent store 
             % without fetching the data. Helps to know what you're getting yourself
@@ -96,6 +99,7 @@ classdef ncdataset
             s = v.getShape()';
         end
         
+        %%
         function d = data(obj, variable, first, last, stride)
             % NCDATASET.DATA  Fetch the data for a given variable. This methods 
             % also allows you to fetch subsets of the data by specifiying a
@@ -158,14 +162,8 @@ classdef ncdataset
             end
         end
         
-        % function v = variable(obj, variableName, shape) 
-        %      
-        %  end
-        %  
-        %  function s = structure(obj, variable, first, last, stride)
-        %      
-        %  end
 
+        %%
         function cv = axes(obj, variable)
             % NCDATASET.AXES  Returns a cell array containing the variable names of
             % coordinate axes for the given variable
@@ -193,6 +191,7 @@ classdef ncdataset
 
         end
 
+        %%
         function a = attributes(obj, variable)
             % NCDATASET.ATTRIBUTES returns the attributes of the variable as an
             % n x 2 cell array. 
@@ -251,6 +250,7 @@ classdef ncdataset
             end
         end
 
+        %%
         function t = time(obj, variable, data)
             % NCDATASET.TIME  Attempts to convert data to Matlab's native time format
             %
@@ -278,21 +278,7 @@ classdef ncdataset
 
 end
 
-% function s = coardsVariable(obj, variable, startIdx, endIdx, stride) 
-%     dimensions = obj.axes(variable);
-%     for i = 1:length(s.dimensions)
-%        % Create each variable. If axes
-%        dim = dimensions{i};
-%        if ~isempty(dim)
-%            s."dim" = obj.data(dim); % TODO pseud-code
-%        else
-%             dim = {sprintf('unnamed%02i', i)};
-%             s."dim" = []; % TODO fix pseudo-code
-%        end
-%     end
-%     s."variable" = obj.data(variable); % TODO fix pseudo-code
-% end
-
+%%
 function [conversion, offset] = timeunits(obj, variable)
     % TIMEUNITS  Determines the conversion and offset needed to transform
     %   data to time from the variables units
@@ -314,7 +300,7 @@ function [conversion, offset] = timeunits(obj, variable)
     attr = obj.attributes(variable);
     keys = attr(:, 1);
     values = attr(:, 2);
-    i = find(ismember(keys, 'units'));  % search for units attribute
+    i = find(ismember(keys, 'units'));         % search for units attribute
     units = lower(values{i});                  % Retrieve the units value
     
     
@@ -342,7 +328,7 @@ function [conversion, offset] = timeunits(obj, variable)
         % Try using matlabs date parsing which covers most common cases
         try 
             offset = datenum(dateString);
-        catch
+        catch e
             % If we're here then it's most likey an iso8601 format. We'll try one.
             try
                 df = java.text.SimpleDateFormat('yyyy-MM-dd''t''HH:mm:ss');
@@ -356,7 +342,7 @@ function [conversion, offset] = timeunits(obj, variable)
         end
     end
     
-    if (conversion == 1) & (offset == 0)
+    if (conversion == 1) && (offset == 0)
         warning('MBARI:NCDATASET', ['No conversion occurred. Are you sure that ' variable ' is time data?']);
     end
     
