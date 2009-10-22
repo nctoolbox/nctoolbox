@@ -72,7 +72,7 @@ classdef ncdataset < handle
                 end
 
             catch me
-                ex = MException('MBARI:NCDATASET', ['Failed to open ' url]);
+                ex = MException('NCDATASET:ncdataset', ['Failed to open ' url]);
                 ex = ex.addCause(me);
                 ex.throw;
             end
@@ -245,7 +245,7 @@ classdef ncdataset < handle
                 end
             else
                 % Show warning, return empty cell array
-                warning('MBARI:NCDATASET', 'No attributes were found');
+                warning('NCDATASET:attributes', 'No attributes were found');
                 a = cell(1, 2);
             end
         end
@@ -337,13 +337,13 @@ function [conversion, offset] = timeunits(obj, variable)
                 secs = jDate.getTime() / 1000;
                 offset = utc2sdn(secs);
             catch me
-                warning('MBARI:NCDATASET', ['Unable to parse date: ' dateString]);
+                warning('NCDATASET:timeunits', ['Unable to parse date: ' dateString]);
             end
         end
     end
     
     if (conversion == 1) && (offset == 0)
-        warning('MBARI:NCDATASET', ['No conversion occurred. Are you sure that ' variable ' is time data?']);
+        warning('NCDATASET:timeunits', ['No conversion occurred. Are you sure that ' variable ' is time data?']);
     end
     
     % fprintf(1, 'Conversion = %12.5f, Offset = %12.5f\n', conversion, offset);
