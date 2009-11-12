@@ -5,7 +5,16 @@
 % variables associated coordinate dimensions. Normally, you would retrive
 % it using CFDATASET.VARIABLE 
 %
-% See also CFDATASET
+% Example of use:
+%  ds = cfdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/OS_M1_20081008_TS.nc');
+%  v = ds.variable('TEMP');
+%  t = v.data([1 1 1 1], [100 5 1 1]);
+%  % Look at properties
+%  v.name
+%  v.axes
+%
+%
+% See also CFDATASET, SIZE, DATA
 classdef ncvariable < handle
     
     properties (SetAccess = private)
