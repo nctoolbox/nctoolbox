@@ -36,3 +36,5 @@ ztime = ds.time('ocean_time', t.ocean_time);
 title([zname ' [' zunits '] on ' datestr(ztime)]);
 
 colorbar
+
+echo('off')
