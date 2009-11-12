@@ -14,6 +14,7 @@ classdef ncvariable < handle
     
     properties (Dependent = true)
         name            % The string variable name that this object represents
+        axes
     end
     
     properties (SetAccess = private, GetAccess = protected)
@@ -51,6 +52,16 @@ classdef ncvariable < handle
                 obj.axesVariables = {};
             end
             
+        end
+        
+        %%
+        function a = get.axes(obj)
+            % NCVARIABLE.AXES Returns the names of the coordinate axes 
+            a = cell(size(obj.axesVariables));
+            for i = 1:length(obj.axesVariables)
+                name = char(obj.axesVariables{i}.getName());
+                a{i} = name;
+            end
         end
         
         %%
@@ -154,26 +165,20 @@ classdef ncvariable < handle
     
     methods (Access = protected)
         %%
-        function d = alldata(obj)
-            % ---- Step 1: Specify the name of the data
-            d.metadata.variable = obj.name;
+        function data = alldata(obj)
             
             % ---- Step 2: Add the data
             name = char(obj.variable.getName());
-            d.data.(name) = obj.dataset.data(name);
+            data.(name) = obj.dataset.data(name);
             
-            % ---- Step 3: Add the coordinate dimensions in order as strings
-            % ---- Step 4: Add the cooridinate data
-            d.metadata.coordinates = cell(size(obj.axesVariables));
             for i = 1:length(obj.axesVariables)
                 name = char(obj.axesVariables{i}.getName());
-                d.metadata.coordinates{i} = name;
-                d.data.(name) = obj.dataset.data(name);
+                data.(name) = obj.dataset.data(name);
             end
         end
         
         %%
-        function d = somedata(obj, first, last, stride)
+        function data = somedata(obj, first, last, stride)
             
             s = obj.dataset.size(obj.name);
             
@@ -188,21 +193,15 @@ classdef ncvariable < handle
                 last = s;
             end
             
-            % ---- Step 1: Specify the name of the data
-            d.metadata.variable = obj.name;
-            
-            % ---- Step 2: Add the data
+            % ---- Step 2: Add the data for the variable of interest
             name = char(obj.variable.getName());
-            d.data.(name) = obj.dataset.data(name, first, last, stride);
-            
-            % ---- Step 3: Add the coordinate dimensions in order as strings
-            % ---- Step 4: Add the cooridinate data
-            d.metadata.coordinates = cell(size(obj.axesVariables));
+            data.(name) = obj.dataset.data(name, first, last, stride);
+
+            % ---- Step 3: Add the data for each axes variable
             for i = 1:length(obj.axesVariables)
                 name = char(obj.axesVariables{i}.getName());
-                d.metadata.coordinates{i} = name;
                 
-                % ---- Step 5: figure out how to subset the data properly
+                % ---- Step 4: figure out how to subset the data properly
                 vs = obj.dataset.size(name);
                 if (length(vs) == length(s)) 
                     %% case: sizes are the same
@@ -217,7 +216,9 @@ classdef ncvariable < handle
                     end
                     
                 elseif length(vs) == 1 
-                    %% case: singleton dimension
+                    %% case: singleton dimension. Find side of data with
+                    % the same length
+                    
                     % TODO: the following line  will give bogus results if
                     % the data has 2 dimensions of the same length 
                     dim = find(s == vs, 1);
@@ -232,7 +233,7 @@ classdef ncvariable < handle
                     end
                     
                 else 
-                    %% case: variable is coordiantes.
+                    %% case: variable is coordiantes. Look for size
                     % TODO this is a lame implementation. 
                     dim = find(s == vs(1), 1);
                     if ~isempty(dim) 
@@ -243,11 +244,15 @@ classdef ncvariable < handle
                                 me.throw;
                            end
                        end
+                       k = dim:dim + length(vs) - 1;
+                       vFirst = first(k);
+                       vLast = last(k);
+                       vStride = stride(k);
                     end
                     
                 end
                 
-                d.data.(name) = obj.dataset.data(name, vFirst, vLast, vStride);
+                data.(name) = obj.dataset.data(name, vFirst, vLast, vStride);
             end
         end
     end
