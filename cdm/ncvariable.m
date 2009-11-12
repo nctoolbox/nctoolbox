@@ -105,11 +105,8 @@ classdef ncvariable < handle
             %       matrix returned by NCDATASET.SIZE or SIZE 
             %
             % Returns:
-            %   The data is returned as a nested structure with the 2 substructures of:
-            %   --- metadata
-            %   | |-- variable = the name of the variable
-            %   | `-- coordinates = A cell array of the names of the coordinate variables in the correct order
-            %   `-- data = the actual data for the variable and each coordinate variable
+            %   The data is returned as a structure containing the actual data for the variable 
+            %   of interest as well as each coordinate variable
             %
             % Example:
             %
@@ -117,8 +114,6 @@ classdef ncvariable < handle
             %   v = ds.variable('TEMP');
             %   t = v.data([1 1 1 1], [10 2 1 1]);
             %
-            
-            
             
             if (nargin == 1)
                 d = alldata(obj);
