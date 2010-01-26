@@ -90,12 +90,9 @@ classdef ncvariable < handle
         %%
         function d = data(obj, first, last, stride)
             % NCVARIABLE.DATA Retrieve all or a subset of the data for the
-            % variable. The data is returned as a nested structure with the
-            % 2 substructures of:
-            %   metadata
-            %       variable = the name of the variable
-            %       coordinates = A cell array of the names of the coordinate variables in the correct order
-            %   data = the actual data for the variable and each coordinate variable
+            % variable. The data is returned as a structure containing a 
+            % variable for the data as well as for each dimension of the 
+            % data.
             %
             % Usage:
             %   d = ncvariable.data

@@ -131,6 +131,70 @@ classdef cfdataset < ncdataset
 
         end
         
+        %%
+        function s = struct(obj, variableName, first, last, stride)
+        % CFDATASET.STRUCT Retrieve all or a subset of the data for the
+        % given variable. The data is returned as a structure containing a 
+        % variable for the data as well as for each dimension of the 
+        % data.
+        %
+        % Usage:
+        %   d = cfdataset.struct(variableName)
+        %   d = cfdataset.struct(variableName, first)
+        %   d = cfdataset.struct(variableName, first, last)
+        %   d = cfdataset.struct(variableName, first, last, stride)
+        %
+        %   If no arguments are provided all the data is returned for the 
+        %   given variable. 
+        %
+        % Arguments:
+        %   variableName = The name of the variable of interest
+        %   first = The first point you want to retrieve (first point idx = 1)
+        %   last  = The last point you want to retrive (default is the end of
+        %       the data array)
+        %   stride = The stride spacing (default is 1)
+        %   NOTE! first, last, and stride must be matrices the same size as the 
+        %       matrix returned by NCDATASET.SIZE or SIZE 
+        %
+        % Returns:
+        %   The data is returned as a structure containing the actual data for the variable 
+        %   of interest as well as each coordinate variable
+        %
+        % Example:
+        %
+        %   ds = cfdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/OS_M1_20081008_TS.nc');
+        %   t = ds.struct('TEMP');
+        %   
+        %
+        % Note: 
+        %   The above example is also equivalent to:
+        %   ds = cfdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/OS_M1_20081008_TS.nc');
+        %   v = ds.variable('TEMP')
+        %   t = v.data
+        %   The reason for providing the 'struct' alternative syntax is
+        %   that it may be more familiar to some users. 
+           v = obj.variable(variableName);
+           
+           if (nargin == 2)
+                s = v.data;
+            else
+                sz = size(v);
+                
+                % Fill in missing arguments
+                % default stride is 1
+                if (nargin < 5)
+                    stride = ones(1, length(sz));
+                end
+                
+                % Default last is the end
+                if (nargin < 4)
+                    last = sz;
+                end
+                
+                s = v.data(first, last, stride);
+            end
+        end
+        
     end
     
 end
