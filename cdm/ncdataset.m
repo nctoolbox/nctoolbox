@@ -47,6 +47,18 @@ classdef ncdataset < handle
         netcdf          % ucar.nc2.ncdataset.NetcdfDataset java instance
         variables       % cell array containing the variable names as strings in netcdf
     end
+    
+    methods (Access = private)
+        %%
+        function delete(obj)
+            % NCDATASET.DELETE Closes netcdf files when object NCDATASET object is disposed or leaves scope
+            try 
+                obj.netcdf.close()
+            catch me
+                % Do nothing
+            end
+        end
+    end
 
     methods
         
@@ -77,6 +89,7 @@ classdef ncdataset < handle
                 ex.throw;
             end
         end
+        
         
         %%
         function s = size(obj, variable)
