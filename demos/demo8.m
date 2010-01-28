@@ -7,6 +7,7 @@ url='http://blackburn.whoi.edu:8081/thredds/dodsC/coawst/fmrc/coawst_2_best.ncd'
 ds = cfdataset(url);
 
 % Grab the variable of interest. No data is being read yet.
+% NOTE: You should use ds.struct now instead of ds.variable. See demo9.m
 v = ds.variable('temp');
 sz= size(v);
 
