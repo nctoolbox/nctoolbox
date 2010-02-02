@@ -33,7 +33,7 @@ echo('off')
 fprintf(1, 'DEPTH, DEC_LAT, DEC_LONG, SITE_ID, TMP, O2\n');
 for i = 1:length(deep)
     j = deep(i);
-    fprintf(1, '%4i, %7.3f, %7.3f, %s, %5.3f, %5.3f\n', depth(j), lat(j), lon(j), ...
+    fprintf(1, '%4i, %7.3f, %7.3f, %s, %6.4f, %5.3f\n', depth(j), lat(j), lon(j), ...
             siteId(j), tmp(j), o2(j));
 end
 
