@@ -13,7 +13,8 @@ sz = ds.size('temp');
 % Grab a subset of the data. Data is now being pulled across the network
 t = ds.struct('temp', [sz(1) sz(2) 1 1], [sz(1) sz(2) sz(3) sz(4)]);
 
-% Make a pretty plot
+% Make a pretty plot. Note the call to 'squeeze'. This removes
+% singleton dimensions.
 surf(t.lon_rho, t.lat_rho, double(squeeze(t.temp)))
 shading('interp');
 view(2)
