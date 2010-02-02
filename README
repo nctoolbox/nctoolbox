@@ -43,12 +43,12 @@ II. Example Usage
   plot(t, o2)
   datetick('x')
   
-  For more information type 'help dataset' at the matlab prompt.
+  For more information type 'help ncdataset' at the matlab prompt.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 III. DEMOS
 
-Demos are in the 'demos' subdirectory. To run them just 'cd' to the demos 
+Demos are in the 'demos' subdirectory. To run them, just 'cd' to the demos 
 directory and run the various demos.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
