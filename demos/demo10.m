@@ -22,7 +22,6 @@ bctd = ds.netcdf.getVariables().get(0)
 % of interest, then subsetting it in memory.
 depth = bctd.findVariable('DEPTH').read().copyToNDJavaArray();
 deep = find(depth > 4300);
-data = cell(length(deep), 6);
 lat = bctd.findVariable('DEC_LAT').read().copyToNDJavaArray();
 lon = bctd.findVariable('DEC_LONG').read().copyToNDJavaArray();
 siteId = bctd.findVariable('SITE_ID').read().copyTo1DJavaArray();
