@@ -12,6 +12,6 @@ function setproxy(proxyname, port)
 % Brian Schlining
 % 2010-02-16
 
-httpClient = org.apache.commons.httpclient.HttpClient()
-httpClient.getHostConfiguration().setProxy(proxyname, port)
-ucar.nc2.dataset.NetcdfDataset.setHttpClient(httpClient)
+httpClient = org.apache.commons.httpclient.HttpClient();
+httpClient.getHostConfiguration().setProxy(proxyname, port);
+ucar.nc2.dataset.NetcdfDataset.setHttpClient(httpClient);
