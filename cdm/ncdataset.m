@@ -280,11 +280,11 @@ classdef ncdataset < handle
             %       all the data for the given variableName is fetched and converted.
             %       It's useful to supply the data when you are working with 
             %       a subset of the data.
-            [conversion offset] = timeunits(obj, variable);
+            
             if nargin < 3
                 data = obj.data(variable);
             end
-            t = data * conversion + offset;
+            t = convertToTime(obj, variable, data);
         end
 
     end
@@ -292,74 +292,19 @@ classdef ncdataset < handle
 end
 
 %%
-function [conversion, offset] = timeunits(obj, variable)
-    % TIMEUNITS  Determines the conversion and offset needed to transform
-    %   data to time from the variables units
-    %
-    % Use as: 
-    %   [conversion, offset] = timeunits(obj, variable)
-    %
-    % Arguments:
-    %   obj = A ncdataset instance
-    %   variable = The name of the time variable
-    %
-    % Return:
-    %   conversion = The conversion factor (multiplier) from the variables
-    %       units to matlabs units.
-    %   offset = The time offset from Matlab's time base in days
-    %
-    % NOTE: THis is naive implementation that looks for  aunit attribute on the
-    % variable with a value in the form of '[time unit] since [some date]'
+function d = convertToTime(obj, variable, data)
     attr = obj.attributes(variable);
-    keys = attr(:, 1);
-    values = attr(:, 2);
-    i = find(ismember(keys, 'units'));         % search for units attribute
-    units = lower(values{i});                  % Retrieve the units value
+    units = value4key(attr, 'units');
+    dateUnit = ucar.nc2.units.DateUnit(['0 ' units]);
+    [r c] = size(data);
+    d = ones(r, c) * NaN;
     
-    
-    
-    % Figure out the conversion from the time units to days (matlabs time units)
-    conversion = 1;
-    unitPatterns = {'milli', 'sec', 'minute', 'hour', 'day', 'year'};
-    conversions = [1 / (1000 * 60 * 60 * 24), 1 / (60 * 60 * 24), 1 / (60 * 24), 1 /24, 1, 365.25];
-    for i = 1:length(unitPatterns)
-        timeUnit = unitPatterns{i};
-        u = strfind(units, timeUnit);
-        if ~isempty(u)
-            conversion = conversions(i);
-            break
-        end
+    % Can't vectorize this operation, use slow-ass loop instead.
+    for i = 1:r
+       for j = 1:c
+          d(i, j) = utc2sdn(dateUnit.makeDate(data(i, j)).getTime() / 1000);
+       end
     end
-    
-    % Figure out the offset
-    offset = 0;
-    idx = regexp(units, '\d');
-    if ~isempty(idx)
-        startIdx = idx(1);
-        endIdx = idx(end);
-        dateString = units(startIdx:endIdx);
-        % Try using matlabs date parsing which covers most common cases
-        try 
-            offset = datenum(dateString);
-        catch e
-            % If we're here then it's most likey an iso8601 format. We'll try one.
-            try
-                df = java.text.SimpleDateFormat('yyyy-MM-dd''t''HH:mm:ss');
-                df.setTimeZone(java.util.TimeZone.getTimeZone('UTC'));
-                jDate = df.parse(dateString);
-                secs = jDate.getTime() / 1000;
-                offset = utc2sdn(secs);
-            catch me
-                warning('NCDATASET:timeunits', ['Unable to parse date: ' dateString]);
-            end
-        end
-    end
-    
-    if (conversion == 1) && (offset == 0)
-        warning('NCDATASET:timeunits', ['No conversion occurred. Are you sure that ' variable ' is time data?']);
-    end
-    
-    % fprintf(1, 'Conversion = %12.5f, Offset = %12.5f\n', conversion, offset);
     
 end
 
