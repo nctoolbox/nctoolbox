@@ -13,7 +13,7 @@ NOTE: setup_nctoolbox sets up nctoolbox for the current Matlab session only.
 You need to add the 'setup_nctoolbox' command to your startup.m file if you
 want it configured every time you start Matlab. 
 
-NOTE: nctoolbox-20100128 requires that you are running Matlab with Java 6+. You can verify the version of Java the matlab is running with:
+NOTE: nctoolbox-20100223 requires that you are running Matlab with Java 6+. You can verify the version of Java the matlab is running with:
   version('-java'). 
   The version returned should start with 'Java 1.6'. If it starts with 'Java 1.5' you should use nctoolbox-20091112.
     

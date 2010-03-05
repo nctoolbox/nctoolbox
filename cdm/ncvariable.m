@@ -120,9 +120,9 @@ classdef ncvariable < handle
             %   v = ds.variable('TEMP');
             %   t = v.data([1 1 1 1], [10 2 1 1]);
             %
-            
+
             if (nargin == 1)
-                d = alldata(obj);
+                d = alldata(obj, 1);
             else
                 s = obj.size;
                 
@@ -137,7 +137,59 @@ classdef ncvariable < handle
                     last = s;
                 end
                 
-                d = somedata(obj, first, last, stride);
+                d = somedata(obj, 1, first, last, stride);
+            end
+        end
+        
+        function g = grid(obj, first, last, stride)
+            % NCVARIABLE.GRID Retrieve all or a subset of the coordinate 
+            % data for the variable. The data is returned as a structure 
+            % containing a variable for each dimension of the data.
+            %
+            % Usage:
+            %   d = ncvariable.grid
+            %   d = ncvariable.grid(first)
+            %   d = ncvariable.grid(first, last)
+            %   d = ncvariable.grid(first, last, stride)
+            %
+            %   If no arguments are provided all the data is returned. 
+            %
+            % Arguments:
+            %   first = The first point you want to retrieve (first point idx = 1)
+            %   last  = The last point you want to retrive (default is the end of
+            %       the data array)
+            %   stride = The stride spacing (default is 1)
+            %   NOTE! first, last, and stride must be matrices the same size as the 
+            %       matrix returned by NCDATASET.SIZE or SIZE 
+            %
+            % Returns:
+            %   The data is returned as a structure containing the actual data for the variable 
+            %   of interest as well as each coordinate variable
+            %
+            % Example:
+            %
+            %   ds = cfdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/OS_M1_20081008_TS.nc');
+            %   v = ds.variable('TEMP');
+            %   t = v.data([1 1 1 1], [10 2 1 1]);
+            %
+            
+            if (nargin == 1)
+                g = alldata(obj, 0);
+            else
+                s = obj.size;
+                
+                % Fill in missing arguments
+                % default stride is 1
+                if (nargin < 4)
+                    stride = ones(1, length(s));
+                end
+                
+                % Default last is the end
+                if (nargin < 3)
+                    last = s;
+                end
+                
+                g = somedata(obj, 0, first, last, stride);
             end
         end
         
@@ -165,12 +217,15 @@ classdef ncvariable < handle
     end
     
     methods (Access = protected)
+        
         %%
-        function data = alldata(obj)
+        function data = alldata(obj, withData)
             
             % ---- Step 2: Add the data
-            name = char(obj.variable.getName());
-            data.(name) = obj.dataset.data(name);
+            if withData
+                name = char(obj.variable.getName());
+                data.(name) = obj.dataset.data(name);
+            end
             
             for i = 1:length(obj.axesVariables)
                 name = char(obj.axesVariables{i}.getName());
@@ -179,7 +234,7 @@ classdef ncvariable < handle
         end
         
         %%
-        function data = somedata(obj, first, last, stride)
+        function data = somedata(obj, withData, first, last, stride)
             
             s = obj.dataset.size(obj.name);
             
@@ -195,8 +250,10 @@ classdef ncvariable < handle
             end
             
             % ---- Step 2: Add the data for the variable of interest
-            name = char(obj.variable.getName());
-            data.(name) = obj.dataset.data(name, first, last, stride);
+            if withData
+                name = char(obj.variable.getName());
+                data.(name) = obj.dataset.data(name, first, last, stride);
+            end
 
             % ---- Step 3: Add the data for each axes variable
             for i = 1:length(obj.axesVariables)
