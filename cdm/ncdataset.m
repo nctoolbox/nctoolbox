@@ -363,14 +363,14 @@ function t = convertToTime2(obj, variable, data)
                 secs = jDate.getTime() / 1000;
                 offset = utc2sdn(secs);
             catch me
-                warning('NCDATASET:timeunits', ['Unable to parse date: ' dateString]);
+                warning('NCDATASET:convertToTime2', ['Unable to parse date: ' dateString]);
             end
         end
     end
 
 
     if (conversion == 1) && (offset == 0)
-        warning('NCDATASET:timeunits', ['No conversion occurred. Are you sure that ' variable ' is time data?']);
+        warning('NCDATASET:convertToTime2', ['No conversion occurred. Are you sure that ' variable ' is time data?']);
     end
 
     % fprintf(1, 'Conversion = %12.5f, Offset = %12.5f\n', conversion, offset);
