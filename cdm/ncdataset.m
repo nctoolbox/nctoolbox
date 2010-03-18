@@ -239,7 +239,7 @@ classdef ncdataset < handle
                 % Get attributes for the variable
                 v = obj.netcdf.findVariable(variable);
                 if isempty(v)
-                    warning('MBARI:NCDATASET', ['Could not find the variable ' variable]);
+                    warning('NCDATASET:attributes', ['Could not find the variable ' variable]);
                 end
                 aa = v.getAttributes();
             end

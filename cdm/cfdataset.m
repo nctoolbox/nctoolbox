@@ -11,15 +11,15 @@
 %
 % Return:
 %   An instance of a cfdataset class
-%
-%   See ncdataset for additional information.
+%   !!! See ncdataset for additional information !!!
 %
 % Methods:
-%   Refer to ncdataset for additional methods.
-%   cfdataset.variable - Provides advanced access to data for a given variable
+%   cfdataset.grid - Retrieve coordinate data for the variable.
+%   cfdataset.struct - Retrieve data and coordinate data for the variable
+%   !!! Refer to ncdataset for additional methods !!!
 %
 % For more information on the methods use help. For example:
-%   >> help cfdataset.variable
+%   >> help cfdataset.struct
 %
 % Example:
 %   ds = cfdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/m1_metsys_20081008_original.nc')
