@@ -122,6 +122,7 @@ classdef cfdataset < ncdataset
                     for i = 1:length(obj.variables)
                         if strcmp(obj.ncvariables{i, 1}, variableName)
                            obj.ncvariables{i, 2} = v; 
+                           break;
                         end
                     end
                 end
