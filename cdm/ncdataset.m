@@ -48,7 +48,7 @@ classdef ncdataset < handle
         variables       % cell array containing the variable names as strings in netcdf
     end
     
-    methods (Access = private)
+    methods (Access = public)
         %%
         function delete(obj)
             % NCDATASET.DELETE Closes netcdf files when object NCDATASET object is disposed or leaves scope
