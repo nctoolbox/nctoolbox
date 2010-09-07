@@ -7,7 +7,7 @@
 echo('on')
 % Demonstration of subsetting a CF convention dataset
 
-url='http://blackburn.whoi.edu:8081/thredds/dodsC/coawst/fmrc/coawst_2_best.ncd';
+url='http://geoport.whoi.edu/thredds/dodsC/coawst_2_2/fmrc/coawst_2_2_best.ncd';
 ds = cfdataset(url);
 
 % Grab the variable of interest. No data is being read yet.

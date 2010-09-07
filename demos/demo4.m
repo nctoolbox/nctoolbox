@@ -1,5 +1,7 @@
 % DEMO4 - Playing with NetCDF-JAVA
 echo('on')
+% Starting DEMO4 ----------------------------------------------------------
+% Example of data access using the NetCDF-Java API
 ds = ncdataset('http://elvis.shore.mbari.org/thredds/dodsC/moorings/OS_M1_TS_090409');
 nc = ds.netcdf;
 
@@ -18,4 +20,4 @@ nc.getUseNaNs()
 out = java.io.BufferedWriter(java.io.FileWriter('trash_me.xml'));
 nc.writeNcML(out, '')
 out.close()
-echo('off')
+echo('off') % Ending DEMO4 ------------------------------------------------

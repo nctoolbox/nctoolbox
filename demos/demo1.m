@@ -1,5 +1,7 @@
 % DEMO1 - Basic data access
 echo('on')
+% STARTING DEMO1 ----------------------------------------------------------
+% Basic usage of ncdataset
 
 %% ---- Open your data
 % Can be NetCDF, NetCDF on webserver, or OpenDAP
@@ -22,4 +24,8 @@ shading interp
 set(gca, 'YDir', 'reverse')
 view(2)
 grid('on')
-echo('off')
+ch = colorbar;
+set(get(ch, 'YLabel'), 'String', '^oC')
+title('Temperature at M1 Mooring in Monterey Bay')
+
+echo('off') % ENDING DEMO2 ------------------------------------------------

@@ -1,6 +1,8 @@
 % DEMO2 - Subsetting data
 
 echo('on')
+% STARTING DEMO2 ----------------------------------------------------------
+% An example of subsetting data using ncdataset
 
 %% ---- Open the dataset
 ds = ncdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/OS_M1_20081008_TS.nc')
@@ -15,7 +17,7 @@ hold('on')
 %% ---- Lets fetch a subset of time in Matlab's native format
 startIdx = 100;
 endIdx = max(ds.size('TIME'));
-stride = 10
+stride = 10;
 t = ds.data('TIME', startIdx, endIdx, stride);
 t = ds.time('TIME', t); % Convert time data to matlab format. See help ncdataset.time
 
@@ -30,4 +32,7 @@ plot(t, temp, 'r.')
 datetick('x', 2);
 grid
 legend('All Data', 'Decimated Data')
-echo('off')
+title('Surface Temperature at M1 Mooring in Monterey Bay')
+ylabel('Temperature [^oC]')
+
+echo('off') % ENDING DEMO2 ------------------------------------------------

@@ -7,6 +7,7 @@
 % 2010-02-02
 
 echo('on')
+% Starting DEMO10 ---------------------------------------------------------
 % NCTOOLBOX doesn't yet support structures directly. But you can work with using
 % the netcdf-Java API in Matlab
 
@@ -28,7 +29,7 @@ siteId = bctd.findVariable('SITE_ID').read().copyTo1DJavaArray();
 tmp = bctd.findVariable('TMP').read().copyTo1DJavaArray();
 o2 = bctd.findVariable('O2').read().copyToNDJavaArray();
 
-echo('off')
+echo('off') % Ending DEMO10 -----------------------------------------------
 % Dump the results to screen
 fprintf(1, 'DEPTH, DEC_LAT, DEC_LONG, SITE_ID, TMP, O2\n');
 for i = 1:length(deep)

@@ -1,6 +1,10 @@
 % DEMO3 - Chaining files and finding attributes
 
 echo('on')
+% Starting DEMO3 ----------------------------------------------------------
+% An example of chaining data files and finding data attributes (i.e.
+% metdata)
+
 o2_ = 'Oxygen';
 time_ = 'esecs';
 
@@ -22,5 +26,6 @@ name = values{ismember(keys, 'long_name')};  % Retrieve the long_name value
 plot(t, o2)
 datetick('x')
 ylabel([name ' [' units ']'])
+title('Dissolved Oxygen at M1 Mooring in Monterey Bay')
 grid
-echo('off')
+echo('off') % Ending DEMO3 ------------------------------------------------

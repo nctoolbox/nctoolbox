@@ -4,6 +4,7 @@
 % 2009-10-22
 
 echo('on')
+% Starting DEMO7 ----------------------------------------------------------
 % Demonstration of using cfdataset to subset a variable and it's coordinate axes
 
 % Open the remote dataset
@@ -36,4 +37,4 @@ ylabel(char(units));
 xlabel('date');
 datetick('x');
 grid('on')
-echo('off')
+echo('off') % Ending DEMO7 ------------------------------------------------

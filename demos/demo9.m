@@ -2,6 +2,7 @@
 % and it's coordinate axis data
 
 echo('on')
+% Starting DEMO9 ----------------------------------------------------------
 % Demonstration of subsetting a CF convention dataset
 
 url='http://geoport.whoi.edu/thredds/dodsC/coawst_2_2/fmrc/coawst_2_2_best.ncd';
@@ -38,4 +39,4 @@ title([zname ' [' zunits '] on ' datestr(ztime)]);
 
 colorbar
 
-echo('off')
+echo('off') % Ending DEMO9 -----------------------------------------------

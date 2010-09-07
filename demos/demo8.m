@@ -1,9 +1,10 @@
 % DEMO8
 
 echo('on')
+% Starting DEMO8 ----------------------------------------------------------
 % Demonstration of subsetting a CF convention dataset
 
-url='http://geoport.whoi.edu/thredds/dodsC/coawst/fmrc/coawst_2_best.ncd'; 
+url='http://geoport.whoi.edu/thredds/dodsC/coawst_2_2/fmrc/coawst_2_2_best.ncd.html'; 
 ds = cfdataset(url);
 
 % Grab the variable of interest. No data is being read yet.
@@ -39,4 +40,4 @@ title([zname ' [' zunits '] on ' datestr(ztime)]);
 
 colorbar
 
-echo('off')
+echo('off') % Ending DEMO8 ------------------------------------------------
