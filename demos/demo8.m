@@ -4,7 +4,7 @@ echo('on')
 % Starting DEMO8 ----------------------------------------------------------
 % Demonstration of subsetting a CF convention dataset
 
-url='http://geoport.whoi.edu/thredds/dodsC/coawst_2_2/fmrc/coawst_2_2_best.ncd.html'; 
+url='http://geoport.whoi.edu/thredds/dodsC/coawst_2_2/fmrc/coawst_2_2_best.ncd'; 
 ds = cfdataset(url);
 
 % Grab the variable of interest. No data is being read yet.
