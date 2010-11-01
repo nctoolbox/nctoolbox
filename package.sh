@@ -15,5 +15,6 @@ cp setup_nctoolbox.m $TARGET
 rm -rf $(find $TARGET -name .svn)
 rm -rf $(find $TARGET -name .hg)
 rm -rf $(find $TARGET -name *~)
-ditto -c -k --keepParent -rsrc $TARGET nctoolbox-$(date "+%Y%m%d").zip
+rm -rf $(find $TARGET -name *DS_Store)
+ditto -c -k --keepParent --noextattr --norsrc $TARGET nctoolbox-$(date "+%Y%m%d").zip
 rm -rf target
