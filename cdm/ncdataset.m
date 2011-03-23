@@ -41,11 +41,14 @@
 
 % Brian Schlining (brian@mbari.org)
 % 2009-05-12
+% Alexander Crosby 2010, 2011
+
 classdef ncdataset < handle
 
     properties (SetAccess = private)
         netcdf          % ucar.nc2.ncdataset.NetcdfDataset java instance
         variables       % cell array containing the variable names as strings in netcdf
+        link
     end
     
     methods (Access = public)
@@ -82,7 +85,9 @@ classdef ncdataset < handle
                 for i = 1:(n)
                     obj.variables{i, 1} = char(vars.get(i - 1).getName());
                 end
-
+                
+                obj.link = url;
+                
             catch me
                 ex = MException('NCDATASET:ncdataset', ['Failed to open ' url]);
                 ex = ex.addCause(me);
@@ -148,7 +153,18 @@ classdef ncdataset < handle
             
             if (nargin == 2)
                 array = v.read();
-                d = array.copyToNDJavaArray();
+                try
+                  d = array.copyToNDJavaArray(); % this fails if the variable has no java shape/no dimension was assigned
+                catch me1 
+                  try
+                   d = array.toString;  % different way to get single value out of java array
+                   d = d.toCharArray'; %must transpose
+                   d = str2double(d);   % matlab string to matlab numeric
+                  catch me2
+                    me2.throw('Error in netcdf-java. Check for file compliance.');
+                  end
+                end
+                d = double(d);
             else
                 s = obj.size(variable);
                 
@@ -172,6 +188,7 @@ classdef ncdataset < handle
                 
                 array = v.read(ranges);
                 d = array.copyToNDJavaArray();
+                d = double(d);
             end
         end
         
@@ -296,7 +313,32 @@ classdef ncdataset < handle
             end
             
         end
-
+        %%
+        function B = subsref(obj,s)
+            switch s(1).type
+                case '.'
+                    methodc = s(1).subs;
+                case '()'
+                             error('ncdataset:subsref',...
+                               'Not a supported subscripted reference, cannot use numerical indexing on a dataset object')
+                case '{}'
+                             error('ncdataset:subsref',...
+                               'Not a supported subscripted reference, cannot use numerical indexing on a dataset object')
+            end
+            switch s(2).type
+                case '.'
+                                error('ncdataset:subsref',...
+                               'Not a supported subscripted reference, cannot use numerical indexing on a dataset object')
+                case '()'
+                    B = builtin('subsref',obj,s);                   
+                case '{}'
+                    g = substruct('.',methodc,'()',s(2).subs);
+%                     g.type = '()';
+%                     g.subs = s(i).subs;
+                    B = builtin('subsref',obj,g);
+            
+            end
+        end
     end
 
 end
@@ -377,5 +419,24 @@ function t = convertToTime2(obj, variable, data)
     t = data * conversion + offset;
 
 end
+
+%% 
+% function sref = subsref(obj,s)
+% % obj(i) is equivalent to obj.Data(i)
+%    switch s(1).type
+%       % Use the built-in subsref for dot notation
+%       case '.'
+%          sref = builtin('subsref',obj,s);
+%       case '()'
+%          sref = builtin('subsref',obj,s);
+% %          error('ncdataset:subsref',...
+% %            'Not a supported subscripted reference, cannot use numerical indexing on a dataset object')
+%      
+%       case '{}'
+%          g.type = '()';
+%          g.subs = s(1).subs;
+%          sref = builtin('subsref',obj,g);
+%    end 
+% end
 
 

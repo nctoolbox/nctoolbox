@@ -33,6 +33,7 @@
 
 % Brian Schlining
 % 2009-10-21
+% Alexander Crosby 2010, 2011
 
 classdef cfdataset < ncdataset
     
@@ -131,7 +132,41 @@ classdef cfdataset < ncdataset
           
 
         end
+        %%
+        function p = point(obj)
+        % Here is some help?
         
+%           if nargin < 5
+%             if nargin < 4
+%               indextype = 'index';
+%               x = 1;
+%               y = 1;
+%             else
+%               indextype = varargin{1};
+%               x = varargin{2};
+%               y = varargin{3};
+%             end
+%             z = ':';
+%           end
+          p = ncpoint(obj);
+          
+        end
+        
+        function r = rgrid(obj)
+          r = ncrgrid(obj);
+        end
+        
+        function c = cgrid(obj)
+          c = nccgrid(obj);
+        end
+        
+        function sg = sgrid(obj)
+          sg = ncsgrid(obj);
+        end
+        
+        function ug = ugrid(obj)
+          ug = ncugrid(obj);
+        end
         %%
         function s = struct(obj, variableName, first, last, stride)
         % CFDATASET.STRUCT Retrieve all or a subset of the data for the
@@ -264,6 +299,107 @@ classdef cfdataset < ncdataset
             end
         end
         
+        function t = gettime(obj, varargin)
+          t_converted = obj.dataset.time('time'); % this is a bad assumption
+          if nargin > 1
+            t_index1 = t_converted > varargin{1};
+            t_index2 = t_converted < varargin{2};
+            t_index = find(t_index1==t_index2);
+            t = t_converted(t_index);
+          else
+            t = t_converted;
+          end
+        end
+       
+        %%
+        function result = numel(varargin)
+          % cfdataset/numel -- Overloaded NUMEL.
+          result = 1;
+        end
+        
+        function B = subsref(obj,s)
+          if isa(s(1).subs, 'cell')
+            s(1).subs = s(1).subs{1};
+          end
+          
+          switch s(1).type
+                case '.'
+                    if length(s)<2
+                        B = builtin('subsref',obj,s);
+                    elseif length(s)==2
+                      if s(2).type=='.'
+                        a = substruct('.',s(1).subs);
+                        A = builtin('subsref',obj,a);
+%                         b = substruct('.',s(2).subs,'()',s(2).subs);
+                        B = builtin('subsref',A,s(2:end));
+                      else
+                        g = substruct('.',s(1).subs,'()',s(2).subs);
+                        % g.type = '()';
+                        % g.subs = s(i).subs;
+                        B = builtin('subsref',obj,g);
+                      end
+                    elseif length(s)==3
+                        switch s(2).type
+                            case '.'
+                                a = substruct('.',s(1).subs);
+                                A = builtin('subsref',obj,a);
+                                B = builtin('subsref',A,s(2:end));
+                            case '()'
+                                B = builtin('subsref',obj,s);
+%                             case '{}' % 5his logic isnt correct
+%                                 g = substruct('.','variable','()',...
+%                                   s(2).subs);
+%                                 d = builtin('subsref',obj,g);
+%                                 B = builtin('subsref',d,s(3));
+% %                                 B = d.data(s(3).subs);
+                                
+                        end
+                    else
+                        error('cfdataset:subsref',...
+                            'Unexpected reference notation or method call')
+                    end
+                    
+            case '()'
+              v = obj.variable(char(s(1).subs));
+              if length(s) == 2
+                B = v.data(s(2).subs);
+              elseif length(s) == 3
+                switch s(3).subs
+                  case 'data'
+                    B = v.data(s(2).subs);
+                  case 'grid'
+                    B = v.grid(s(2).subs);
+                end
+              else
+                B = v;
+              end
+              
+            case '{}'
+              
+                  v = obj.variable(s(1).subs);
+                  if length(s) == 1
+%                     B = v.data(s(1).subs);
+                    B = v;
+                  elseif length(s) == 2
+                    B = v.data(s(2).subs{:});
+                  elseif length(s) == 3
+                    switch s(3).subs
+                      case 'data'
+                        B = v.data(s(2).subs);
+                      case 'grid'
+                        B = v.grid(s(2).subs);
+                    end
+                  else
+                    B = v;
+                  end
+              
+          end
+        end
     end
     
+    
+    
 end
+
+%%
+        
