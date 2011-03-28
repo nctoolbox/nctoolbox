@@ -112,7 +112,7 @@ classdef ncdataset < handle
             % Return:
             %   The size of the data for the variable. Includes all dimensions,
             %   even the singleton dimensions
-            
+            variable = ucar.nc2.NetcdfFile.escapeName(variable)
             v = obj.netcdf.findVariable(variable);
             s = v.getShape()';
         end
@@ -148,7 +148,7 @@ classdef ncdataset < handle
             %     ds = ncdataset('/Volumes/oasis/m1/netcdf/m1_adcp_20051020_longranger.nc')
             %     u = ds.data('u_component_uncorrected'); % u is a matlab 'single' type
             %     u = double(u) % promote single to double precision
-            
+            variable = ucar.nc2.NetcdfFile.escapeName(variable)
             v = obj.netcdf.findVariable(variable);
             
             if (nargin == 2)
@@ -208,7 +208,7 @@ classdef ncdataset < handle
             % Return:
             %   An (n, 1) cell array containing the names (in order) of the variable
             %   names representing the coordinate axes for the specified variableName.
-
+            variable = ucar.nc2.NetcdfFile.escapeName(variable)
             v = obj.netcdf.findVariable(variable);
             dims = v.getDimensions();
             cv = cell(dims.size(), 1);
@@ -254,6 +254,7 @@ classdef ncdataset < handle
                 aa = obj.netcdf.getGlobalAttributes();
             else
                 % Get attributes for the variable
+                variable = ucar.nc2.NetcdfFile.escapeName(variable)
                 v = obj.netcdf.findVariable(variable);
                 if isempty(v)
                     warning('NCDATASET:attributes', ['Could not find the variable ' variable]);
