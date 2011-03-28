@@ -3,6 +3,8 @@ function setup_ncdataset
 home = fileparts(which(mfilename));
 addpath(fullfile(home, 'java'));
 addpath(fullfile(home, 'cdm'));
+addpath(fullfile(home, 'cdm', 'utilities'));
+
 
 warning off
 try 
