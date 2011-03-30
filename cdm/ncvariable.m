@@ -24,12 +24,12 @@ classdef ncvariable < handle
     properties (Dependent = true)
         name            % The string variable name that this object represents
         axes
+        attributes
     end
     
     properties (SetAccess = private, GetAccess = protected)
         variable        % ucar.nc2.Variable instance. Represents the data
         axesVariables    % ucar.nc2.Variable instance. Represents the data.
-        attributes %added acrosby
     end
     
     methods
@@ -47,12 +47,11 @@ classdef ncvariable < handle
             elseif isa(src, 'ncdataset')
                 obj.dataset = src;             % src is a ncdataset
             else
-                ex = MException('NCVARIABLE:ncvariable', 'Invalid dataset was specified');
+                ex = MException(['NCTOOLBOX:' mfilename], 'Invalid dataset was specified');
                 ex.throw;
             end
             
             obj.variable = obj.dataset.netcdf.findVariable(variableName);
-            obj.attributes = obj.dataset.attributes(obj.name); %acrosby
             
             if nargin == 3
                 obj.axesVariables = cell(size(axesVariableNames));
@@ -64,6 +63,10 @@ classdef ncvariable < handle
             end
             
             
+        end
+        
+        function a = get.attributes(obj)
+            a = obj.dataset.attributes(obj.name);
         end
         
         %%
@@ -129,7 +132,9 @@ classdef ncvariable < handle
                     try
                         d = alldata(obj,1);
                     catch me
-                        me.throw();
+                        ex = MException(['NCTOOLBOX:' mfilename ':data'], ['Failed to open ' url]);
+                        ex = ex.addCause(me);
+                        ex.throw;
                     end
                 else
                     d = alldata(obj, 1);
@@ -402,7 +407,8 @@ classdef ncvariable < handle
                                 sref = obj.data(first, last, stride);
                             else
                                 sref = obj.data;
-                                disp('Warning: Variable has no netcdf dimension associated with it. Errors may result from non CF compliant files.')
+                                warning(['NCTOOLBOX:' mfilename ':subsref'], ...
+                                    ['Variable "' name '" has no netcdf dimension associated with it. Errors may result from non CF compliant files.'])
                             end
                         case 'grid'
                             nums = size(obj);
@@ -419,7 +425,8 @@ classdef ncvariable < handle
                                 end
                                 sref = obj.grid(first, last, stride);
                             else
-                                disp('No dimensions associated with variable');
+                                warning(['NCTOOLBOX:' mfilename ':subsref'], ...
+                                    ['Variable "' name '" has no netcdf dimension associated with it. Errors may result from non CF compliant files.'])
                             end
                         otherwise
                             sref = builtin('subsref',obj,s);
@@ -433,8 +440,8 @@ classdef ncvariable < handle
                     end
                     % No support for indexing using '{}'
                 case '{}'
-                    error('variable_object:subsref',...
-                        'Not a supported subscripted reference, "{}" are not permitted to call variable object methods')
+                    error(['NCTOOLBOX:' mfilename ':subsref'], ...
+                        'Not a supported subscripted reference, "{}" are not permitted to call variable object methods');
             end
         end
         
@@ -497,7 +504,8 @@ classdef ncvariable < handle
                             vLast = last;
                             vStride = stride;
                         else
-                            me = MException('NCVARIABLE:somedata', ['The data size of the coordinate variable,' ...
+                            me = MException(['NCTOOLBOX:' mfilename ':somedata'], ...
+                                ['The data size of the coordinate variable,' ...
                                 name ', does not fit the size of ' obj.name]);
                             me.throw;
                         end
@@ -514,7 +522,8 @@ classdef ncvariable < handle
                             vLast = last(dim);
                             vStride = stride(dim);
                         else
-                            me = MException('NCVARIABLE:somedata', ['The data size of the coordinate variable,' ...
+                            me = MException(['NCTOOLBOX:' mfilename ':somedata'], ...
+                                ['The data size of the coordinate variable,' ...
                                 name ', does not fit the size of ' obj.name]);
                             me.throw;
                         end
@@ -526,7 +535,8 @@ classdef ncvariable < handle
                         if ~isempty(dim)
                             for j = 2:length(vs)
                                 if vs(j) ~= s(dim + j - 1)
-                                    me = MException('NCVARIABLE:somedata', ['The data size of the coordinate variable,' ...
+                                    me = MException(['NCTOOLBOX:' mfilename ':somedata'], ...
+                                        ['The data size of the coordinate variable,' ...
                                         name ', does not fit the size of ' obj.name]);
                                     me.throw;
                                 end

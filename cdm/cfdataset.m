@@ -367,7 +367,7 @@ classdef cfdataset < ncdataset
                                 
                         end
                     else
-                        error('cfdataset:subsref',...
+                        error(['NCTOOLBOX:' mfilename ':subsref'], ...
                             'Unexpected reference notation or method call')
                     end
                     
