@@ -133,45 +133,6 @@ classdef cfdataset < ncdataset
             
         end
         
-        % TODO the following are essentially factory functions. For
-        % extensibility it would better if these were NOT included here.
-        % Rather they should be called as ncpoint(ds);
-        %%
-        function p = point(obj)
-            % Here is some help?
-            
-            %           if nargin < 5
-            %             if nargin < 4
-            %               indextype = 'index';
-            %               x = 1;
-            %               y = 1;
-            %             else
-            %               indextype = varargin{1};
-            %               x = varargin{2};
-            %               y = varargin{3};
-            %             end
-            %             z = ':';
-            %           end
-            p = ncpoint(obj);
-            
-        end
-        
-        function r = rgrid(obj)
-            r = ncrgrid(obj);
-        end
-        
-        function c = cgrid(obj)
-            c = nccgrid(obj);
-        end
-        
-        function sg = sgrid(obj)
-            sg = ncsgrid(obj);
-        end
-        
-        function ug = ugrid(obj)
-            ug = ncugrid(obj);
-        end
-        
         %%
         function s = struct(obj, variableName, first, last, stride)
             % CFDATASET.STRUCT Retrieve all or a subset of the data for the
@@ -304,10 +265,10 @@ classdef cfdataset < ncdataset
             end
         end
         
-        % TODO Commented this out as:
+        %% TODO Commented this out as:
         %  1) gettime makes flawed assumptions on what is a time variable.
         %  2) There may be more than 1 time variable
-        %%
+        %
 %         function t = gettime(obj, varargin)
 %             t_converted = obj.dataset.time('time'); % this is a bad assumption
 %             if nargin > 1
@@ -367,30 +328,32 @@ classdef cfdataset < ncdataset
                                 
                         end
                     else
-                        error('cfdataset:subsref',...
+                        error(['NCTOOLBOX:' mfilename ':subsref'], ...
                             'Unexpected reference notation or method call')
                     end
                     
-                case '()'
-                    v = obj.variable(char(s(1).subs));
-                    if length(s) == 2
-                        B = v.data(s(2).subs);
-                    elseif length(s) == 3
-                        switch s(3).subs
-                            case 'data'
-                                B = v.data(s(2).subs);
-                            case 'grid'
-                                B = v.grid(s(2).subs);
-                        end
-                    else
-                        B = v;
-                    end
+                 case '()'
+                     error('cfdataset:subsref',...
+                            'Call with "()" as first type unsupported at this time')
+%                     v = obj.variable(char(s(1).subs));
+%                     if length(s) == 2
+%                         B = v.data(s(2).subs);
+%                     elseif length(s) == 3
+%                         switch s(3).subs
+%                             case 'data'
+%                                 B = v.data(s(2).subs);
+%                             case 'grid'
+%                                 B = v.grid(s(2).subs);
+%                         end
+%                     else
+%                         B = v;
+%                     end
                     
-                case '{}'
-                    
+                 case '{}'
+%                      error('cfdataset:subsref',...
+%                             'Call with "{}" as first type unsupported at this time')       
                     v = obj.variable(s(1).subs);
                     if length(s) == 1
-                        %                     B = v.data(s(1).subs);
                         B = v;
                     elseif length(s) == 2
                         B = v.data(s(2).subs{:});

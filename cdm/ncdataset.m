@@ -89,7 +89,7 @@ classdef ncdataset < handle
                 obj.location = url;
                 
             catch me
-                ex = MException('NCDATASET:ncdataset', ['Failed to open ' url]);
+                ex = MException(['NCTOOLBOX:' mfilename], ['Failed to open ' url]);
                 ex = ex.addCause(me);
                 ex.throw;
             end
@@ -148,7 +148,7 @@ classdef ncdataset < handle
             %     ds = ncdataset('/Volumes/oasis/m1/netcdf/m1_adcp_20051020_longranger.nc')
             %     u = ds.data('u_component_uncorrected'); % u is a matlab 'single' type
             %     u = double(u) % promote single to double precision
-            variable = ucar.nc2.NetcdfFile.escapeName(variable)
+            variable = ucar.nc2.NetcdfFile.escapeName(variable);
             v = obj.netcdf.findVariable(variable);
             
             if (nargin == 2)
@@ -163,7 +163,7 @@ classdef ncdataset < handle
                         d = d.toCharArray';  % must transpose
                         d = str2double(d);   % matlab string to matlab numeric
                     catch me2
-                        ex = MException('NCDATASET:ncdataset', ['Failed to open "' variable '" in ' url]);
+                        ex = MException(['NCTOOLBOX:' mfilename ':data'], ['Failed to open "' variable '" in ' url]);
                         ex = ex.addCause(me2);
                         ex.throw;
                     end
@@ -214,7 +214,7 @@ classdef ncdataset < handle
             % Return:
             %   An (n, 1) cell array containing the names (in order) of the variable
             %   names representing the coordinate axes for the specified variableName.
-            variable = ucar.nc2.NetcdfFile.escapeName(variable)
+            variable = ucar.nc2.NetcdfFile.escapeName(variable);
             v = obj.netcdf.findVariable(variable);
             dims = v.getDimensions();
             cv = cell(dims.size(), 1);
@@ -260,10 +260,10 @@ classdef ncdataset < handle
                 aa = obj.netcdf.getGlobalAttributes();
             else
                 % Get attributes for the variable
-                variable = ucar.nc2.NetcdfFile.escapeName(variable)
+                variable = ucar.nc2.NetcdfFile.escapeName(variable);
                 v = obj.netcdf.findVariable(variable);
                 if isempty(v)
-                    warning('NCDATASET:attributes', ['Could not find the variable ' variable]);
+                    warning(['NCTOOLBOX:' mfilename ':attributes'], ['Could not find the variable ' variable]);
                 end
                 aa = v.getAttributes();
             end
@@ -282,7 +282,7 @@ classdef ncdataset < handle
                 end
             else
                 % Show warning, return empty cell array
-                warning('NCDATASET:attributes', 'No attributes were found');
+                warning(['NCTOOLBOX:' mfilename ':attributes'], 'No attributes were found');
                 a = cell(1, 2);
             end
         end
@@ -314,7 +314,7 @@ classdef ncdataset < handle
                 try
                     t = convertToTime2(obj, variable, data);
                 catch me2
-                    warning('NCDATASET:time', ['Unable to convert ' variable ' to matlab time.']);
+                    warning(['NCTOOLBOX:' mfilename ':time'], ['Unable to convert ' variable ' to matlab time.']);
                     t = data;
                 end
             end
@@ -418,14 +418,14 @@ if ~isempty(idx)
             secs = jDate.getTime() / 1000;
             offset = utc2sdn(secs);
         catch me
-            warning('NCDATASET:convertToTime2', ['Unable to parse date: ' dateString]);
+            warning(['NCTOOLBOX:' mfilename ':convertToTime2'], ['Unable to parse date: ' dateString]);
         end
     end
 end
 
 
 if (conversion == 1) && (offset == 0)
-    warning('NCDATASET:convertToTime2', ['No conversion occurred. Are you sure that ' variable ' is time data?']);
+    warning(['NCTOOLBOX:' mfilename ':convertToTime2'], ['No conversion occurred. Are you sure that ' variable ' is time data?']);
 end
 
 % fprintf(1, 'Conversion = %12.5f, Offset = %12.5f\n', conversion, offset);

@@ -24,12 +24,12 @@ classdef ncvariable < handle
     properties (Dependent = true)
         name            % The string variable name that this object represents
         axes
+        attributes
     end
     
     properties (SetAccess = private, GetAccess = protected)
         variable        % ucar.nc2.Variable instance. Represents the data
         axesVariables    % ucar.nc2.Variable instance. Represents the data.
-        attributes %added acrosby
     end
     
     methods
@@ -47,12 +47,11 @@ classdef ncvariable < handle
             elseif isa(src, 'ncdataset')
                 obj.dataset = src;             % src is a ncdataset
             else
-                ex = MException('NCVARIABLE:ncvariable', 'Invalid dataset was specified');
+                ex = MException(['NCTOOLBOX:' mfilename], 'Invalid dataset was specified');
                 ex.throw;
             end
             
             obj.variable = obj.dataset.netcdf.findVariable(variableName);
-            obj.attributes = obj.dataset.attributes(obj.name); %acrosby
             
             if nargin == 3
                 obj.axesVariables = cell(size(axesVariableNames));
@@ -64,6 +63,10 @@ classdef ncvariable < handle
             end
             
             
+        end
+        
+        function a = get.attributes(obj)
+            a = obj.dataset.attributes(obj.name);
         end
         
         %%
@@ -129,7 +132,9 @@ classdef ncvariable < handle
                     try
                         d = alldata(obj,1);
                     catch me
-                        me.throw();
+                        ex = MException(['NCTOOLBOX:' mfilename ':data'], ['Failed to open ' url]);
+                        ex = ex.addCause(me);
+                        ex.throw;
                     end
                 else
                     d = alldata(obj, 1);
@@ -225,162 +230,14 @@ classdef ncvariable < handle
         
 
         %%
-        % TODO this should be removed and put into a subclass (something
-        % like (geodataset which would return subclasses of ncvariable 
-        % called geovariable). Many datasets are NOT geographic, we shouldn't
-        % clutter base classes with this functionality. Also, 'bbox' is not
-        % very informative as to what the function does. The correct term 
-        % used in GIS is 'envelope'.
-%         function bb = bbox(obj, tmin_i, tmax_i, zmin_i, zmax_i, east_min,...
-%                 north_min, east_max, north_max, stride)
-%             % BBOX
-%             %
-%             % For use with nj_tbx/nctoolbox to return data based on geographic extents.
-%             % Use:
-%             % data = variable.bbox(-71.5, 39.5, -65, 46)
-%             %                         %[east north east north]%
-%             %
-%             % This code relys on coards conventions of coodinate order using:
-%             % [time, z, lat, lon]
-%             %
-%             % TODO: add stride arguments and catches for points and stations
-%             % because this logic won't work with them.
-%             % Alexander Crosby, Applied Science Associates
-%             %
-%             %           g = obj.grid;
-%             %           h = 0;
-%             %           a = obj.axes;
-%             %           [lat_name] = char(a(end-1));
-%             %           [lon_name] = char(a(end));
-%             nums = obj.size;
-%             
-%             [indstart_r indend_r indstart_c indend_c] = obj.bboxij(east_min, north_min, east_max, north_max);
-%             
-%             if length(nums) < 4
-%                 
-%                 tstart = first(1);
-%                 tend = last(1);
-%                 zstart = first(2);
-%                 zend = last(2);
-%                 first = [1 indstart_r indstart_c];
-%                 last = [1 indend_r indend_c];
-%                 %             stride = [1 1 1];
-%                 
-%             else
-%                 first = [tmin_i zmin_i indstart_r indstart_c];
-%                 last = [tmax_i zmax_i indend_r indend_c];
-%                 %             stride = [1 1 1 1];
-%                 
-%             end
-%             bb.data = obj.data(first, last, stride);
-%             bb.grid = obj.grid(first, last, stride);
-%             
-%         end
         
-        % TODO see comment above for bbox function
-%         function [indstart_r indend_r indstart_c indend_c] =...
-%                 bboxij(obj, east_min, north_min, east_max, north_max)
-%             % BBOXIJ
-%             %
-%             % For use with nj_tbx/nctoolbox to return data based on geographic extents.
-%             % Use:
-%             % data = variable.bbox(-71.5 39.5 -65 46)
-%             %                         %[east north east north]%
-%             %
-%             % This code relys on coards conventions of coodinate order using:
-%             % [time, z, lat, lon]
-%             %
-%             % TODO: add stride arguments and catches for points and stations
-%             % because this logic won't work with them.
-%             % Alexander Crosby, Applied Science Associates
-%             %
-%             g = obj.grid;
-%             %           h = 0;
-%             
-%             
-%             
-%             if ~isvector(g.lat)
-%                 [indlat_l1] = ((g.lat <= north_max)); %2d
-%                 [indlat_l2] = ((g.lat >= north_min)); %2d
-%                 [indlat_r indlat_c] = find((indlat_l1&indlat_l2)); % 1d each
-%                 indlon_l1 = zeros(size(indlat_l1));
-%                 indlon_l2 = zeros(size(indlat_l1));
-%                 for i = 1:length(indlat_r)
-%                     if g.lon(indlat_r(i), indlat_c(i)) <= east_max;
-%                         indlon_l1(indlat_r(i), indlat_c(i)) = true;
-%                     end
-%                     if g.lon(indlat_r(i), indlat_c(i)) >= east_min;
-%                         indlon_l2(indlat_r(i), indlat_c(i)) = true;
-%                     end
-%                 end
-%                 [ind_r, ind_c] = find((indlon_l1&indlon_l2));
-%                 h=1;
-%             else
-%                 indlat1 = (g.lat <= north_max);
-%                 indlat2 = (g.lat >= north_min);
-%                 indlat = find(indlat1&indlat2);
-%                 indlon1 = (g.lon <= east_max);
-%                 indlon2 = (g.lon >= east_min);
-%                 indlon = find(indlon1&indlon2);
-%                 
-%             end
-%             
-%             %             if h==1 %if lat, lon are 2-D  %% doesn't matter?
-%             indstart_c = min(ind_c);
-%             indend_c = max(ind_c);
-%             indstart_r = min(ind_r);
-%             indend_r = max(ind_r);
-%             %             nums = obj.size;
-%             %             if length(nums) < 4
-%             %               first = [1 indstart_r indstart_c];
-%             %               last = [1 indend_r indend_c];
-%             %               stride = [1 1 1];
-%             %
-%             %             else
-%             %               first = [1 1 indstart_r indstart_c];
-%             %               last = [1 1 indend_r indend_c];
-%             %               stride = [1 1 1 1];
-%             %
-%             %             end
-%             %             bb.data = obj.data(first, last, stride);
-%             %             bb.grid = obj.grid(first, last, stride);
-%             
-%             %           else %if lat, lon are 1-D
-%             %             indlat_start = min(indlat);
-%             %             indlon_start = min(indlon);
-%             %             indlat_end = max(indlat);
-%             %             indlon_end = max(indlon);
-%             % %             nums = size(obj);
-%             %
-%             % %             if length(nums) < 4
-%             % %             bb.data = obj.data(...
-%             % %               [1 indlat_start indlon_start],...
-%             % %               [nums(1) indlat_end,indlon_end],...
-%             % %               [1 1 1]...
-%             % %               );
-%             % %             %         if nargout > 1
-%             % %             bb.grid = obj.grid(...
-%             % %               [1 indlat_start indlon_start],...
-%             % %               [nums(1) indlat_end,indlon_end],...
-%             % %               [1 1 1]...
-%             % %               );
-%             % %             else
-%             % %               bb.data = obj.data(...
-%             % %               [1 1 indlat_start indlon_start],...
-%             % %               [nums(1) nums(2) indlat_end,indlon_end],...
-%             % %               [1 1 1 1]...
-%             % %               );
-%             % %             %         if nargout > 1
-%             % %               bb.grid = obj.grid(...
-%             % %               [1 1 indlat_start indlon_start],...
-%             % %               [nums(1) nums(2) indlat_end,indlon_end],...
-%             % %               [1 1 1 1]...
-%             % %               );
-%             % %             end
-%         end
-        
-        
-        function sref = subsref(obj,s)
+         function e = end(obj, k, n)
+           n = obj.dataset.size(obj.name);
+           e = n(k);
+         end % Added to deal with end indexing functionality,
+                                                     % otherwise the indexing arugment is ignored.
+
+         function sref = subsref(obj,s)
             switch s(1).type
                 % Use the built-in subsref for dot notation
                 case '.'
@@ -390,36 +247,31 @@ classdef ncvariable < handle
                             if ~isempty(nums)
                                 switch length(s)
                                     case 1
-                                        first = ones(1,length(nums));
-                                        last = double(nums);
-                                        stride = first;
+                                        sref = obj;
                                     case 2
-                                        %                 switch length(nums)
-                                        %                   case 1
                                         [first last stride] = parseIndices(s(2).subs, double(nums));
-                                        
+                                        sref = obj.data(first, last, stride);
                                 end
-                                sref = obj.data(first, last, stride);
+                                
                             else
                                 sref = obj.data;
-                                disp('Warning: Variable has no netcdf dimension associated with it. Errors may result from non CF compliant files.')
+                                warning(['NCTOOLBOX:' mfilename ':subsref'], ...
+                                    ['Variable "' name '" has no netcdf dimension associated with it. Errors may result from non CF compliant files.'])
                             end
                         case 'grid'
                             nums = size(obj);
                             if ~isempty(nums)
                                 switch length(s)
                                     case 1
-                                        first = ones(1,length(nums));
-                                        last = double(nums);
-                                        stride = first;
+                                        sref = obj;
                                     case 2
-                                        %                 switch length(nums)
-                                        %                   case 1
                                         [first last stride] = parseIndices(s(2).subs, double(nums));
+                                        sref = obj.grid(first, last, stride);
                                 end
-                                sref = obj.grid(first, last, stride);
+
                             else
-                                disp('No dimensions associated with variable');
+                                warning(['NCTOOLBOX:' mfilename ':subsref'], ...
+                                    ['Variable "' name '" has no netcdf dimension associated with it. Errors may result from non CF compliant files.'])
                             end
                         otherwise
                             sref = builtin('subsref',obj,s);
@@ -433,8 +285,8 @@ classdef ncvariable < handle
                     end
                     % No support for indexing using '{}'
                 case '{}'
-                    error('variable_object:subsref',...
-                        'Not a supported subscripted reference, "{}" are not permitted to call variable object methods')
+                    error(['NCTOOLBOX:' mfilename ':subsref'], ...
+                        'Not a supported subscripted reference, "{}" are not permitted to call variable object methods');
             end
         end
         
@@ -497,7 +349,8 @@ classdef ncvariable < handle
                             vLast = last;
                             vStride = stride;
                         else
-                            me = MException('NCVARIABLE:somedata', ['The data size of the coordinate variable,' ...
+                            me = MException(['NCTOOLBOX:' mfilename ':somedata'], ...
+                                ['The data size of the coordinate variable,' ...
                                 name ', does not fit the size of ' obj.name]);
                             me.throw;
                         end
@@ -514,7 +367,8 @@ classdef ncvariable < handle
                             vLast = last(dim);
                             vStride = stride(dim);
                         else
-                            me = MException('NCVARIABLE:somedata', ['The data size of the coordinate variable,' ...
+                            me = MException(['NCTOOLBOX:' mfilename ':somedata'], ...
+                                ['The data size of the coordinate variable,' ...
                                 name ', does not fit the size of ' obj.name]);
                             me.throw;
                         end
@@ -526,7 +380,8 @@ classdef ncvariable < handle
                         if ~isempty(dim)
                             for j = 2:length(vs)
                                 if vs(j) ~= s(dim + j - 1)
-                                    me = MException('NCVARIABLE:somedata', ['The data size of the coordinate variable,' ...
+                                    me = MException(['NCTOOLBOX:' mfilename ':somedata'], ...
+                                        ['The data size of the coordinate variable,' ...
                                         name ', does not fit the size of ' obj.name]);
                                     me.throw;
                                 end
@@ -539,13 +394,7 @@ classdef ncvariable < handle
                         
                     end
                     data.(name) = obj.dataset.data(name, vFirst, vLast, vStride);
-                    
-                    % TODO Data should NOT be modified in a base class!! It
-                    % should be returned as stored (accepting missing data,
-                    % and fill values). Modifing the data will surprise many
-                    % users. Maybe a geodataset subclass could modify
-                    % values as long as it is explicitly stated in the
-                    % documentation so users will NOT be surprised.
+
 %                     if isempty(type)
 %                         data.(name) = obj.dataset.data(name, vFirst, vLast, vStride);
 %                     else
