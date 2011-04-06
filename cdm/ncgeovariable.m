@@ -104,16 +104,63 @@ classdef ncgeovariable < ncvariable
         end % interopgrid end
         
         function tw = timewindow(src, starttime, stoptime)
+          d = src.timewindowij(starttime, stoptime);
+          tw = d.time;
         end
         
-        function twind = timewindowij(src, starttime, stoptime)
-        end
+        %% These functions would rather output multiple outputs instead of struct, must reconcile
+        %     with the subsref in either ncgeovariable or ncvariable. Wait, why, then, does geoij work???
+        function d = timewindowij(src, starttime, stoptime)
+          s = src.size;
+          first = ones(1, length(s));
+          last = s;
+          stride = first;
+          g = src.interopgrid(first, last, stride);
+          
+          if isfield(g, 'time') % are any of the fields recognized as time explictly
+            starttime = datenum(starttime);
+            stoptime = datenum(stoptime);
+            if isempty(starttime)
+              starttime = g.time(1);
+            end
+            if isempty(stoptime)
+              stoptime = g.time(end);
+            end
+            
+            t_index1 = g.time > starttime;
+            t_index2 = g.time < stoptime;
+            d.index = find(t_index1==t_index2);
+            d.time = g.time(d.index);
+          else
+            me = MException(['NCTOOLBOX:' mfilename ':timewindowij'], ...
+                'No grid variable returned as time.');
+            me.throw;
+          end
+        end % end timewindowij
         
-        function tgs = timegeosubset(src, startime, stoptime, zmin, zmax, east_min, north_min, ...
-            east_max, north_max)
-        end
+        function d = timegeosubset(src, starttime, stoptime, zmin, zmax, east_min, north_min, ...
+            east_max, north_max, stride)
+          nums = src.size;
+            
+            [indstart_r indend_r indstart_c indend_c] = src.geoij(east_min, north_min, east_max, north_max);
+            t = src.timewindowij(starttime, stoptime);
+            
+            if length(nums) < 4
+              me = MException(['NCTOOLBOX:' mfilename ':geosubset'], ...
+                ['Expected data of ', obj.name, ' to be rank 4.']);
+              me.throw;
+                
+            else
+                first = [min(t.index) zmin indstart_r indstart_c];
+                last = [max(t.index) zmax indend_r indend_c];
+                
+            end
+            d.data = src.data(first, last, stride);
+            d.grid = src.interopgrid(first, last, stride);
+            
+        end % end of timegeosubset
         
-        function [d g] = geosubset(obj, tmin_i, tmax_i, zmin_i, zmax_i, east_min,...
+        function d = geosubset(obj, tmin_i, tmax_i, zmin_i, zmax_i, east_min,...
                 north_min, east_max, north_max, stride)
             % GEOVARIABLE.GEOSUBSET
             %
@@ -154,11 +201,11 @@ classdef ncgeovariable < ncvariable
                 %             stride = [1 1 1 1];
                 
             end
-            d = obj.data(first, last, stride);
-            g = obj.interopgrid(first, last, stride);
+            d.data = obj.data(first, last, stride);
+            d.grid = obj.interopgrid(first, last, stride);
             
-        end
-        
+        end % end of geosubset
+       %% 
         function [indstart_r indend_r indstart_c indend_c] =...
                 geoij(obj, east_min, north_min, east_max, north_max)
             % GEOVARIABLE.GEOIJ
