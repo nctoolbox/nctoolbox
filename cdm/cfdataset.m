@@ -118,6 +118,8 @@ classdef cfdataset < ncdataset
                     
                 end
                 
+                
+                
                 v = ncvariable(obj, variableName, axesVariableNames);
                 if ~isempty(v)
                     for i = 1:length(obj.variables)

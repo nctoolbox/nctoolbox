@@ -82,7 +82,28 @@ classdef ncgeodataset < cfdataset
                     
                 end
                 
-                v = ncgeovariable(obj, variableName, axesVariableNames);
+                % Testing combining the axes from both the variable axes and dataset axes
+                % maybe temporary stop gap...?
+                for i = 1:length(axesVariableNames)
+                  axesVariables{i,1} = axesVariableNames{i};
+                end
+                
+                dsaxes = obj.axes(variableName);
+                alreadythere = 0;
+                for i = 1:length(dsaxes)
+                  if ~isempty(dsaxes{i})
+                    for j = 1:length(axesVariables)
+                      if strcmp(axesVariables{j}, dsaxes{i})
+                        alreadythere = 1;
+                      end
+                    end
+                    if ~alreadythere
+                      axesVariables{length(axesVariables)+1,1} = dsaxes{i};
+                    end
+                  end
+                end
+                
+                v = ncgeovariable(obj, variableName, axesVariables);
                 if ~isempty(v)
                     for i = 1:length(obj.variables)
                         if strcmp(obj.ncvariables{i, 1}, variableName)

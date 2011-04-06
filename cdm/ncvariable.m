@@ -23,6 +23,7 @@ classdef ncvariable < handle
     
     properties (Dependent = true)
         name            % The string variable name that this object represents
+        axes2
         axes
         attributes
     end
@@ -92,6 +93,21 @@ classdef ncvariable < handle
             % it's singleton dimensions
             n = obj.dataset.size(obj.name);
         end
+        
+%         function a = get.axes(src) % temporary work around
+%           dsaxes = src.dataset.axes(src.name);
+%           c = 1;
+%           for i = 1:length(dsaxes);
+%             if ~isempty(dsaxes{i})
+%               a{c,1} = dsaxes{i};
+%               c = c + 1;
+%             end
+%           end
+%           varaxes = src.axes2;
+%           for i = 1:length(varaxes)
+%             a{c-1+i,1} = varaxes{i};
+%           end
+%         end
         
         %%
         function d = data(obj, first, last, stride)
@@ -339,7 +355,7 @@ classdef ncvariable < handle
             if withData == 0
                 for i = 1:length(obj.axesVariables)
                     name = char(obj.axesVariables{i}.getName());
-                    type = char(obj.axesVariables{i}.getAxisType());
+%                     type = char(obj.axesVariables{i}.getAxisType());
                     % ---- Step 4: figure out how to subset the data properly
                     vs = obj.dataset.size(name);
                     if (length(vs) == length(s))
