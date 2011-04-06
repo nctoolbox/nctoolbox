@@ -145,15 +145,20 @@ classdef ncgeovariable < ncvariable
             [indstart_r indend_r indstart_c indend_c] = src.geoij(east_min, north_min, east_max, north_max);
             t = src.timewindowij(starttime, stoptime);
             
-            if length(nums) < 4
+            if length(nums) < 3
               me = MException(['NCTOOLBOX:' mfilename ':geosubset'], ...
-                ['Expected data of ', obj.name, ' to be rank 4.']);
+                ['Expected data of ', obj.name, ' to be at least rank 3.']);
               me.throw;
-                
+            elseif length(nums) < 4
+              first = [min(t.index) indstart_r indstart_c];
+              last = [max(t.index) indend_r indend_c];
+            elseif length(nums) < 5
+              first = [min(t.index) zmin indstart_r indstart_c];
+              last = [max(t.index) zmax indend_r indend_c];
             else
-                first = [min(t.index) zmin indstart_r indstart_c];
-                last = [max(t.index) zmax indend_r indend_c];
-                
+              me = MException(['NCTOOLBOX:' mfilename ':geosubset'], ...
+                ['Expected data of ', obj.name, ' to be less than rank 5.']);
+              me.throw;
             end
             d.data = src.data(first, last, stride);
             d.grid = src.interopgrid(first, last, stride);
@@ -183,23 +188,24 @@ classdef ncgeovariable < ncvariable
             
             [indstart_r indend_r indstart_c indend_c] = obj.geoij(east_min, north_min, east_max, north_max);
             
-            if length(nums) < 4
+            if length(nums) < 2
               me = MException(['NCTOOLBOX:' mfilename ':geosubset'], ...
-                ['Expected data of ', obj.name, ' to be rank 4.']);
+                ['Expected data of ', obj.name, ' to be at least rank 2.']);
               me.throw;
-%                 tstart = first(1);
-%                 tend = last(1);
-%                 zstart = first(2);
-%                 zend = last(2);
-%                 first = [1 indstart_r indstart_c];
-%                 last = [1 indend_r indend_c];
-                %             stride = [1 1 1];
-                
+            elseif length(nums) < 3
+              first = [indstart_r indstart_c];
+              last = [indend_r indend_c];
+            elseif length(nums) < 4
+              first = [tmin_i indstart_r indstart_c];
+              last = [tmax_i indend_r indend_c];
+            elseif length(nums) < 5
+              first = [tmin_i zmin_i indstart_r indstart_c];
+              last = [tmax_i zmax_i indend_r indend_c];
             else
-                first = [tmin_i zmin_i indstart_r indstart_c];
-                last = [tmax_i zmax_i indend_r indend_c];
-                %             stride = [1 1 1 1];
-                
+              me = MException(['NCTOOLBOX:' mfilename ':geosubset'], ...
+                ['Expected data of ', obj.name, ' to be less than rank 5.']);
+              me.throw;
+              
             end
             d.data = obj.data(first, last, stride);
             d.grid = obj.interopgrid(first, last, stride);
