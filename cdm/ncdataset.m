@@ -288,6 +288,21 @@ classdef ncdataset < handle
         end
         
         %%
+        function save(obj, filename)
+            % NCDATASET.SAVE Save the data to a local file
+            %
+            % Use as:
+            %   obj.save(filename)
+            %
+            % Arguments:
+            %   filename = The path, as a string, to the file that the data will
+            %       be written to.
+            
+            % TODO Should we warn user if file already exists?
+            ucar.nc2.FileWriter.writeToFile(obj.netcdf, filename);
+        end
+        
+        %%
         function t = time(obj, variable, data)
             % NCDATASET.TIME  Attempts to convert data to Matlab's native time format
             %
