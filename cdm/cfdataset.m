@@ -352,23 +352,23 @@ classdef cfdataset < ncdataset
 %                     end
                     
                  case '{}'
-%                      error('cfdataset:subsref',...
-%                             'Call with "{}" as first type unsupported at this time')       
-                    v = obj.variable(s(1).subs);
-                    if length(s) == 1
-                        B = v;
-                    elseif length(s) == 2
-                        B = v.data(s(2).subs{:});
-                    elseif length(s) == 3
-                        switch s(3).subs
-                            case 'data'
-                                B = v.data(s(2).subs);
-                            case 'grid'
-                                B = v.grid(s(2).subs);
-                        end
-                    else
-                        B = v;
-                    end
+                    error('cfdataset:subsref',...
+                             'Call with "{}" as first type unsupported at this time')       
+%                     v = obj.variable(s(1).subs);
+%                     if length(s) == 1
+%                         B = v;
+%                     elseif length(s) == 2
+%                         B = v.data(s(2).subs{:});
+%                     elseif length(s) == 3
+%                         switch s(3).subs
+%                             case 'data'
+%                                 B = v.data(s(2).subs);
+%                             case 'grid'
+%                                 B = v.grid(s(2).subs);
+%                         end
+%                     else
+%                         B = v;
+%                     end
                     
             end
         end
