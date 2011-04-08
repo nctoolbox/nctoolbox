@@ -118,6 +118,17 @@ classdef ncgeodataset < cfdataset
             
         end
         
+        function m = metadata(obj)
+          %NCGEODATASET.METADATA - Function to grab all of the attributes (global and variables) all
+          % at once. 
+          % 
+          vars = obj.variables;
+          m.global_attributes = obj.attributes;
+          for i=1:length(vars);
+            m.(vars{i}) = obj.attributes(vars{i});
+          end
+        end % function metadata end
+        
 %% Should be called as ncpoint(nc), etc.
 %
 %         function p = point(obj)
@@ -139,6 +150,65 @@ classdef ncgeodataset < cfdataset
 %         function ug = ugrid(obj)
 %             ug = ncugrid(obj);
 %         end
+        function B = subsref(obj,s)
+            if isa(s(1).subs, 'cell')
+                s(1).subs = s(1).subs{1};
+            end
+            
+            switch s(1).type
+                case '.'
+                    if length(s) < 2
+                        B = builtin('subsref',obj,s);
+                    elseif length(s) == 2
+                        if s(2).type == '.'
+                            a = substruct('.',s(1).subs);
+                            A = builtin('subsref',obj,a);
+                            %                         b = substruct('.',s(2).subs,'()',s(2).subs);
+                            B = builtin('subsref',A,s(2:end));
+                        else
+                            g = substruct('.',s(1).subs,'()',s(2).subs);
+                            % g.type = '()';
+                            % g.subs = s(i).subs;
+                            B = builtin('subsref',obj,g);
+                        end
+                    elseif length(s)==3
+                        switch s(2).type
+                            case '.'
+                                a = substruct('.',s(1).subs);
+                                A = builtin('subsref',obj,a);
+                                B = builtin('subsref',A,s(2:end));
+                            case '()'
+                                B = builtin('subsref',obj,s);
+                                
+                        end
+                    else
+                        error(['NCTOOLBOX:' mfilename ':subsref'], ...
+                            'Unexpected reference notation or method call')
+                    end
+                    
+                 case '()'
+                     error('cfdataset:subsref',...
+                            'Call with "()" as first type unsupported at this time')
+                    
+                 case '{}'    
+                    v = obj.variable(s(1).subs);
+                    if length(s) == 1
+                        B = v;
+                    elseif length(s) == 2
+                        B = v.data(s(2).subs{:});
+                    elseif length(s) == 3
+                        switch s(3).subs
+                            case 'data'
+                                B = v.data(s(2).subs);
+                            case 'grid'
+                                B = v.grid(s(2).subs);
+                        end
+                    else
+                        B = v;
+                    end
+                    
+            end
+        end
         
     end  % methods end
     

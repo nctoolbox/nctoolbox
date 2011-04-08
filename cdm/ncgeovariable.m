@@ -45,7 +45,7 @@ classdef ncgeovariable < ncvariable
             
         end % ncgeovariable end
         
-        function ig = interopgrid(src, first, last, stride) % layer subsref for matlab indexing
+        function ig = grid_interop(src, first, last, stride) % layer subsref for matlab indexing
           g = src.grid(first, last, stride);
           names = fieldnames(g);
           
@@ -101,66 +101,155 @@ classdef ncgeovariable < ncvariable
             end % end is type empty or not if statement
           end % end loop through field names
           
-        end % interopgrid end
+        end % grid_interop end
         
         function tw = timewindow(src, starttime, stoptime)
+          d = src.timewindowij(starttime, stoptime);
+          tw = d.time;
         end
         
-        function twind = timewindowij(src, starttime, stoptime)
-        end
+        %% These functions would rather output multiple outputs instead of struct, must reconcile
+        %     with the subsref in either ncgeovariable or ncvariable. Wait, why, then, does geoij work???
+        function d = timewindowij(src, starttime, stoptime)
+          % NCGEOVARIABLE.TIMEWINDOWIJ - Function to get indices from start and stop times for sub-
+          % setting. TODO: There must be a better/fast way to do this using the java library.
+          s = src.size;
+          first = ones(1, length(s));
+          last = s;
+          stride = first;
+          g = src.grid_interop(first, last, stride);
+          
+          if isfield(g, 'time') % are any of the fields recognized as time explictly
+            starttime = datenum(starttime);
+            stoptime = datenum(stoptime);
+            if isempty(starttime)
+              starttime = g.time(1);
+            end
+            if isempty(stoptime)
+              stoptime = g.time(end);
+            end
+            
+            t_index1 = g.time > starttime;
+            t_index2 = g.time < stoptime;
+            d.index = find(t_index1==t_index2);
+            d.time = g.time(d.index);
+          else
+            me = MException(['NCTOOLBOX:' mfilename ':timewindowij'], ...
+                'No grid variable returned as time.');
+            me.throw;
+          end
+        end % end timewindowij
         
-        function tgs = timegeosubset(src, startime, stoptime, zmin, zmax, east_min, north_min, ...
-            east_max, north_max)
-        end
+        function d = timegeosubset(src, struct)
+          nums = src.size;
+            
+            [indstart_r indend_r indstart_c indend_c] = src.geoij(struct);
+            t = src.timewindowij(struct.time{1}, struct.time{2});
+            
+            if length(nums) < 3
+              me = MException(['NCTOOLBOX:' mfilename ':geosubset'], ...
+                ['Expected data of ', obj.name, ' to be at least rank 3.']);
+              me.throw;
+            elseif length(nums) < 4
+              ax = obj.grid([1 1 1],[1 1 1],[1 1 1]);
+              if isfield(ax, 'time')
+                first = [min(t.index) indstart_r indstart_c];
+                last = [max(t.index) indend_r indend_c];
+                stride = [struct.t_stride struct.xy_stride(2) struct.xy_stride(1)];
+              else
+                me = MException(['NCTOOLBOX:' mfilename ':geosubset'], ...
+                  'Expected either a coordinate variable acknowleged as time.');
+                me.throw;
+              end
+            elseif length(nums) < 5
+              first = [min(t.index) struct.z_index{1} indstart_r indstart_c];
+              last = [max(t.index) struct.z_index{2} indend_r indend_c];
+              stride = [struct.t_stride struct.z_stride struct.xy_stride(2) struct.xy_stride(1)];
+            else
+              me = MException(['NCTOOLBOX:' mfilename ':geosubset'], ...
+                ['Expected data of ', obj.name, ' to be less than rank 5.']);
+              me.throw;
+            end
+            d.data = src.data(first, last, stride);
+            d.grid = src.grid_interop(first, last, stride);
+            
+        end % end of timegeosubset
         
-        function [d g] = geosubset(obj, tmin_i, tmax_i, zmin_i, zmax_i, east_min,...
-                north_min, east_max, north_max, stride)
+        function d = geosubset(obj, struct)
             % GEOVARIABLE.GEOSUBSET
             %
-            % For use with nj_tbx/nctoolbox to return data based on geographic extents.
-            % Use:
-            % data = variable.geosubset(1, 1000, 2, 5, -71.5, 39.5, -65, 46, [1 1 1 1])
-            %                         %[mintime_ind, maxtime_ind, minZ_ind, maxZ_ind, mineast, minnorth, maxeast, maxnorth, [stride]]%
+            % For use with nj_tbx/nctoolbox to return data based on geographic extents. 
+            % Use: data = variable.geosubset(struct); %Where struct is the kind of structure produced by 
+            %         geosubset_struct.m.
+            %                         
             %
             %
             % TODO: add stride arguments and catches for points and stations
             % because this logic won't work with them.
             % Alexander Crosby, Applied Science Associates
             %
-            %           g = obj.grid;
-            %           h = 0;
-            %           a = obj.axes;
-            %           [lat_name] = char(a(end-1));
-            %           [lon_name] = char(a(end));
             nums = obj.size;
             
-            [indstart_r indend_r indstart_c indend_c] = obj.geoij(east_min, north_min, east_max, north_max);
+            [indstart_r indend_r indstart_c indend_c] = obj.geoij(struct);
             
-            if length(nums) < 4
+            if numel(struct.time{1}) > 1 % check to see if someone used str or datevec by accident
               me = MException(['NCTOOLBOX:' mfilename ':geosubset'], ...
-                ['Expected data of ', obj.name, ' to be rank 4.']);
+                'Expected min time to be an index/integer.');
               me.throw;
-%                 tstart = first(1);
-%                 tend = last(1);
-%                 zstart = first(2);
-%                 zend = last(2);
-%                 first = [1 indstart_r indstart_c];
-%                 last = [1 indend_r indend_c];
-                %             stride = [1 1 1];
-                
             else
-                first = [tmin_i zmin_i indstart_r indstart_c];
-                last = [tmax_i zmax_i indend_r indend_c];
-                %             stride = [1 1 1 1];
-                
+              tmin_i = struct.time{1};
             end
-            d = obj.data(first, last, stride);
-            g = obj.interopgrid(first, last, stride);
             
-        end
-        
+            if numel(struct.time{2}) > 1 % check to see if someone used str or datevec by accident
+              me = MException(['NCTOOLBOX:' mfilename ':geosubset'], ...
+                'Expected max time to be an index/integer.');
+              me.throw;
+            else
+              tmax_i = struct.time{2};
+            end
+            
+            if length(nums) < 2
+              me = MException(['NCTOOLBOX:' mfilename ':geosubset'], ...
+                ['Expected data of ', obj.name, ' to be at least rank 2.']);
+              me.throw;
+            elseif length(nums) < 3
+              first = [indstart_r indstart_c];
+              last = [indend_r indend_c];
+              stride = [struct.xy_stride(2) struct.xy_stride(1)];
+            elseif length(nums) < 4
+              ax = obj.grid([1 1 1],[1 1 1],[1 1 1]);
+              if isfield(ax, 'time')
+                first = [tmin_i indstart_r indstart_c];
+                last = [tmax_i indend_r indend_c];
+                stride = [struct.t_stride struct.xy_stride(2) struct.xy_stride(1)];
+              elseif isfield(ax, 'z')
+                first = [struct.z_index{1} indstart_r indstart_c];
+                last = [struct.z_index{2} indend_r indend_c];
+                stride = [struct.z_stride struct.xy_stride(2) struct.xy_stride(1)];
+              else
+                me = MException(['NCTOOLBOX:' mfilename ':geosubset'], ...
+                  'Expected either a coordinate variable acknowleged as time or as z.');
+                me.throw;
+              end
+            elseif length(nums) < 5
+              first = [tmin_i struct.z_index{1} indstart_r indstart_c];
+              last = [tmax_i struct.z_index{2} indend_r indend_c];
+              stride = [struct.t_stride struct.z_stride struct.xy_stride(2) struct.xy_stride(1)];
+            else
+              me = MException(['NCTOOLBOX:' mfilename ':geosubset'], ...
+                ['Expected data of ', obj.name, ' to be less than rank 5.']);
+              me.throw;
+              
+            end
+            
+            % Get the corresponding data and interop grid...
+            d.data = obj.data(first, last, stride);
+            d.grid = obj.grid_interop(first, last, stride);
+            
+        end % end of geosubset
+       %% 
         function [indstart_r indend_r indstart_c indend_c] =...
-                geoij(obj, east_min, north_min, east_max, north_max)
+                geoij(obj, struct)
             % GEOVARIABLE.GEOIJ
             %
             % For use with nj_tbx/nctoolbox to return data based on geographic extents.
@@ -176,10 +265,14 @@ classdef ncgeovariable < ncvariable
             first = ones(1, length(s));
             last = s;
             stride = first;
-            g = obj.interopgrid(first, last, stride);
+            g = obj.grid_interop(first, last, stride);
             %           h = 0;
             
-            
+            %Unpack geosubset_structure
+            north_max = struct.lat(2);
+            north_min = struct.lat(1);
+            east_max = struct.lon(2);
+            east_min = struct.lon(1);
             
             if ~isvector(g.lat)
                 [indlat_l1] = ((g.lat <= north_max)); %2d
@@ -212,6 +305,63 @@ classdef ncgeovariable < ncvariable
             indstart_r = min(ind_r);
             indend_r = max(ind_r);
 
+        end
+        
+        function sref = subsref(obj,s)
+            switch s(1).type
+                % Use the built-in subsref for dot notation
+                case '.'
+                    switch s(1).subs
+                      case 'grid_interop'
+                      switch length(s)
+                        case 1
+                          sref = obj;
+                        case 2
+                          nums = obj.size;
+                          [first last stride] = parseIndices(s(2).subs, double(nums));
+                          sref = obj.grid_interop(first, last, stride);
+                      end
+                      case 'data'
+                            nums = size(obj);
+                            if ~isempty(nums)
+                                switch length(s)
+                                    case 1
+                                        sref = obj;
+                                    case 2
+                                        [first last stride] = parseIndices(s(2).subs, double(nums));
+                                        sref = obj.data(first, last, stride);
+                                end
+                                
+                            else
+                                sref = obj.data;
+                                warning(['NCTOOLBOX:' mfilename ':subsref'], ...
+                                    ['Variable "' name '" has no netcdf dimension associated with it. Errors may result from non CF compliant files.'])
+                            end
+                        case 'grid'
+                            nums = size(obj);
+                            if ~isempty(nums)
+                                switch length(s)
+                                    case 1
+                                        sref = obj;
+                                    case 2
+                                        [first last stride] = parseIndices(s(2).subs, double(nums));
+                                        sref = obj.grid(first, last, stride);
+                                end
+
+                            else
+                                warning(['NCTOOLBOX:' mfilename ':subsref'], ...
+                                    ['Variable "' name '" has no netcdf dimension associated with it. Errors may result from non CF compliant files.'])
+                            end
+                      otherwise
+                        sref = builtin('subsref',obj,s);
+                    end
+                case '()'
+                    warning(['NCTOOLBOX:' mfilename ':subsref'], ...
+                        'Not a supported subscripted reference, "()" are not permitted to call variable object methods');
+                case '{}'
+                    warning(['NCTOOLBOX:' mfilename ':subsref'], ...
+                        'Not a supported subscripted reference, "{}" are not permitted to call variable object methods');
+            end
         end
     end % methods end
     
