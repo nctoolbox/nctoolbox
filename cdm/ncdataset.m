@@ -289,7 +289,7 @@ classdef ncdataset < handle
         
         %%
         function save(obj, filename)
-            % NCDATASET.SAVE Save the data to a local file
+            % NCDATASET.SAVE Save the data to a local netcdf file
             %
             % Use as:
             %   obj.save(filename)
