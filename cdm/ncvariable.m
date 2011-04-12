@@ -48,7 +48,7 @@ classdef ncvariable < handle
             elseif isa(src, 'ncdataset')
                 obj.dataset = src;             % src is a ncdataset
             else
-                ex = MException(['NCTOOLBOX:' mfilename], 'Invalid dataset was specified');
+                ex = MException('NCTOOLBOX:ncvariable', 'Invalid dataset was specified');
                 ex.throw;
             end
             
@@ -148,7 +148,7 @@ classdef ncvariable < handle
                     try
                         d = alldata(obj,1);
                     catch me
-                        ex = MException(['NCTOOLBOX:' mfilename ':data'], ['Failed to open ' url]);
+                        ex = MException('NCTOOLBOX:ncvariable:data', ['Failed to open ' url]);
                         ex = ex.addCause(me);
                         ex.throw;
                     end
@@ -271,7 +271,7 @@ classdef ncvariable < handle
                                 
                             else
                                 sref = obj.data;
-                                warning(['NCTOOLBOX:' mfilename ':subsref'], ...
+                                warning('NCTOOLBOX:ncvariable:subsref', ...
                                     ['Variable "' name '" has no netcdf dimension associated with it. Errors may result from non CF compliant files.'])
                             end
                         case 'grid'
@@ -286,7 +286,7 @@ classdef ncvariable < handle
                                 end
 
                             else
-                                warning(['NCTOOLBOX:' mfilename ':subsref'], ...
+                                warning('NCTOOLBOX:ncvariable:subsref', ...
                                     ['Variable "' name '" has no netcdf dimension associated with it. Errors may result from non CF compliant files.'])
                             end
                         otherwise
@@ -301,7 +301,7 @@ classdef ncvariable < handle
                     end
                     % No support for indexing using '{}'
                 case '{}'
-                    error(['NCTOOLBOX:' mfilename ':subsref'], ...
+                    error('NCTOOLBOX:ncvariable:subsref', ...
                         'Not a supported subscripted reference, "{}" are not permitted to call variable object methods');
             end
         end
@@ -365,7 +365,7 @@ classdef ncvariable < handle
                             vLast = last;
                             vStride = stride;
                         else
-                            me = MException(['NCTOOLBOX:' mfilename ':somedata'], ...
+                            me = MException('NCTOOLBOX:ncvariable:somedata', ...
                                 ['The data size of the coordinate variable,' ...
                                 name ', does not fit the size of ' obj.name]);
                             me.throw;
@@ -383,7 +383,7 @@ classdef ncvariable < handle
                             vLast = last(dim);
                             vStride = stride(dim);
                         else
-                            me = MException(['NCTOOLBOX:' mfilename ':somedata'], ...
+                            me = MException('NCTOOLBOX:ncvariable:somedata', ...
                                 ['The data size of the coordinate variable,' ...
                                 name ', does not fit the size of ' obj.name]);
                             me.throw;
@@ -396,7 +396,7 @@ classdef ncvariable < handle
                         if ~isempty(dim)
                             for j = 2:length(vs)
                                 if vs(j) ~= s(dim + j - 1)
-                                    me = MException(['NCTOOLBOX:' mfilename ':somedata'], ...
+                                    me = MException('NCTOOLBOX:ncvariable:somedata', ...
                                         ['The data size of the coordinate variable,' ...
                                         name ', does not fit the size of ' obj.name]);
                                     me.throw;
