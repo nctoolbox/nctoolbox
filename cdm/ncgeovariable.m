@@ -107,18 +107,7 @@ classdef ncgeovariable < ncvariable
           d = src.timewindowij(starttime, stoptime);
           tw = d.time;
         end
-        
-%         function it = interptime(varargin)
-%           % NCGEOVARIABLE.INTERPTIME - Interpolate data matrix to a particular time or time vector.
-%           % Useage: >> data = var.interptime([2005 1 1 0 0 0]);
-%         end
-        
-%         function xy = interptoxy(x, y)
-%           % NCGEOVARIABLE.INTERPTOXY - Interpolate data at an x/y (lon/lat) location or set of locat-
-%           % ions when inputs are vectors of the same length.
-%           % Useage: >> data = var.interptoxy(-77, 45);
-%         end
-        
+
         
         %% These functions would rather output multiple outputs instead of struct, must reconcile
         %     with the subsref in either ncgeovariable or ncvariable. Wait, why, then, does geoij work???
