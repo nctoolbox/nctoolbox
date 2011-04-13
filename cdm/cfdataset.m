@@ -330,12 +330,12 @@ classdef cfdataset < ncdataset
                                 
                         end
                     else
-                        error(['NCTOOLBOX:' mfilename ':subsref'], ...
+                        error('NCTOOLBOX:cfdataset:subsref', ...
                             'Unexpected reference notation or method call')
                     end
                     
                  case '()'
-                     error('cfdataset:subsref',...
+                     error('NCTOOLBOX:cfdataset:subsref',...
                             'Call with "()" as first type unsupported at this time')
 %                     v = obj.variable(char(s(1).subs));
 %                     if length(s) == 2
@@ -352,7 +352,7 @@ classdef cfdataset < ncdataset
 %                     end
                     
                  case '{}'
-                    error('cfdataset:subsref',...
+                    error('NCTOOLBOX:cfdataset:subsref',...
                              'Call with "{}" as first type unsupported at this time')       
 %                     v = obj.variable(s(1).subs);
 %                     if length(s) == 1
