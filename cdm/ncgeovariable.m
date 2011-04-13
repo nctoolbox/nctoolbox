@@ -45,7 +45,12 @@ classdef ncgeovariable < ncvariable
             
         end % ncgeovariable end
         
-        function ig = grid_interop(src, first, last, stride) % layer subsref for matlab indexing
+        function ig = grid_interop(src, first, last, stride) 
+          % NCGEOVARIABLE.GRID_INTEROP - Method to get the coordinate variables and their data as a
+          % a structure with standardized field names for lat, lon, time, and z. Other coordiante variables
+          % that are not recognized by netcdf-java as the previous four types have field names directly
+          % taken from their variable names.
+          % Useage: >> gridstruct = geovar.grid_interop(1,:,:,1:2:50);
           g = src.grid(first, last, stride);
           names = fieldnames(g);
           
@@ -104,43 +109,93 @@ classdef ncgeovariable < ncvariable
         end % grid_interop end
         
         function tw = timewindow(src, starttime, stoptime)
+          % NCGEOVARIABLE.TIMEWINDOW - Function to pull the time coordinates within the specified
+          % start and stop times from the variable object.
+          % Useage: >> time = geovar.timewindow([2004 1 1 0 0 0], [2005 12 31 0 0 0]);
+          %              >> time = geovar.timewindow(731947, 732677);
           d = src.timewindowij(starttime, stoptime);
           tw = d.time;
         end
+
+%         function [index,distance]=nearxy(src, lon, lat, dist);
+%           % NEARXY  finds the indices of the grid that are closest to the point (lon, lat).
+%           %        [index,distance]=nearxy(lon, lat) finds the closest point and
+%           %                                           the distance
+%           %        [index,distance]=nearxy(lon, lat,dist) finds all points closer than
+%           %                                           the value of dist.
+%           % rsignell@crusty.er.usgs.gov
+%           % A Crosby - added perfect sphere assumption for geographic coordinates
+%           
+%           % Grab x/y part of grid
+%           s = src.size;
+%           first = ones(1, length(s));
+%           last = s;
+%           if length(s) > 3
+%             last(1) = 1;
+%             last(2) = 1;
+%           elseif length(s) > 2
+%             last(1) = 1;
+%           end
+%           stride = first;
+%           g = src.grid_interop(first, last, stride);
+%           
+%           gridx = g.lon;
+%           gridy = g.lat;
+%           
+%           distance=sqrt((gridx-lon).^2+(gridy-lat).^2); % TODO: Change this formulation to haversine...
+%           if (nargin > 4),
+%             index=find(distance<=dist);     %finds points closer than dist
+%           else,
+%             index=find(distance==min(distance));  % finds closest point
+%             index=index(1);
+%           end
+%           distance=distance(index);
+%           
+%         end % nearxy end
         
-        %% These functions would rather output multiple outputs instead of struct, must reconcile
-        %     with the subsref in either ncgeovariable or ncvariable. Wait, why, then, does geoij work???
-        function d = timewindowij(src, starttime, stoptime)
-          % NCGEOVARIABLE.TIMEWINDOWIJ - Function to get indices from start and stop times for sub-
-          % setting. TODO: There must be a better/fast way to do this using the java library.
-          s = src.size;
-          first = ones(1, length(s));
-          last = s;
-          stride = first;
-          g = src.grid_interop(first, last, stride);
-          
-          if isfield(g, 'time') % are any of the fields recognized as time explictly
-            starttime = datenum(starttime);
-            stoptime = datenum(stoptime);
-            if isempty(starttime)
-              starttime = g.time(1);
-            end
-            if isempty(stoptime)
-              stoptime = g.time(end);
-            end
+          %% These functions would rather output multiple outputs instead of struct, must reconcile
+          %     with the subsref in either ncgeovariable or ncvariable. Wait, why, then, does geoij work???
+          function d = timewindowij(src, starttime, stoptime)
+            % NCGEOVARIABLE.TIMEWINDOWIJ - Function to get indices from start and stop times for sub-
+            % setting. TODO: There must be a better/fast way to do this using the java library.
+            % Useage: >> timestruct = geovar.timewindowij([2004 1 1 0 0 0], [2005 12 31 0 0 0]);
+            %              >> timestruct = geovar.timewindowij(731947, 732677);
+            % Result: time.time = time data
+            %            time.index = time indices
+            s = src.size;
+            first = ones(1, length(s));
+            last = s;
+            stride = first;
+            g = src.grid_interop(first, last, stride);
             
-            t_index1 = g.time > starttime;
-            t_index2 = g.time < stoptime;
-            d.index = find(t_index1==t_index2);
-            d.time = g.time(d.index);
-          else
-            me = MException(['NCTOOLBOX:' mfilename ':timewindowij'], ...
+            if isfield(g, 'time') % are any of the fields recognized as time explictly
+              starttime = datenum(starttime);
+              stoptime = datenum(stoptime);
+              if isempty(starttime)
+                starttime = g.time(1);
+              end
+              if isempty(stoptime)
+                stoptime = g.time(end);
+              end
+              
+              t_index1 = g.time > starttime;
+              t_index2 = g.time < stoptime;
+              d.index = find(t_index1==t_index2);
+              d.time = g.time(d.index);
+            else
+              me = MException(['NCTOOLBOX:' mfilename ':timewindowij'], ...
                 'No grid variable returned as time.');
-            me.throw;
-          end
-        end % end timewindowij
+              me.throw;
+            end
+          end % end timewindowij
         
         function d = timegeosubset(src, struct)
+          % NCGEOVARIABLE.TIMEGEOSUBSET - Function to request a time/lat/lon subset of data and the
+          % the corresponding grid, using a z indices if relevant.
+          % Useage: >> subsetstructure = geosubset_construct(731947, 732677, [], 1, 1, [], -77, -75.5, [],  36, 38, 1));
+          %              >> struct = geovar.timegeosubset(subsetstructure);
+          %              struct is struct.data, struct.grid.lat, struct.grid.lon, struct.grid.time, etc...
+          %
           nums = src.size;
             
             [indstart_r indend_r indstart_c indend_c] = src.geoij(struct);
@@ -176,18 +231,13 @@ classdef ncgeovariable < ncvariable
         end % end of timegeosubset
         
         function d = geosubset(obj, struct)
-            % GEOVARIABLE.GEOSUBSET
-            %
-            % For use with nj_tbx/nctoolbox to return data based on geographic extents. 
-            % Use: data = variable.geosubset(struct); %Where struct is the kind of structure produced by 
-            %         geosubset_struct.m.
-            %                         
-            %
-            %
-            % TODO: add stride arguments and catches for points and stations
-            % because this logic won't work with them.
-            % Alexander Crosby, Applied Science Associates
-            %
+          % NCGEOVARIABLE.GEOSUBSET - Function to request a lat/lon subset of data and the
+          % the corresponding grid, using a z and time indices if relevant.
+          % Useage: >> subsetstructure = geosubset_construct(1, 2400, [], 1, 1, [], -77, -75.5, [],  36, 38, 1));
+          %              >> struct = geovar.timegeosubset(subsetstructure);
+          %              struct is struct.data, struct.grid.lat, struct.grid.lon, struct.grid.time, etc...
+          %
+          %
             nums = obj.size;
             
             [indstart_r indend_r indstart_c indend_c] = obj.geoij(struct);
@@ -250,16 +300,13 @@ classdef ncgeovariable < ncvariable
        %% 
         function [indstart_r indend_r indstart_c indend_c] =...
                 geoij(obj, struct)
-            % GEOVARIABLE.GEOIJ
+            % GEOVARIABLE.GEOIJ - Function to return start and stop indices for rows and columns if the 
+            % the lat/lon grids are rank 2, but if the grids are vectors the function returns start and stop
+            % indices of lon and then lat (in that order).
             %
-            % For use with nj_tbx/nctoolbox to return data based on geographic extents.
-            %
-            % This code relys on coards conventions of coodinate order using:
-            % [time, z, lat, lon]
-            %
-            % TODO: add stride arguments and catches for points and stations
-            % because this logic won't work with them.
-            % Alexander Crosby, Applied Science Associates
+            % Usage: >> [firstrow, lastrow, firstcol, lastcol] = geoij(geovar, subsetstruct)
+            %            >> [firstlon, lastlon, firstlat, lastlat] = geoij(geovar, subsetstruct) % if lat/lon are vector
+            % 
             %
             s = obj.size;
             first = ones(1, length(s));
@@ -289,23 +336,27 @@ classdef ncgeovariable < ncvariable
                     end
                 end
                 [ind_r, ind_c] = find((indlon_l1&indlon_l2));
-                h=1;
-            else
+                indstart_c = min(ind_c); % Out
+                indend_c = max(ind_c);
+                indstart_r = min(ind_r);
+                indend_r = max(ind_r);
+            else  
                 indlat1 = (g.lat <= north_max);
                 indlat2 = (g.lat >= north_min);
                 indlat = find(indlat1&indlat2);
                 indlon1 = (g.lon <= east_max);
                 indlon2 = (g.lon >= east_min);
                 indlon = find(indlon1&indlon2);
-                
+                % Out
+                indstart_c = min(indlat);
+                indend_c = max(indlat);
+                indstart_r = min(indlon);
+                indend_r = max(indlon);
             end
             
-            indstart_c = min(ind_c);
-            indend_c = max(ind_c);
-            indstart_r = min(ind_r);
-            indend_r = max(ind_r);
+            
 
-        end
+        end % end geoij
         
         function sref = subsref(obj,s)
             switch s(1).type
