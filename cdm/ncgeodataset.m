@@ -31,7 +31,7 @@ classdef ncgeodataset < cfdataset
             % graphically located data.
             %
             % Usage:
-            %    v = ncgeodataset.variable(variableName)
+            %    v = ncgeodataset.geovariable(variableName)
             %
             % Arguments:
             %    variableName = A string name of the variable you want to
@@ -119,9 +119,10 @@ classdef ncgeodataset < cfdataset
         end
         
         function m = metadata(obj)
-          %NCGEODATASET.METADATA - Function to grab all of the attributes (global and variables) all
+          % NCGEODATASET.METADATA - Function to grab all of the attributes (global and variables) all
           % at once. 
-          % 
+          % Useage: >> metadatastructure = ds.metadata;
+          %
           vars = obj.variables;
           m.global_attributes = obj.attributes;
           for i=1:length(vars);
