@@ -10,14 +10,15 @@ ds = cfdataset(url);
 % Grab the variable of interest. No data is being read yet.
 % NOTE: You should use ds.struct now instead of ds.variable. See demo9.m
 v = ds.variable('temp');
-sz= size(v);
+% sz= size(v);
 
 % Grab a subset of the data. Data is now being pulled across the network
-t = v.data([sz(1) sz(2) 1 1], [sz(1) sz(2) sz(3) sz(4)]);
+t = v.data(end, end, 1:end, 1:end);
+g = v.grid(end, end, 1:end, 1:end);
 
 % Make a pretty plot. Note the call to 'squeeze'. This removes
 % singleton dimensions.
-surf(t.lon_rho, t.lat_rho, double(squeeze(t.temp)))
+surf(g.lon_rho, g.lat_rho, double(squeeze(t)))
 shading('interp');
 view(2)
 axis('equal')
@@ -35,7 +36,7 @@ ylabel([yname ' [' yunits ']']);
 zatt = ds.attributes('temp');
 zname = value4key(zatt, 'long_name');
 zunits = value4key(zatt, 'units'); 
-ztime = ds.time('ocean_time', t.ocean_time);
+ztime = ds.time('time1', g.time1);
 title([zname ' [' zunits '] on ' datestr(ztime)]);
 
 colorbar

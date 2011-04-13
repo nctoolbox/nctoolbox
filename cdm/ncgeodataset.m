@@ -151,6 +151,14 @@ classdef ncgeodataset < cfdataset
 %         function ug = ugrid(obj)
 %             ug = ncugrid(obj);
 %         end
+        %%
+        % CFDATASET.NUMEL Overridden function required for supporting
+        % SUBSREF
+        function result = numel(varargin)
+            % cfdataset/numel -- Overloaded NUMEL.
+            result = 1;
+        end
+        
         function B = subsref(obj,s)
             if isa(s(1).subs, 'cell')
                 s(1).subs = s(1).subs{1};

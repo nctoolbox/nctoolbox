@@ -178,11 +178,24 @@ classdef cfdataset < ncdataset
             %   The reason for providing the 'struct' alternative syntax is
             %   that it may be more familiar to some users.
             v = obj.variable(variableName);
-            
+            sz = size(v);
             if (nargin == 2)
-                s = v.data;
+              switch length(sz)
+                case 1
+                  s = v.grid(:);
+                  s.(v.name) = v.data(:);
+                case 2
+                  s = v.grid(:,:);
+                  s.(v.name) = v.data(:,:);
+                case 3
+                  s = v.grid(:,:,:);
+                  s.(v.name) = v.data(:,:,:);
+                case 4
+                  s = v.grid(:,:,:,:);
+                  s.(v.name) = v.data(:,:,:,:);
+              end
             else
-                sz = size(v);
+                
                 
                 % Fill in missing arguments
                 % default stride is 1
@@ -195,7 +208,22 @@ classdef cfdataset < ncdataset
                     last = sz;
                 end
                 
-                s = v.data(first, last, stride);
+                switch length(sz)
+                  case 1
+                    s = v.grid(:);
+                    s.(v.name) = v.data(first:stride:last);
+                  case 2
+                    s = v.grid(:,:);
+                    s.(v.name) = v.data(first(1):stride(1):last(1),first(2):stride(2):last(2));
+                  case 3
+                    s = v.grid(:,:,:);
+                    s.(v.name) = v.data(first(1):stride(1):last(1),first(2):stride(2):last(2),first(3):stride(3):last(3));
+                  case 4
+                    s = v.grid(:,:,:,:);
+                    s.(v.name) = v.data(first(1):stride(1):last(1),first(2):stride(2):last(2),first(3):stride(3):last(3),...
+                      first(4):stride(4):last(4));
+                end
+                
             end
         end
         
@@ -246,11 +274,21 @@ classdef cfdataset < ncdataset
             %   The reason for providing the 'grid' alternative syntax is
             %   that it may be more familiar to some users.
             v = obj.variable(variableName);
+            sz = size(v);
             
             if (nargin == 2)
-                s = v.grid;
+              switch length(sz)
+                case 1
+                 s = v.grid(:);
+                case 2
+                  s = v.grid(:,:);
+                case 3
+                  s = v.grid(:,:,:);
+                case 4
+                  s = v.grid(:,:,:,:);
+              end
             else
-                sz = size(v);
+                
                 
                 % Fill in missing arguments
                 % default stride is 1
@@ -263,7 +301,18 @@ classdef cfdataset < ncdataset
                     last = sz;
                 end
                 
-                s = v.grid(first, last, stride);
+                switch length(sz)
+                  case 1
+                    s = v.grid(first:stride:last);
+                  case 2
+                    s = v.grid(first(1):stride(1):last(1),first(2):stride(2):last(2));
+                  case 3
+                    s = v.grid(first(1):stride(1):last(1),first(2):stride(2):last(2),first(3):stride(3):last(3));
+                  case 4
+                    s = v.grid(first(1):stride(1):last(1),first(2):stride(2):last(2),first(3):stride(3):last(3),...
+                      first(4):stride(4):last(4));
+                end
+                
             end
         end
         
@@ -282,96 +331,11 @@ classdef cfdataset < ncdataset
 %                 t = t_converted;
 %             end
 %         end
+ 
+       
+  
         
-        %%
-        % CFDATASET.NUMEL Overridden function required for supporting
-        % SUBSREF
-        function result = numel(varargin)
-            % cfdataset/numel -- Overloaded NUMEL.
-            result = 1;
-        end
-        
-        %%
-        function B = subsref(obj,s)
-            if isa(s(1).subs, 'cell')
-                s(1).subs = s(1).subs{1};
-            end
-            
-            switch s(1).type
-                case '.'
-                    if length(s) < 2
-                        B = builtin('subsref',obj,s);
-                    elseif length(s) == 2
-                        if s(2).type == '.'
-                            a = substruct('.',s(1).subs);
-                            A = builtin('subsref',obj,a);
-                            %                         b = substruct('.',s(2).subs,'()',s(2).subs);
-                            B = builtin('subsref',A,s(2:end));
-                        else
-                            g = substruct('.',s(1).subs,'()',s(2).subs);
-                            % g.type = '()';
-                            % g.subs = s(i).subs;
-                            B = builtin('subsref',obj,g);
-                        end
-                    elseif length(s)==3
-                        switch s(2).type
-                            case '.'
-                                a = substruct('.',s(1).subs);
-                                A = builtin('subsref',obj,a);
-                                B = builtin('subsref',A,s(2:end));
-                            case '()'
-                                B = builtin('subsref',obj,s);
-                                %                             case '{}' % 5his logic isnt correct
-                                %                                 g = substruct('.','variable','()',...
-                                %                                   s(2).subs);
-                                %                                 d = builtin('subsref',obj,g);
-                                %                                 B = builtin('subsref',d,s(3));
-                                % %                                 B = d.data(s(3).subs);
-                                
-                        end
-                    else
-                        error('NCTOOLBOX:cfdataset:subsref', ...
-                            'Unexpected reference notation or method call')
-                    end
-                    
-                 case '()'
-                     error('NCTOOLBOX:cfdataset:subsref',...
-                            'Call with "()" as first type unsupported at this time')
-%                     v = obj.variable(char(s(1).subs));
-%                     if length(s) == 2
-%                         B = v.data(s(2).subs);
-%                     elseif length(s) == 3
-%                         switch s(3).subs
-%                             case 'data'
-%                                 B = v.data(s(2).subs);
-%                             case 'grid'
-%                                 B = v.grid(s(2).subs);
-%                         end
-%                     else
-%                         B = v;
-%                     end
-                    
-                 case '{}'
-                    error('NCTOOLBOX:cfdataset:subsref',...
-                             'Call with "{}" as first type unsupported at this time')       
-%                     v = obj.variable(s(1).subs);
-%                     if length(s) == 1
-%                         B = v;
-%                     elseif length(s) == 2
-%                         B = v.data(s(2).subs{:});
-%                     elseif length(s) == 3
-%                         switch s(3).subs
-%                             case 'data'
-%                                 B = v.data(s(2).subs);
-%                             case 'grid'
-%                                 B = v.grid(s(2).subs);
-%                         end
-%                     else
-%                         B = v;
-%                     end
-                    
-            end
-        end
+
     end
     
     

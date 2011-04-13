@@ -34,8 +34,8 @@ ylabel([yname ' [' yunits ']']);
 zatt = ds.attributes('temp');
 zname = value4key(zatt, 'long_name');
 zunits = value4key(zatt, 'units'); 
-ztime = ds.time('ocean_time', t.ocean_time);
-title([zname ' [' zunits '] on ' datestr(ztime)]);
+ztime = ds.time('time1', t.time1);
+title([zname ' [' zunits '] on ' datestr(ztime(1))]);
 
 colorbar
 

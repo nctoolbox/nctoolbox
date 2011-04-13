@@ -14,7 +14,8 @@ ds = cfdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m
 v = ds.variable('TEMP');
 
 % Grab a subset of the data. Data is now being pulled across the network
-t = v.data([1 1 1 1], [100 5 1 1]);
+t = v.grid(1:100, 1:5, 1, 1);
+t.TEMP = v.data(1:100, 1:5, 1, 1);
 
 % View the variable name in the returned structure
 v.name                  
