@@ -7,7 +7,7 @@
 %  hg clone https://nctoolbox.googlecode.com/hg/ nctoolbox 
 %  Rich Signell (rsignell@usgs.gov)
 
-url='http://geoport-dev.whoi.edu/thredds/dodsC/ncom_relo/fukushima';
+url='http://edac-dap3.northerngulfinstitute.org/thredds/dodsC/ncom_fukushima_agg/Fukushima_best.ncd';
 nc=cfdataset(url);
 dn=nc.time('time');
 u=nc.variable('water_u');
