@@ -125,6 +125,7 @@ switch(nargout)
         varargout{2} = vz;
         varargout{3} = vdata;
 end
+end
 
 
 
