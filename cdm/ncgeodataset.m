@@ -183,12 +183,12 @@ classdef ncgeodataset < cfdataset
                                 
                         end
                     else
-                        error(['NCTOOLBOX:' mfilename ':subsref'], ...
+                        error(['NCTOOLBOX:ncgeodataset:subsref'], ...
                             'Unexpected reference notation or method call')
                     end
                     
                  case '()'
-                     error('cfdataset:subsref',...
+                     error('NCTOOLBOX:ncgeodataset:subsref',...
                             'Call with "()" as first type unsupported at this time')
                     
                  case '{}'    

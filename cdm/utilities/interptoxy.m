@@ -5,7 +5,7 @@
           % Useage: >> data = var.interptoxy(data, lat, lon, -77, 45, 'linear');
           s = size(data);
           if length(x) ~= length(y)
-            error('Input coordinate vectors do not agree.')
+            error('NCTOOLBOX:interptoxy','Input coordinate vectors do not agree.')
           end
           
           % Need good method for dealing with vector ans matrix lat/lon then to vector for scattered 

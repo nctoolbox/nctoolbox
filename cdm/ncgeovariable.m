@@ -183,7 +183,7 @@ classdef ncgeovariable < ncvariable
               d.index = find(t_index1==t_index2);
               d.time = g.time(d.index);
             else
-              me = MException(['NCTOOLBOX:' mfilename ':timewindowij'], ...
+              me = MException(['NCTOOLBOX:ncgeovariable:timewindowij'], ...
                 'No grid variable returned as time.');
               me.throw;
             end
@@ -202,7 +202,7 @@ classdef ncgeovariable < ncvariable
             t = src.timewindowij(struct.time{1}, struct.time{2});
             
             if length(nums) < 3
-              me = MException(['NCTOOLBOX:' mfilename ':geosubset'], ...
+              me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
                 ['Expected data of ', obj.name, ' to be at least rank 3.']);
               me.throw;
             elseif length(nums) < 4
@@ -212,7 +212,7 @@ classdef ncgeovariable < ncvariable
                 last = [max(t.index) indend_r indend_c];
                 stride = [struct.t_stride struct.xy_stride(2) struct.xy_stride(1)];
               else
-                me = MException(['NCTOOLBOX:' mfilename ':geosubset'], ...
+                me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
                   'Expected either a coordinate variable acknowleged as time.');
                 me.throw;
               end
@@ -221,7 +221,7 @@ classdef ncgeovariable < ncvariable
               last = [max(t.index) struct.z_index{2} indend_r indend_c];
               stride = [struct.t_stride struct.z_stride struct.xy_stride(2) struct.xy_stride(1)];
             else
-              me = MException(['NCTOOLBOX:' mfilename ':geosubset'], ...
+              me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
                 ['Expected data of ', obj.name, ' to be less than rank 5.']);
               me.throw;
             end
@@ -243,7 +243,7 @@ classdef ncgeovariable < ncvariable
             [indstart_r indend_r indstart_c indend_c] = obj.geoij(struct);
             
             if numel(struct.time{1}) > 1 % check to see if someone used str or datevec by accident
-              me = MException(['NCTOOLBOX:' mfilename ':geosubset'], ...
+              me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
                 'Expected min time to be an index/integer.');
               me.throw;
             else
@@ -259,7 +259,7 @@ classdef ncgeovariable < ncvariable
             end
             
             if length(nums) < 2
-              me = MException(['NCTOOLBOX:' mfilename ':geosubset'], ...
+              me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
                 ['Expected data of ', obj.name, ' to be at least rank 2.']);
               me.throw;
             elseif length(nums) < 3
@@ -277,7 +277,7 @@ classdef ncgeovariable < ncvariable
                 last = [struct.z_index{2} indend_r indend_c];
                 stride = [struct.z_stride struct.xy_stride(2) struct.xy_stride(1)];
               else
-                me = MException(['NCTOOLBOX:' mfilename ':geosubset'], ...
+                me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
                   'Expected either a coordinate variable acknowleged as time or as z.');
                 me.throw;
               end
@@ -286,7 +286,7 @@ classdef ncgeovariable < ncvariable
               last = [tmax_i struct.z_index{2} indend_r indend_c];
               stride = [struct.t_stride struct.z_stride struct.xy_stride(2) struct.xy_stride(1)];
             else
-              me = MException(['NCTOOLBOX:' mfilename ':geosubset'], ...
+              me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
                 ['Expected data of ', obj.name, ' to be less than rank 5.']);
               me.throw;
               
@@ -385,7 +385,7 @@ classdef ncgeovariable < ncvariable
                                 
                             else
                                 sref = obj.data;
-                                warning(['NCTOOLBOX:' mfilename ':subsref'], ...
+                                warning(['NCTOOLBOX:ncgeovariable:subsref'], ...
                                     ['Variable "' name '" has no netcdf dimension associated with it. Errors may result from non CF compliant files.'])
                             end
                         case 'grid'
@@ -400,17 +400,17 @@ classdef ncgeovariable < ncvariable
                                 end
 
                             else
-                                warning(['NCTOOLBOX:' mfilename ':subsref'], ...
+                                warning(['NCTOOLBOX:ncgeovariable:subsref'], ...
                                     ['Variable "' name '" has no netcdf dimension associated with it. Errors may result from non CF compliant files.'])
                             end
                       otherwise
                         sref = builtin('subsref',obj,s);
                     end
                 case '()'
-                    warning(['NCTOOLBOX:' mfilename ':subsref'], ...
+                    warning(['NCTOOLBOX:ncgeovariable:subsref'], ...
                         'Not a supported subscripted reference, "()" are not permitted to call variable object methods');
                 case '{}'
-                    warning(['NCTOOLBOX:' mfilename ':subsref'], ...
+                    warning(['NCTOOLBOX:ncgeovariable:subsref'], ...
                         'Not a supported subscripted reference, "{}" are not permitted to call variable object methods');
             end
         end
