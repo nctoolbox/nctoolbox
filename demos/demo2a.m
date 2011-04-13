@@ -5,7 +5,7 @@ echo('on')
 % An example of subsetting data using ncdataset
 
 %% ---- Open the dataset
-ds = cfdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/OS_M1_20081008_TS.nc')
+ds = ncgeodataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/OS_M1_20081008_TS.nc')
 
 % You can view the variables available to you
 ds.variables
