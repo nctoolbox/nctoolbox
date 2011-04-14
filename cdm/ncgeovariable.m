@@ -178,8 +178,8 @@ classdef ncgeovariable < ncvariable
                 stoptime = g.time(end);
               end
               
-              t_index1 = g.time > starttime;
-              t_index2 = g.time < stoptime;
+              t_index1 = g.time >= starttime;
+              t_index2 = g.time <= stoptime;
               d.index = find(t_index1==t_index2);
               d.time = g.time(d.index);
             else
@@ -201,12 +201,23 @@ classdef ncgeovariable < ncvariable
             [indstart_r indend_r indstart_c indend_c] = src.geoij(struct);
             t = src.timewindowij(struct.time{1}, struct.time{2});
             
-            if length(nums) < 3
+            if length(nums) < 2
               me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
-                ['Expected data of ', obj.name, ' to be at least rank 3.']);
+                ['Expected data of ', src.name, ' to be at least rank 2.']);
               me.throw;
+            elseif length(nums) <3
+              ax = src.grid([1 1],[1 1],[1 1]);
+              if isfield(ax, 'time')
+                first = [min(t.index) indstart_r];
+                last = [max(t.index) indend_r];
+                stride = [struct.t_stride struct.xy_stride(2)];
+              else
+                me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
+                  'Expected either a coordinate variable acknowleged as time.');
+                me.throw;
+              end
             elseif length(nums) < 4
-              ax = obj.grid([1 1 1],[1 1 1],[1 1 1]);
+              ax = src.grid([1 1 1],[1 1 1],[1 1 1]);
               if isfield(ax, 'time')
                 first = [min(t.index) indstart_r indstart_c];
                 last = [max(t.index) indend_r indend_c];
@@ -348,14 +359,30 @@ classdef ncgeovariable < ncvariable
                 indlon2 = (g.lon >= east_min);
                 indlon = find(indlon1&indlon2);
                 % Out
-                indstart_c = min(indlat);
-                indend_c = max(indlat);
-                indstart_r = min(indlon);
-                indend_r = max(indlon);
+                attrs = obj.dataset.attributes;
+                key = value4key(attrs, 'CF:featureType');
+                
+                if strcmp(key, 'timeSeries')
+                  a = [];
+                  for i = 1:length(indlon)
+                    if ~isempty(find(indlon(i)==indlat, 1))
+                      a(length(a)+1) = indlon(i);
+                    end
+                  end
+                  indstart_c = min(a);
+                  indend_c = max(a);
+                  indstart_r = min(a);
+                  indend_r = max(a);
+                else
+                  indstart_c = min(indlat);
+                  indend_c = max(indlat);
+                  indstart_r = min(indlon);
+                  indend_r = max(indlon);
+                end
             end
             
             
-
+            
         end % end geoij
         
         function sref = subsref(obj,s)

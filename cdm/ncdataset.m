@@ -263,7 +263,7 @@ classdef ncdataset < handle
                 variable = ucar.nc2.NetcdfFile.escapeName(variable);
                 v = obj.netcdf.findVariable(variable);
                 if isempty(v)
-                    warning('NCTOOLBOX:ncdataset:attributes', ['Could not find the variable ' variable]);
+                    warning('NCTOOLBOX:ncdataset:attributes', ['Could not find the variable ']);
                 end
                 aa = v.getAttributes();
             end
