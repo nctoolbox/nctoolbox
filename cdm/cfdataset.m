@@ -38,7 +38,7 @@
 classdef cfdataset < ncdataset
     
     properties (SetAccess = private, GetAccess = private)
-        ncvariables
+        ncvariables % 2 by n cell array
     end
     
     methods
@@ -87,13 +87,11 @@ classdef cfdataset < ncdataset
                 % for the variable of interest. We'll try the CF
                 % conventions first and if that's not available we'll try
                 % COARDS.
-                
                 att = obj.attributes(variableName);
                 coordinates = value4key(att, 'coordinates');
                 
                 if ~isempty(coordinates)
                     % ---- Look for CF 'coordinates' attribute
-                    
                     % Parse the string into white space delimited parts
                     jls = java.lang.String(coordinates);
                     p = jls.split(' ');                   % java.lang.String[]
@@ -315,26 +313,6 @@ classdef cfdataset < ncdataset
                 
             end
         end
-        
-        %% TODO Commented this out as:
-        %  1) gettime makes flawed assumptions on what is a time variable.
-        %  2) There may be more than 1 time variable
-        %
-%         function t = gettime(obj, varargin)
-%             t_converted = obj.dataset.time('time'); % this is a bad assumption
-%             if nargin > 1
-%                 t_index1 = t_converted > varargin{1};
-%                 t_index2 = t_converted < varargin{2};
-%                 t_index = find(t_index1==t_index2);
-%                 t = t_converted(t_index);
-%             else
-%                 t = t_converted;
-%             end
-%         end
- 
-       
-  
-        
 
     end
     

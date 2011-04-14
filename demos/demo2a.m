@@ -26,7 +26,7 @@ t = ds.time('TIME', t); % Convert time data to matlab format. See help ncdataset
 ds.size('TEMP')
 % Use variable, start, end, stride to subset
 % Same as: temp = ds.data('TEMP', [startIdx 1 1 1], [endIdx 1 1 1], [stride 1 1 1]);
-temp = ds{'TEMP'}(startIdx:stride:endIdx, 1, 1, 1)
+temp = ds{'TEMP'}(startIdx:stride:endIdx, 1, 1, 1);
 
 
 %% ---- Plot it

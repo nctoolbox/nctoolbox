@@ -336,36 +336,6 @@ classdef ncdataset < handle
             
         end
         
-        
-        %%
-        %         function B = subsref(obj,s)
-        %             % TODO This is broken.
-        %             switch s(1).type
-        %                 case '.'
-        %                     methodc = s(1).subs;
-        %                 case '()'
-        %                              error('NCDATASET:subsref',...
-        %                                'Not a supported subscripted reference, cannot use numerical indexing on a dataset object')
-        %                 case '{}'
-        %                              error('NCDATASET:subsref',...
-        %                                'Not a supported subscripted reference, cannot use numerical indexing on a dataset object')
-        %             end
-        %             if (length(s) > 1)
-        %                 switch s(2).type
-        %                     case '.'
-        %                                     error('ncdataset:subsref',...
-        %                                    'Not a supported subscripted reference, cannot use numerical indexing on a dataset object')
-        %                     case '()'
-        %                         B = builtin('subsref',obj,s);
-        %                     case '{}'
-        %                         g = substruct('.',methodc,'()',s(2).subs);
-        %     %                     g.type = '()';
-        %     %                     g.subs = s(i).subs;
-        %                         B = builtin('subsref',obj,g);
-        %
-        %                 end
-        %             end
-        %         end
     end
     
 end
