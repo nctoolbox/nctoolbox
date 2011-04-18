@@ -1,4 +1,4 @@
-function [start count stride] = parseIndices(indices, varShape)
+function [start count stride] = indexing(indices, varShape)
 
 %mVariable/parseIndices - parses subscripting references into 
 % start,count and stride based on variable shape.

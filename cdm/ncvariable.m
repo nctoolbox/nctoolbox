@@ -265,7 +265,7 @@ classdef ncvariable < handle
                                     case 1
                                         sref = obj;
                                     case 2
-                                        [first last stride] = parseIndices(s(2).subs, double(nums));
+                                        [first last stride] = indexing(s(2).subs, double(nums));
                                         sref = obj.data(first, last, stride);
                                 end
                                 
@@ -281,7 +281,7 @@ classdef ncvariable < handle
                                     case 1
                                         sref = obj;
                                     case 2
-                                        [first last stride] = parseIndices(s(2).subs, double(nums));
+                                        [first last stride] = indexing(s(2).subs, double(nums));
                                         sref = obj.grid(first, last, stride);
                                 end
 
