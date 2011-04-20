@@ -155,7 +155,7 @@ classdef ncgeovariable < ncvariable
         
           %% These functions would rather output multiple outputs instead of struct, must reconcile
           %     with the subsref in either ncgeovariable or ncvariable. Wait, why, then, does geoij work???
-          function d = timewindowij(src, starttime, stoptime)
+          function d = timewindowij(src, varargin)
             % NCGEOVARIABLE.TIMEWINDOWIJ - Function to get indices from start and stop times for sub-
             % setting. TODO: There must be a better/fast way to do this using the java library.
             % Useage: >> timestruct = geovar.timewindowij([2004 1 1 0 0 0], [2005 12 31 0 0 0]);
@@ -169,8 +169,8 @@ classdef ncgeovariable < ncvariable
             g = src.grid_interop(first, last, stride);
             
             if isfield(g, 'time') % are any of the fields recognized as time explictly
-              starttime = datenum(starttime);
-              stoptime = datenum(stoptime);
+              starttime = datenum(varargin{1});
+              stoptime = datenum(varargin{2});
               if isempty(starttime)
                 starttime = g.time(1);
               end

@@ -1,6 +1,6 @@
 function [Tvar,Tdis,Tzed,Tlon,Tlat] = ...
   nc_genslice(file,varname,lonTrk,latTrk,timTrk,report)
-% [Tvar,Tdis,Tzed,Tlon,Tlat] = roms_genslice(file,varname,lonTrk,latTrk,timTrk)
+% [Tvar,Tdis,Tzed,Tlon,Tlat] = nc_genslice(file,varname,lonTrk,latTrk,timTrk)
 %
 % Basically works like GSLICE. Get a "generic" vertical slice out of ROMS
 % output file at coordinates specified by a vector of lon, lat and time
