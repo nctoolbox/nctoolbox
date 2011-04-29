@@ -226,7 +226,7 @@ classdef ncgeovariable < ncvariable
               struct.t_stride = [1 1];
             end
             
-            if isfield(struct, 'z_index')l
+            if isfield(struct, 'z_index');
             else
               struct.z_index = [1 nums(2)];
             end
@@ -337,7 +337,7 @@ classdef ncgeovariable < ncvariable
                 last = [tmax_i indend_r indend_c];
                 stride = [struct.t_stride struct.xy_stride(2) struct.xy_stride(1)];
               elseif isfield(ax, 'z')
-                if isfield(struct, 'z_index')l
+                if isfield(struct, 'z_index');
                 else
                   struct.z_index = [1 nums(1)];
                 end
@@ -350,7 +350,7 @@ classdef ncgeovariable < ncvariable
                 me.throw;
               end
             elseif length(nums) < 5
-              if isfield(struct, 'z_index')l
+              if isfield(struct, 'z_index');
               else
                 struct.z_index = [1 nums(2)];
               end
