@@ -199,7 +199,37 @@ classdef ncgeovariable < ncvariable
           nums = src.size;
             
             [indstart_r indend_r indstart_c indend_c] = src.geoij(struct);
-            t = src.timewindowij(struct.time{1}, struct.time{2});
+             
+            if isfield(struct, 'time')
+              if iscell(struct.time)
+                t = src.timewindowij(struct.time{1}, struct.time{2});
+              else
+                t = src.timewindowij(struct.time(1), struct.time(1));
+              end
+            else
+              t.index(1) = 1;
+              t.index(2) = nums(1);
+            end
+            
+            if isfield(struct, 'xy_stride');
+            else
+              struct.xy_stride = [1 1];
+            end
+            
+            if isfield(struct, 'z_stride');
+            else
+              struct.z_stride = [1 1];
+            end
+            
+            if isfield(struct, 't_stride');
+            else
+              struct.t_stride = [1 1];
+            end
+            
+            if isfield(struct, 'z_index')l
+            else
+              struct.z_index = [1 nums(2)];
+            end
             
             if length(nums) < 2
               me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
@@ -228,8 +258,8 @@ classdef ncgeovariable < ncvariable
                 me.throw;
               end
             elseif length(nums) < 5
-              first = [min(t.index) struct.z_index{1} indstart_r indstart_c];
-              last = [max(t.index) struct.z_index{2} indend_r indend_c];
+              first = [min(t.index) struct.z_index(1) indstart_r indstart_c];
+              last = [max(t.index) struct.z_index(2) indend_r indend_c];
               stride = [struct.t_stride struct.z_stride struct.xy_stride(2) struct.xy_stride(1)];
             else
               me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
@@ -250,23 +280,46 @@ classdef ncgeovariable < ncvariable
           %
           %
             nums = obj.size;
+            if isfield(struct, 'xy_stride');
+            else
+              struct.xy_stride = [1 1];
+            end
+            
+            if isfield(struct, 'z_stride');
+            else
+              struct.z_stride = [1 1];
+            end
+            
+            if isfield(struct, 't_stride');
+            else
+              struct.t_stride = [1 1];
+            end
             
             [indstart_r indend_r indstart_c indend_c] = obj.geoij(struct);
             
-            if numel(struct.time{1}) > 1 % check to see if someone used str or datevec by accident
-              me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
-                'Expected min time to be an index/integer.');
-              me.throw;
+            if isfield(struct, 'time')
+              if iscell(struct.time)
+                if numel(struct.time{1}) > 1 % check to see if someone used str or datevec by accident
+                  me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
+                    'Expected min time to be an index/integer.');
+                  me.throw;
+                else
+                  tmin_i = struct.time{1};
+                end
+                if numel(struct.time{2}) > 1 % check to see if someone used str or datevec by accident
+                  me = MException(['NCTOOLBOX:' mfilename ':geosubset'], ...
+                    'Expected max time to be an index/integer.');
+                  me.throw;
+                else
+                  tmax_i = struct.time{2};
+                end
+              else
+                tmin_i = temp(1);
+                tmax_i = temp(2);
+              end
             else
-              tmin_i = struct.time{1};
-            end
-            
-            if numel(struct.time{2}) > 1 % check to see if someone used str or datevec by accident
-              me = MException(['NCTOOLBOX:' mfilename ':geosubset'], ...
-                'Expected max time to be an index/integer.');
-              me.throw;
-            else
-              tmax_i = struct.time{2};
+              tmin_i = 1;
+              tmax_i = nums(1);
             end
             
             if length(nums) < 2
@@ -284,8 +337,12 @@ classdef ncgeovariable < ncvariable
                 last = [tmax_i indend_r indend_c];
                 stride = [struct.t_stride struct.xy_stride(2) struct.xy_stride(1)];
               elseif isfield(ax, 'z')
-                first = [struct.z_index{1} indstart_r indstart_c];
-                last = [struct.z_index{2} indend_r indend_c];
+                if isfield(struct, 'z_index')l
+                else
+                  struct.z_index = [1 nums(1)];
+                end
+                first = [struct.z_index(1) indstart_r indstart_c];
+                last = [struct.z_index(2) indend_r indend_c];
                 stride = [struct.z_stride struct.xy_stride(2) struct.xy_stride(1)];
               else
                 me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
@@ -293,6 +350,10 @@ classdef ncgeovariable < ncvariable
                 me.throw;
               end
             elseif length(nums) < 5
+              if isfield(struct, 'z_index')l
+              else
+                struct.z_index = [1 nums(2)];
+              end
               first = [tmin_i struct.z_index{1} indstart_r indstart_c];
               last = [tmax_i struct.z_index{2} indend_r indend_c];
               stride = [struct.t_stride struct.z_stride struct.xy_stride(2) struct.xy_stride(1)];
@@ -326,11 +387,25 @@ classdef ncgeovariable < ncvariable
             g = obj.grid_interop(first, last, stride);
             %           h = 0;
             flag = 0;
+            
+            
             %Unpack geosubset_structure
-            north_max = struct.lat(2);
-            north_min = struct.lat(1);
-            east_max = struct.lon(2);
-            east_min = struct.lon(1);
+            if isfield(struct, lat);
+              north_max = struct.lat(2);
+              north_min = struct.lat(1);
+            else
+              north_max = max(g.lat);
+              north_min = min(g.lat);
+            end
+            
+            if isfield(struct, lon);
+              east_max = struct.lon(2);
+              east_min = struct.lon(1);
+            else
+              east_max = max(g.lon);
+              east_min = min(g.lon);
+            end
+            
             
             if ~isvector(g.lat)
                 [indlat_l1] = ((g.lat <= north_max)); %2d

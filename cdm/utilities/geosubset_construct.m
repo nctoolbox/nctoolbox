@@ -10,7 +10,7 @@ function [ s ] = geosubset_construct(starttime, stoptime, t_stride, zmin, zmax, 
 % Bounding Dimensions
 s.lat = [northmin northmax]; % both ends must be explicit
 s.lon = [eastmin eastmax]; % both ends must be explicit
-s.z_index = {zmin zmax}; % both ends must be explicit
+s.z_index = [zmin zmax]; % both ends must be explicit
 s.time = {starttime stoptime}; %both ends must be explicit
 
 % Stride Arugments
