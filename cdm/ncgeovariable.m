@@ -390,7 +390,7 @@ classdef ncgeovariable < ncvariable
             
             
             %Unpack geosubset_structure
-            if isfield(struct, lat);
+            if isfield(struct, 'lat');
               north_max = struct.lat(2);
               north_min = struct.lat(1);
             else
@@ -398,7 +398,7 @@ classdef ncgeovariable < ncvariable
               north_min = min(g.lat);
             end
             
-            if isfield(struct, lon);
+            if isfield(struct,'lon');
               east_max = struct.lon(2);
               east_min = struct.lon(1);
             else
