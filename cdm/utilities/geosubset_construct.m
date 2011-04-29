@@ -2,7 +2,7 @@ function [ s ] = geosubset_construct(starttime, stoptime, t_stride, zmin, zmax, 
   eastmax, x_stride, northmin, northmax, y_stride)
 % SUBSET_STRUCT this is a function that, in a matlab way, creates a subset structure for nctoolbox's 
 % geosubset or timegeosubset functions.
-% >> geosubset_struct(1, 1, [], 1, 1, [], -77, -75.5, [],  36, 38, 1)
+% >> geosubset_construct(1, 1, [], 1, 1, [], -77, -75.5, [],  36, 38, 1)
 %
 % Note: the starttime and stoptime arugments also accept matlab time formats datevec and datenum.
 %

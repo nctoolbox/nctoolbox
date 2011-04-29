@@ -8,7 +8,8 @@
             error('NCTOOLBOX:interptoxy','Input coordinate vectors do not agree.')
           end
           
-          % Need good method for dealing with vector ans matrix lat/lon then to vector for scattered 
+          
+          % Need good method for dealing with vector ans matrix lat/lon then to vector for scattered
           % interpretation.
           if isvector(lat)
             lat = repmat(lat, 1, length(lon));
@@ -36,7 +37,7 @@
                   redata(flags1) = [];
                   relat(flags1) = [];
                   relon(flags1) = [];
-                  int = TriScatteredInterp(lon, lat, redata, method);
+                  int = TriScatteredInterp(relon, relat, redata, method);
                   clear redata
                   if isvector(x)
                     for k = 1:length(x)
@@ -86,7 +87,7 @@
             redata(flags1) = [];
             relat(flags1) = [];
             relon(flags1) = [];
-            int = TriScatteredInterp(lon, lat, redata, method);
+            int = TriScatteredInterp(relon, relat, redata, method);
             clear redata
             if isvector(x)
               for k = 1:length(x)

@@ -325,7 +325,7 @@ classdef ncgeovariable < ncvariable
             stride = first;
             g = obj.grid_interop(first, last, stride);
             %           h = 0;
-            
+            flag = 0;
             %Unpack geosubset_structure
             north_max = struct.lat(2);
             north_min = struct.lat(1);
@@ -374,10 +374,11 @@ classdef ncgeovariable < ncvariable
                   indstart_r = min(a);
                   indend_r = max(a);
                 else
-                  indstart_c = min(indlat);
-                  indend_c = max(indlat);
-                  indstart_r = min(indlon);
-                  indend_r = max(indlon);
+                  indstart_c = min(indlon); % testing temp, i switched lon and lat here
+                  indend_c = max(indlon);
+                  indstart_r = min(indlat);
+                  indend_r = max(indlat);
+                  flag = 1;
                 end
             end
             
