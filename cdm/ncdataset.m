@@ -73,26 +73,42 @@ classdef ncdataset < handle
             % are fetched and stored in the 'variables' property. This can be
             % use to open local files, files stored on an HTTP server and
             % OpenDAP URLs.
-            
-            try
-                obj.netcdf = ucar.nc2.dataset.NetcdfDataset.openDataset(url);
-                
-                % Fetches the names of all variables from the netcdf ncdataset
-                % and stores them in a cell array
-                vars = obj.netcdf.getVariables();
-                n = size(vars);
-                obj.variables = cell(n, 1);
-                for i = 1:(n)
-                    obj.variables{i, 1} = char(vars.get(i - 1).getName());
+            %
+            % If the argument is another instance of ncdataset or one of it's
+            % subtypes, such as cfdataset or ncgeodataset then this creates 
+            % a new ncdataset that shares the underlying data.
+            if isa(url, 'ncdataset')
+                obj.location = url.location;
+                obj.netcdf = url.netcdf;
+                obj.variables = url.variables;
+            elseif isa(url, 'char')
+                try
+                    obj.netcdf = ucar.nc2.dataset.NetcdfDataset.openDataset(url);
+
+                    % Fetches the names of all variables from the netcdf ncdataset
+                    % and stores them in a cell array
+                    vars = obj.netcdf.getVariables();
+                    n = size(vars);
+                    obj.variables = cell(n, 1);
+                    for i = 1:(n)
+                        obj.variables{i, 1} = char(vars.get(i - 1).getName());
+                    end
+
+                    obj.location = url;
+
+                catch me
+                    ex = MException('NCTOOLBOX:ncdataset', ['Failed to open ' url]);
+                    ex = ex.addCause(me);
+                    ex.throw;
                 end
-                
-                obj.location = url;
-                
-            catch me
-                ex = MException('NCTOOLBOX:ncdataset', ['Failed to open ' url]);
-                ex = ex.addCause(me);
+            else
+                ex = MException('NCTOOLBOX:ncdataset', ['The argument was a ' class(url) ...
+                    '. That is not valid. Use a url (A Matlab char) or another ncdataset' ...
+                    ' object instead. ']);
                 ex.throw;
             end
+            
+            
         end
         
         
