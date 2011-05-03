@@ -189,7 +189,7 @@ classdef ncgeovariable < ncvariable
             end
           end % end timewindowij
         
-        function d = timegeosubset(src, struct)
+        %function d = timegeosubset(src, struct)
           % NCGEOVARIABLE.TIMEGEOSUBSET - Function to request a time/lat/lon subset of data and the
           % the corresponding grid, using a z indices if relevant.
           % Useage: >> subsetstructure = geosubset_construct(731947, 732677, [], 1, 1, [], -77, -75.5, [],  36, 38, 1));
@@ -297,30 +297,41 @@ classdef ncgeovariable < ncvariable
             
             [indstart_r indend_r indstart_c indend_c] = obj.geoij(struct);
             
-            if isfield(struct, 'time')
+            if isfield(struct, 'time') % Deal with time (values) or t_index (indices) bounds
               if iscell(struct.time)
-                if numel(struct.time{1}) > 1 % check to see if someone used str or datevec by accident
+                t = src.timewindowij(struct.time{1}, struct.time{2});
+              else
+                t = src.timewindowij(struct.time(1), struct.time(1));
+              end
+            else
+              t.index(1) = 1;
+              t.index(2) = nums(1);
+            elseif isfield(struct, 't_index')
+              if iscell(struct.t_index)
+                if numel(struct.t_index{1}) > 1 % check to see if someone used str or datevec by accident
                   me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
                     'Expected min time to be an index/integer.');
                   me.throw;
                 else
-                  tmin_i = struct.time{1};
+                  tmin_i = struct.t_index{1};
                 end
-                if numel(struct.time{2}) > 1 % check to see if someone used str or datevec by accident
+                if numel(struct.t_index{2}) > 1 % check to see if someone used str or datevec by accident
                   me = MException(['NCTOOLBOX:' mfilename ':geosubset'], ...
                     'Expected max time to be an index/integer.');
                   me.throw;
                 else
-                  tmax_i = struct.time{2};
+                  tmax_i = struct.t_index{2};
                 end
               else
-                tmin_i = temp(1);
-                tmax_i = temp(2);
+                tmin_i = struct.t_index(1);
+                tmax_i = struct.t_index(2);
               end
             else
               tmin_i = 1;
               tmax_i = nums(1);
             end
+            
+            
             
             if length(nums) < 2
               me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...

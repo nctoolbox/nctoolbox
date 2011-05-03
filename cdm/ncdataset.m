@@ -287,6 +287,36 @@ classdef ncdataset < handle
             end
         end
         
+        function val = attribute(obj, key, var)
+          % NCDATASET.ATTRIBUTE returns the value a global attribute specified by its key or the
+          % variable attribute specified by key and variable.
+          %
+          % Use as:
+          %   a = ncdataset.attribute('title')
+          %   a = ncdataset.attribute(key)
+          %
+          %   a = ncdataset.attribute('title', 'temp')
+          %   a = ncdataset.attribute(key, variableName)
+          %
+          % Inputs:
+          %   key = The name of the attribute field like 'title' or 'units'...
+          %   variableName = The name of the variable whos attributes you want
+          %       to retrieve. If no argument is specified then the
+          %       global attributes are returned.
+          %
+          % Return:
+          %   The value associated with the attribute field corresponding to key (and optionally 
+          %   variableName)
+          if nargin < 3
+            atlist = obj.attributes;
+            val = value4key(atlist, key);
+          elseif nargin > 1
+            atlist = obj.attributes(var);
+            val = value4key(atlist, key);
+          else
+            warning('NCTOOLBOX:ncdataset:attribute', 'No key or variable specified.');
+          end
+        end
         %%
         function save(obj, filename)
             % NCDATASET.SAVE Save the data to a local netcdf file

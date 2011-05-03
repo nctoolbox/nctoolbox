@@ -94,20 +94,22 @@ classdef ncvariable < handle
             n = obj.dataset.size(obj.name);
         end
         
-%         function a = get.axes(src) % temporary work around
-%           dsaxes = src.dataset.axes(src.name);
-%           c = 1;
-%           for i = 1:length(dsaxes);
-%             if ~isempty(dsaxes{i})
-%               a{c,1} = dsaxes{i};
-%               c = c + 1;
-%             end
-%           end
-%           varaxes = src.axes2;
-%           for i = 1:length(varaxes)
-%             a{c-1+i,1} = varaxes{i};
-%           end
-%         end
+        function val = attribute(obj, key)
+          % NCVARIABLE.ATTRIBUTE returns the value a global attribute specified by its key or the
+          % variable attribute specified by key and variable.
+          %
+          % Use as:
+          %   a = ncvariable.attribute('title')
+          %   a = ncvariable.attribute(key)
+          %
+          %
+          % Inputs:
+          %   key = The name of the attribute field like 'title' or 'units'...
+          %
+          % Return:
+          %   The value associated with the attribute field corresponding to key.
+          val = obj.dataset.attribute(key, obj.name);
+        end
         
         %%
         function d = data(obj, first, last, stride)
