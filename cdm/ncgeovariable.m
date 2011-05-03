@@ -300,12 +300,13 @@ classdef ncgeovariable < ncvariable
             if isfield(struct, 'time') % Deal with time (values) or t_index (indices) bounds
               if iscell(struct.time)
                 t = src.timewindowij(struct.time{1}, struct.time{2});
+                tmin_i = t.index(1);
+                tmax_i = t.index(2);
               else
                 t = src.timewindowij(struct.time(1), struct.time(1));
+                tmin_i = t.index(1);
+                tmax_i = t.index(2);
               end
-            else
-              t.index(1) = 1;
-              t.index(2) = nums(1);
             elseif isfield(struct, 't_index')
               if iscell(struct.t_index)
                 if numel(struct.t_index{1}) > 1 % check to see if someone used str or datevec by accident
