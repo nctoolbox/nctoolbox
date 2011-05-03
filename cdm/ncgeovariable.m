@@ -299,11 +299,11 @@ classdef ncgeovariable < ncvariable
             
             if isfield(struct, 'time') % Deal with time (values) or t_index (indices) bounds
               if iscell(struct.time)
-                t = src.timewindowij(struct.time{1}, struct.time{2});
+                t = obj.timewindowij(struct.time{1}, struct.time{2});
                 tmin_i = t.index(1);
                 tmax_i = t.index(2);
               else
-                t = src.timewindowij(struct.time(1), struct.time(1));
+                t = obj.timewindowij(struct.time(1), struct.time(1));
                 tmin_i = t.index(1);
                 tmax_i = t.index(2);
               end
