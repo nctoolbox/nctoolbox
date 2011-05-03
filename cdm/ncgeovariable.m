@@ -300,12 +300,12 @@ classdef ncgeovariable < ncvariable
             if isfield(struct, 'time') % Deal with time (values) or t_index (indices) bounds
               if iscell(struct.time)
                 t = obj.timewindowij(struct.time{1}, struct.time{2});
-                tmin_i = t.index(1);
-                tmax_i = t.index(2);
+                tmin_i = min(t.index);
+                tmax_i = max(t.index);
               else
-                t = obj.timewindowij(struct.time(1), struct.time(1));
-                tmin_i = t.index(1);
-                tmax_i = t.index(2);
+                t = obj.timewindowij(struct.time(1), struct.time(2));
+                tmin_i = min(t.index);
+                tmax_i = max(t.index);
               end
             elseif isfield(struct, 't_index')
               if iscell(struct.t_index)
@@ -339,9 +339,16 @@ classdef ncgeovariable < ncvariable
                 ['Expected data of ', obj.name, ' to be at least rank 2.']);
               me.throw;
             elseif length(nums) < 3
-              first = [indstart_r indstart_c];
-              last = [indend_r indend_c];
-              stride = [struct.xy_stride(2) struct.xy_stride(1)];
+              ax = obj.grid([1 1],[1 1],[1 1]);
+              if isfield(ax, 'time')
+                first = [tmin_i indstart_r];
+                last = [tmax_i indend_r];
+                stride = [struct.t_stride struct.xy_stride(2)];
+              else
+                first = [indstart_r indstart_c];
+                last = [indend_r indend_c];
+                stride = [struct.xy_stride(2) struct.xy_stride(1)];
+              end
             elseif length(nums) < 4
               ax = obj.grid([1 1 1],[1 1 1],[1 1 1]);
               if isfield(ax, 'time')
