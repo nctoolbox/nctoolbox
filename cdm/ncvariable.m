@@ -360,20 +360,22 @@ classdef ncvariable < handle
 %                     type = char(obj.axesVariables{i}.getAxisType());
                     % ---- Step 4: figure out how to subset the data properly
                     vs = obj.dataset.size(name);
-                    if (length(vs) == length(s))
+                    if numel(vs) > 0 % Added to solve work around somedata calls that involve variables with
+                                            % no netcdf dim. (This will be frequent in some OOI files.)
+                      if (length(vs) == length(s))
                         %% case: sizes are the same
                         if isequal(vs, s)
-                            vFirst = first;
-                            vLast = last;
-                            vStride = stride;
+                          vFirst = first;
+                          vLast = last;
+                          vStride = stride;
                         else
-                            me = MException('NCTOOLBOX:ncvariable:somedata', ...
-                                ['The data size of the coordinate variable,' ...
-                                name ', does not fit the size of ' obj.name]);
-                            me.throw;
+                          me = MException('NCTOOLBOX:ncvariable:somedata', ...
+                            ['The data size of the coordinate variable,' ...
+                            name ', does not fit the size of ' obj.name]);
+                          me.throw;
                         end
                         
-                    elseif length(vs) == 1
+                      elseif length(vs) == 1
                         %% case: singleton dimension. Find side of data with
                         % the same length
                         
@@ -381,83 +383,41 @@ classdef ncvariable < handle
                         % the data has 2 dimensions of the same length
                         dim = find(s == vs, 1);
                         if ~isempty(dim)
-                            vFirst = first(dim);
-                            vLast = last(dim);
-                            vStride = stride(dim);
+                          vFirst = first(dim);
+                          vLast = last(dim);
+                          vStride = stride(dim);
                         else
-                            me = MException('NCTOOLBOX:ncvariable:somedata', ...
-                                ['The data size of the coordinate variable,' ...
-                                name ', does not fit the size of ' obj.name]);
-                            me.throw;
+                          me = MException('NCTOOLBOX:ncvariable:somedata', ...
+                            ['The data size of the coordinate variable,' ...
+                            name ', does not fit the size of ' obj.name]);
+                          me.throw;
                         end
                         
-                    else
+                      else
                         %% case: variable is coordiantes. Look for size
                         % TODO this is a lame implementation.
                         dim = find(s == vs(1), 1);
                         if ~isempty(dim)
-                            for j = 2:length(vs)
-                                if vs(j) ~= s(dim + j - 1)
-                                    me = MException('NCTOOLBOX:ncvariable:somedata', ...
-                                        ['The data size of the coordinate variable,' ...
-                                        name ', does not fit the size of ' obj.name]);
-                                    me.throw;
-                                end
+                          for j = 2:length(vs)
+                            if vs(j) ~= s(dim + j - 1)
+                              me = MException('NCTOOLBOX:ncvariable:somedata', ...
+                                ['The data size of the coordinate variable,' ...
+                                name ', does not fit the size of ' obj.name]);
+                              me.throw;
                             end
-                            k = dim:dim + length(vs) - 1;
-                            vFirst = first(k);
-                            vLast = last(k);
-                            vStride = stride(k);
+                          end
+                          k = dim:dim + length(vs) - 1;
+                          vFirst = first(k);
+                          vLast = last(k);
+                          vStride = stride(k);
                         end
                         
+                      end
+                      data.(name) = obj.dataset.data(name, vFirst, vLast, vStride);
+                    else
+                      data.(name) = obj.dataset.data(name);
                     end
-                    data.(name) = obj.dataset.data(name, vFirst, vLast, vStride);
-
-%                     if isempty(type)
-%                         data.(name) = obj.dataset.data(name, vFirst, vLast, vStride);
-%                     else
-%                         switch type
-%                             case 'Height'
-%                                 pos_z = char(obj.axesVariables{i}.getPositive());
-%                                 if strcmp(pos_z, 'POSITIVE_DOWN')
-%                                     tmp = obj.dataset.data(name, vFirst, vLast, vStride);
-%                                     data.z = tmp.*-1; %adjust for positive direction
-%                                 else
-%                                     data.z = obj.dataset.data(name, vFirst, vLast, vStride);
-%                                 end
-%                                 
-%                             case 'GeoZ'
-%                                 pos_z = char(obj.axesVariables{i}.getPositive());
-%                                 if strcmp(pos_z, 'POSITIVE_DOWN')
-%                                     tmp = obj.dataset.data(name, vFirst, vLast, vStride);
-%                                     data.z = tmp.*-1; %adjust for positive direction
-%                                 else
-%                                     data.z = obj.dataset.data(name, vFirst, vLast, vStride);
-%                                 end
-%                                 
-%                             case 'Time'
-%                                 tmp = obj.dataset.data(name, vFirst, vLast, vStride);
-%                                 t_converted = obj.dataset.time(name, tmp);
-%                                 data.time = t_converted;
-%                                 
-%                                 %                     case 'RunTime'
-%                                 %                       tmp = obj.dataset.data(name, vFirst, vLast, vStride);
-%                                 %                       t_converted = obj.dataset.time(name, tmp);
-%                                 %                       data.(type) = t_converted;
-%                                 
-%                             case 'Lon'
-%                                 tmp = obj.dataset.data(name, vFirst, vLast, vStride);
-%                                 ind = find(tmp > 180);
-%                                 tmp(ind) = tmp(ind)-360;
-%                                 data.lon = tmp;
-%                             case 'Lat'
-%                                 data.lat = obj.dataset.data(name, vFirst, vLast, vStride);
-%                             otherwise
-%                                 data.(type) = obj.dataset.data(name, vFirst, vLast, vStride);
-%                         end
-%                     end
-                    
-                end
+              end
             end
         end
     end
