@@ -34,11 +34,17 @@ classdef ncugrid < handle
       import ucar.unidata.geoloc.LatLonRect;
       
       if ischar(nc)
-        obj.dataset = ncdataset(nc);  % src is a string URL/File
+        try
+          obj.dataset = ncdataset(nc);  % src is a string URL/File
+        catch % if it doesnt work maybe try dods instead of http
+          nc(1:4) = 'dods';
+          obj.dataset = ncdataset(nc);  % src is a string URL/File
+        end
         form = Formatter();
         cancelTask = [];
         obj.netcdfugrid = FeatureDatasetFactoryManager.open(FeatureType.UGRID, nc, cancelTask, form);
-      elseif isa(nc, 'ncdataset')
+      
+        elseif isa(nc, 'ncdataset')
         obj.dataset = nc;             % src is a ncdataset
         form = Formatter();
         cancelTask = [];
@@ -61,10 +67,14 @@ classdef ncugrid < handle
       end
       
       
-    end
+    end % end constructor
     
-    
+    function ss = unstructuredLatLonSubset(obj, struct) % input subset structure
+      % NCUGRID.unstructuredLatLonSubset  - Function to subset an unstructured model grid by lat/lon
+      % bounding box using subsetting methods in the ugrid-java.
+      ss = []; % Return nothing at the moment, wait for kyle
+    end % end subset
   
-  end
+  end % end methods
 
-end
+end % end class

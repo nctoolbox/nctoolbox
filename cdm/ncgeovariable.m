@@ -272,13 +272,10 @@ classdef ncgeovariable < ncvariable
 %         end % end of timegeosubset
         
         function d = geosubset(obj, struct)
-          % NCGEOVARIABLE.GEOSUBSET - Function to request a lat/lon subset of data and the
-          % the corresponding grid, using a z and time indices if relevant.
-          % Useage: >> subsetstructure = geosubset_construct(1, 2400, [], 1, 1, [], -77, -75.5, [],  36, 38, 1));
-          %              >> struct = geovar.timegeosubset(subsetstructure);
-          %              struct is struct.data, struct.grid.lat, struct.grid.lon, struct.grid.time, etc...
+          % NCGEOVARIABLE.GEOSUBSET - 
           %
           %
+%           if ~regexp(obj.dataset.attribute('Conventions'), 'UGRID')
             nums = obj.size;
             if isfield(struct, 'xy_stride');
             else
@@ -373,8 +370,8 @@ classdef ncgeovariable < ncvariable
               else
                 struct.z_index = [1 nums(2)];
               end
-              first = [tmin_i struct.z_index{1} indstart_r indstart_c];
-              last = [tmax_i struct.z_index{2} indend_r indend_c];
+              first = [tmin_i struct.z_index(1) indstart_r indstart_c];
+              last = [tmax_i struct.z_index(2) indend_r indend_c];
               stride = [struct.t_stride struct.z_stride struct.xy_stride(2) struct.xy_stride(1)];
             else
               me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
@@ -386,7 +383,10 @@ classdef ncgeovariable < ncvariable
             % Get the corresponding data and interop grid...
             d.data = obj.data(first, last, stride);
             d.grid = obj.grid_interop(first, last, stride);
-            
+%           else
+%             ugrid = ncugrid(obj); % Starting to add place holders for ugrid subsetting functionality
+%             d = ugrid.unstructuredLatLonSubset(struct);
+%           end % end of ugrid if
         end % end of geosubset
        %% 
         function [indstart_r indend_r indstart_c indend_c] =...
