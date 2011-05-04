@@ -134,7 +134,7 @@ classdef ncgeodataset < cfdataset
           % NCGEODATASET.extent - Function to calculate lat/lon bounding box of variable.
           v = obj.geovariable(variableName);
           s = v.size;
-          switch s % hopefully this speeds up the grid_interop call when time is involved
+          switch length(s) % hopefully this speeds up the grid_interop call when time is involved
             case 1
               error('')
             case 2
@@ -144,8 +144,8 @@ classdef ncgeodataset < cfdataset
             case 4
               g = v.grid_interop(1,1,:,:);
           end
-          e.lon = [min(g.lon) max(g.lon)];
-          e.lat = [min(g.lat) max(g.lat)];
+          e.lon = [min(min(g.lon)) max(max(g.lon))];
+          e.lat = [min(min(g.lat)) max(max(g.lat))];
         end
         
 %% Should be called as ncpoint(nc), etc.
