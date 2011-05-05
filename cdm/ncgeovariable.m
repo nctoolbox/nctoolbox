@@ -284,12 +284,12 @@ classdef ncgeovariable < ncvariable
             
             if isfield(struct, 'z_stride');
             else
-              struct.z_stride = [1 1];
+              struct.z_stride = 1;
             end
             
             if isfield(struct, 't_stride');
             else
-              struct.t_stride = [1 1];
+              struct.t_stride = 1;
             end
             
             [indstart_r indend_r indstart_c indend_c] = obj.geoij(struct);
