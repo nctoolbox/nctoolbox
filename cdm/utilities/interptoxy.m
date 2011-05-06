@@ -93,6 +93,7 @@
               for k = 1:length(x)
                 interpolatedvalues(k) = int(x(k),y(k));
               end
+            else
               num = size(x);
               for k = 1:num(1)
                 for l = 1:num(2)
