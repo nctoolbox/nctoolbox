@@ -218,7 +218,7 @@ classdef ncgeodataset < cfdataset
                             'Call with "()" as first type unsupported at this time')
                     
                  case '{}'    
-                    v = obj.variable(s(1).subs);
+                    v = obj.geovariable(s(1).subs);
                     if length(s) == 1
                         B = v;
                     elseif length(s) == 2
@@ -228,7 +228,7 @@ classdef ncgeodataset < cfdataset
                             case 'data'
                                 B = v.data(s(2).subs);
                             case 'grid'
-                                B = v.grid(s(2).subs);
+                                B = v.grid_interop(s(2).subs{:});
                         end
                     else
                         B = v;
