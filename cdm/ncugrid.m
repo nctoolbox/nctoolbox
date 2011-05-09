@@ -51,7 +51,7 @@ classdef ncugrid < handle
         cancelTask = [];
         obj.netcdfugrid = FeatureDatasetFactoryManager.open(FeatureType.UGRID, nc.link, cancelTask, form);
       else
-        ex = MException('NCVARIABLE:ncvariable', 'Invalid dataset was specified');
+        ex = MException('NCUGRID:ncugrid', 'Invalid dataset was specified');
         ex.throw;
       end
       
@@ -87,7 +87,8 @@ classdef ncugrid < handle
       
       % Find the mesh that contains the variable of interest.
       mesh_ident = obj.attribute('mesh', varName);
-      mesh_ind = str2double(mesh_ident(5:end));
+      mesh_vars = regexp(mesh_ident, ' ', 'split');
+      mesh_ind = str2double(mesh_vars{1}(5:end));
       
       % Get all the meshes, access the correct mesh for the variable, then call subset method on mesh.
       meshes = obj.meshes;
@@ -209,15 +210,16 @@ classdef ncugrid < handle
     
     function gs = getSomeCoordinateData(obj, varName, mesh)
       mesh_ident = obj.attribute('mesh', varName);
+      mesh_vars = regexp(mesh_ident, ' ', 'split');
       if nargin < 3
-        mesh  = obj.meshes.get(str2double(mesh_ident(5:end)-1));
+        mesh  = obj.meshes.get(str2double(mesh_vars{1}(5:end)-1));
       end
 
       coordinates = obj.attribute('coordinates', varName);
       coordinate_vars = regexp(coordinates, ' ', 'split');
       
       location = obj.attribute('location', varName);
-      connectivity_var = obj.attribute([location, '_connectivity'], mesh_ident);
+      connectivity_var = obj.attribute([location, '_connectivity'], mesh_vars{1});
       
       % Get coordinates (time, lat, lon,...)
       for i = 1:length(coordinate_vars)
@@ -372,15 +374,16 @@ classdef ncugrid < handle
     
     function gr = grid(obj, varName, first, last, stride)
       mesh_ident = obj.attribute('mesh', varName);
+      mesh_vars = regexp(mesh_ident, ' ', 'split');
       if nargin < 3
-        mesh  = obj.meshes.get(str2double(mesh_ident(5:end)-1));
+        mesh  = obj.meshes.get(str2double(mesh_vars{1}(5:end)-1));
       end
       
       coordinates = obj.attribute('coordinates', varName);
       coordinate_vars = regexp(coordinates, ' ', 'split');
       
       location = obj.attribute('location', varName);
-      connectivity_var = obj.attribute([location, '_connectivity'], mesh_ident);
+      connectivity_var = obj.attribute([location, '_connectivity'], mesh_vars{1});
       
       % Get coordinates (time, lat, lon,...)
       for i = 1:length(coordinate_vars)
@@ -472,6 +475,40 @@ classdef ncugrid < handle
       vs = v.getShape;
       vs = vs';
     end
+    
+    function d = timewindowij(src, varargin)
+            % NCGEOVARIABLE.TIMEWINDOWIJ - Function to get indices from start and stop times for sub-
+            % setting. TODO: There must be a better/fast way to do this using the java library.
+            % Useage: >> timestruct = geovar.timewindowij([2004 1 1 0 0 0], [2005 12 31 0 0 0]);
+            %              >> timestruct = geovar.timewindowij(731947, 732677);
+            % Result: time.time = time data
+            %            time.index = time indices
+            s = src.size(varargin{1});
+            first = ones(1, length(s));
+            last = s;
+            stride = first;
+            g = src.grid_interop(first, last, stride);
+            
+            if isfield(g, 'time') % are any of the fields recognized as time explictly
+              starttime = datenum(varargin{2});
+              stoptime = datenum(varargin{3});
+              if isempty(starttime)
+                starttime = g.time(1);
+              end
+              if isempty(stoptime)
+                stoptime = g.time(end);
+              end
+              
+              t_index1 = g.time >= starttime;
+              t_index2 = g.time <= stoptime;
+              d.index = find(t_index1==t_index2);
+              d.time = g.time(d.index);
+            else
+              me = MException(['NCTOOLBOX:ncgeovariable:timewindowij'], ...
+                'No grid variable returned as time.');
+              me.throw;
+            end
+          end % end timewindowij
     
     
 %     function e = end(obj, k, n)
