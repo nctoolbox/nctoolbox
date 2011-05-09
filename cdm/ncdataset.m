@@ -51,6 +51,12 @@ classdef ncdataset < handle
         variables       % cell array containing the variable names as strings in netcdf
     end
     
+    methods (Access = protected)
+        function opencheck
+           % TODO check ncdataset open/closed status and reopen if needed 
+        end
+    end
+    
     methods (Access = public)
         %%
         function delete(obj)
@@ -79,7 +85,7 @@ classdef ncdataset < handle
             % a new ncdataset that shares the underlying data.
             if isa(url, 'ncdataset')
                 obj.location = url.location;
-                obj.netcdf = url.netcdf;
+                obj.netcdf = ucar.nc2.dataset.NetcdfDataset.openDataset(url.netcdf.getLocation());
                 obj.variables = url.variables;
             elseif isa(url, 'char')
                 try
