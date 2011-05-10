@@ -33,6 +33,6 @@ for i=1:length(uris)
     [m,n]=size(ele);if m==3,ele=ele.';end  % flip connectivity for trisurf
     trisurf(ele,lon,lat,zeta);shading interp;view(2);colorbar
     title(sprintf('%s (%s): %s',var,nc.attribute('units', var),datestr(zgrid.time)));
-    set (gca, 'DataAspectRatio', [1 cos(gmean(lat(:))*pi/180) 1] ); 
+    set (gca, 'DataAspectRatio', [1 cos(mean(lat(find(isfinite(lat(:)))))*pi/180) 1] ); 
     toc
 end
