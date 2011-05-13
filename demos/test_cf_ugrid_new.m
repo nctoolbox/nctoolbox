@@ -17,7 +17,8 @@ for i=1:length(uris)
     tic
     %initialize NCUGRID dataset object
     nc=ncugrid(uri);
-    
+    nc.cells
+    nc.nodes
     % read data at specified time step (all nodes)
     zeta = nc.data(var, [itime 1], [itime max(nc.size(var))], [1 1]);
     
