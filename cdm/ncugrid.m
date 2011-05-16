@@ -1,5 +1,4 @@
 % UGRID Extention of dataset object class for unstructured grid datasets.
-% Alexander Crosby, Applied Science Associates 2010
 % 
 classdef ncugrid < handle
     
@@ -41,15 +40,13 @@ classdef ncugrid < handle
           nc(1:4) = 'dods';
           obj.dataset = ncdataset(nc);  % src is a string URL/File
         end
-        form = Formatter();
         cancelTask = [];
-        obj.netcdfugrid = FeatureDatasetFactoryManager.open(FeatureType.UGRID, nc, cancelTask, form);
+        obj.netcdfugrid = FeatureDatasetFactoryManager.open(FeatureType.UGRID, nc, cancelTask, Formatter());
       
         elseif isa(nc, 'ncdataset')
         obj.dataset = nc;             % src is a ncdataset
-        form = Formatter();
         cancelTask = [];
-        obj.netcdfugrid = FeatureDatasetFactoryManager.open(FeatureType.UGRID, nc.link, cancelTask, form);
+        obj.netcdfugrid = FeatureDatasetFactoryManager.open(FeatureType.UGRID, nc.link, cancelTask, Formatter());
       else
         ex = MException('NCUGRID:ncugrid', 'Invalid dataset was specified');
         ex.throw;
@@ -57,18 +54,23 @@ classdef ncugrid < handle
       
       %set properties
       u = obj.netcdfugrid;
-      obj.meshes = u.getUGrids();
-      meshes = obj.meshes;
-      obj.numberofgrids = meshes.size();
+      meshsets = u.getMeshsets();
+%       UGridDataset.getMeshsets().get(0).getMesh()
+      obj.meshes = meshsets;
+      obj.numberofgrids = meshsets.size;
       for i = 1:(obj.numberofgrids)
-        obj.cells(i, 1) = meshes.get(i - 1).getSize();
-        obj.nodes(i, 1) = meshes.get(i - 1).getNodeSize();
-        obj.edges(i, 1) = meshes.get(i - 1).getEdgeSize();
-        obj.faces(i, 1) = meshes.get(i - 1).getFaceSize();
+        obj.cells(i, 1) = meshsets.get(i - 1).getMesh.getSize();
+        obj.nodes(i, 1) = meshsets.get(i - 1).getMesh.getNodeSize();
+        obj.edges(i, 1) = meshsets.get(i - 1).getMesh.getEdgeSize();
+        obj.faces(i, 1) = meshsets.get(i - 1).getMesh.getFaceSize();
       end
       
       
     end % end constructor
+    
+    function uvar = uvariable(obj, varName)
+      uvar = ncuvariable(obj, varName);
+    end % uvariable end
     
     function ss = unstructuredLatLonSubset(obj, varName, struct) % input subset structure
       % NCUGRID.unstructuredLatLonSubset  - Function to subset an unstructured model grid by lat/lon
@@ -92,28 +94,41 @@ classdef ncugrid < handle
       
       % Get all the meshes, access the correct mesh for the variable, then call subset method on mesh.
       meshes = obj.meshes;
-      meshes.get(mesh_ind-1).buildRTree();
-      subsat = meshes.get(mesh_ind-1).subset(bbox); % Subsat is also mesh
+      if meshes.get(mesh_ind-1).getTreeSize() == 0
+        meshes.get(mesh_ind-1).buildRTree();
+      end
+      v = obj.netcdfugrid.getMeshVariableByName(varName);
+      subsat = v.subset(bbox); % Subsat is ugriddataset
       
       
       % Get netcdfj variable class and read all (since we already subset)
+      submeshv = subsat.getMeshVariableByName(varName);
+      connect_meshset = subsat.getMeshset(0);
+      
       %       inds = subsat.getNodeIndexes;
-      nodes = subsat.getUniqueNodes();
+%       nodes = subsat.getUniqueNodes();
       % Kyle made a method to do this automatically mesh.getNodeLatLons() and getNodeIndexes()
-      for i = 1:nodes.size();
-        inds(i,1) = nodes.get(i-1).getDataIndex();
-      end
-      s = obj.size(varName);
-      first = ones(1, length(s));
-      last = s;
-      stride = first;
-      for j = 1:length(inds)
-        first(1,end) = inds(j);
-        last(1, end) = inds(j);
-        ss.data(:,j) = obj.data(varName, first, last, stride);
-      end
+%       for i = 1:nodes.size();
+%         inds(i,1) = nodes.get(i-1).getDataIndex();
+%       end
+%       s = obj.size(varName);
+%       first = ones(1, length(s));
+%       last = s;
+%       stride = first;
+      
+%       This gets the data at indices, one at a time, very slow but works...
+%       for j = 1:length(inds)
+%         first(1,end) = inds(j);
+%         last(1, end) = inds(j);
+%         ss.data(:,j) = obj.data(varName, first, last, stride);
+%       end
+      
+      % Get variable values from subsat meshVariable
+      array = submeshv.read();
+      values = array.copyToNDJavaArray();
+      ss.data = values;
       % Related coordinates and connectivity 
-      ss.grid = obj.getMeSomeCoordinateData(varName, subsat);
+      ss.grid = obj.getMeSomeCoordinateData(varName, connect_meshset);
       
      
     end % end subset
@@ -208,18 +223,18 @@ classdef ncugrid < handle
       end
     end % end attribute
     
-    function gs = getSomeCoordinateData(obj, varName, mesh)
+    function gs = getSomeCoordinateData(obj, varName, meshset)
       mesh_ident = obj.attribute('mesh', varName);
       mesh_vars = regexp(mesh_ident, ' ', 'split');
       if nargin < 3
-        mesh  = obj.meshes.get(str2double(mesh_vars{1}(5:end)-1));
+        meshset  = obj.meshes.get(str2double(mesh_vars{1}(5:end)-1));
       end
 
       coordinates = obj.attribute('coordinates', varName);
       coordinate_vars = regexp(coordinates, ' ', 'split');
       
-      location = obj.attribute('location', varName);
-      connectivity_var = obj.attribute([location, '_connectivity'], mesh_vars{1});
+%       location = obj.attribute('location', varName);
+%       connectivity_var = obj.attribute([location, '_connectivity'], mesh_vars{1});
       
       % Get coordinates (time, lat, lon,...)
       for i = 1:length(coordinate_vars)
@@ -240,7 +255,7 @@ classdef ncugrid < handle
         end
       end % end for
       
-      nodes = mesh.getUniqueNodes(); 
+      nodes = meshset.getMesh().getUniqueNodes(); 
       % Kyle made a method to do this automatically mesh.getNodeLatLons() and getNodeIndexes()
       for i = 1:nodes.size();
         point = nodes.get(i-1).getGeoPoint();
@@ -249,12 +264,13 @@ classdef ncugrid < handle
         gs.index(i,1) = nodes.get(i-1).getDataIndex();
       end
       % Get connectivity
-        v = obj.netcdfugrid.getNetcdfFile().findVariable(connectivity_var);
+%         v = obj.netcdfugrid.getNetcdfFile().findVariable(connectivity_var);
+        v = meshset.getTopology();
         array = v.read();
         values = array.copyToNDJavaArray();
-        gs.connectivity = values';
+        gs.connectivity = values;
         
-    end % end grid
+    end % end 
     
     function d = data(obj, variable, first, last, stride)
       
@@ -278,7 +294,7 @@ classdef ncugrid < handle
             ex.throw;
           end
         end
-        d = double(d);
+        d = d;
       else
         s = obj.size(variable);
         
@@ -510,74 +526,7 @@ classdef ncugrid < handle
             end
           end % end timewindowij
     
-    
-%     function e = end(obj, k, n)
-% %            n = obj.temp;
-%            e = k-1;
-%          end % Added to deal with end indexing functionality,
-%                                                      % otherwise the indexing arugment is ignored.
-%     function sref = subsref(obj,s)
-%             switch s(1).type
-%                 % Use the built-in subsref for dot notation
-%                 case '.'
-%                     switch s(1).subs
-%                       case 'grid_interop'
-%                       switch length(s)
-%                         case 1
-%                           sref = obj;
-% %                           obj.temp = size(s(2).subs{1});
-%                         case 2
-%                           nums = obj.size(s(2).subs{1});
-%                           [first last stride] = indexing(s(2).subs{2:end}, double(nums));
-%                           sref = obj.grid_interop(s(2).subs{1}, first, last, stride);
-%                       end
-%                       case 'data'
-%                             
-% %                             if ~isempty(nums)
-%                                 switch length(s)
-%                                     case 1
-%                                         sref = obj;
-% %                                         obj.temp = size(s(2).subs{1});
-%                                     case 2
-%                                         nums = size(s(2).subs{1});
-%                                         [first last stride] = indexing(s(2).subs{2:end}, double(nums));
-%                                         sref = obj.data(s(2).subs{1}, first, last, stride);
-%                                 end
-%                                 
-% %                             else
-% %                                 sref = obj.data;
-% %                                 warning(['NCTOOLBOX:ncgeovariable:subsref'], ...
-% %                                     ['Variable "' name '" has no netcdf dimension associated with it. Errors may result from non CF compliant files.'])
-% %                             end
-%                         case 'grid'
-%                             
-% %                             if ~isempty(nums)
-%                                 switch length(s)
-%                                     case 1
-%                                         sref = obj;
-% %                                         obj.temp = size(s(2).subs{1});
-%                                     case 2
-%                                         nums = size(s(2).subs{1});
-%                                         [first last stride] = indexing(s(2).subs{2:end}, double(nums));
-%                                         sref = obj.grid(s(2).subs{1}, first, last, stride);
-%                                 end
-% 
-% %                             else
-% %                                 warning(['NCTOOLBOX:ncgeovariable:subsref'], ...
-% %                                     ['Variable "' name '" has no netcdf dimension associated with it. Errors may result from non CF compliant files.'])
-% %                             end
-%                       otherwise
-%                         sref = builtin('subsref',obj,s);
-%                     end
-%                 case '()'
-%                     warning(['NCTOOLBOX:ncgeovariable:subsref'], ...
-%                         'Not a supported subscripted reference, "()" are not permitted to call variable object methods');
-%                 case '{}'
-%                     warning(['NCTOOLBOX:ncgeovariable:subsref'], ...
-%                         'Not a supported subscripted reference, "{}" are not permitted to call variable object methods');
-%             end
-%         end
-    
+
   end % end methods
 
 end % end class

@@ -20,7 +20,7 @@ classdef ncpoint < handle
       %            nc = ncpoint('http://testbedapps.sura.org/thredds/dodsC/estuarine_hypoxia/obs/points.nc');
       %            nc = ncpoint(ncdataset);
       if ischar(nc)
-        obj.dataset = ncdataset(src);  % nc is a string URL/File
+        obj.dataset = ncdataset(nc);  % nc is a string URL/File
       elseif isa(nc, 'ncdataset')
         obj.dataset = nc;             % nc is an ncdataset
 %       elseif isa(nc, 'ncvariable')
@@ -64,7 +64,7 @@ classdef ncpoint < handle
             starttime = datenum(varargin{2});
             stoptime = datenum(varargin{3});
             % Take time series from starttime:stoptime
-            t_converted = obj.dataset.time('time'); % this is a bad assumption
+            t_converted = obj.dataset.time(tvar); 
             t_index1 = t_converted > starttime;
             t_index2 = t_converted < stoptime;
             t_index = find(t_index1==t_index2);
@@ -91,8 +91,10 @@ classdef ncpoint < handle
           for i=1:length(vars)
             dat = obj.dataset.data(vars{i}); % interim notation
             if length(dat)==length(ts.time)
-              ts.(vars{i}) = [];
-              ts.(vars{i}) = dat;
+              if ~strcmp(vars{i}, tvar)
+                ts.(vars{i}) = [];
+                ts.(vars{i}) = dat;
+              end
             end
             clear dat
           end
@@ -130,15 +132,25 @@ classdef ncpoint < handle
       % Usage:
       %           size = ncpoint.point_size(varName);
       s = obj.size(varName);
-      ps = s(2:end);
+      switch length(s)
+        case 1
+          ps = s;
+        otherwise
+          ps = s(2:end);
+      end
     end
     
-    function c = collection_count(obj)
+    function c = collection_count(obj, varName)
       % NCPOINT.collection_count - Function to return the number of points in the collection.
       % Usage:
       %           size = ncpoint.collection_count;
       s = obj.size(varName);
-      c = s(1);
+      switch length(s)
+        case 1
+          c = 1;
+        otherwise
+          c = s(1);
+      end
     end
     
     function s = size(obj, varName)
