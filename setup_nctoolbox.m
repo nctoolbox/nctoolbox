@@ -1,4 +1,4 @@
-function setup_ncdataset
+function setup_nctoolbox
 
 home = fileparts(which(mfilename));
 addpath(fullfile(home, 'java'));
