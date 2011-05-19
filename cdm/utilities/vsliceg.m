@@ -157,7 +157,7 @@ for j = 1:n-1
 end
 
 return
-
+end
 
 function [d,az1,az2]=geodist(input)
 %  GEODIST uses the geodetic inverse formula (geodesy by
@@ -232,6 +232,6 @@ az1 = az1*180/pi;
 az2 = az2*180/pi;
 
 
-
+end
 
 

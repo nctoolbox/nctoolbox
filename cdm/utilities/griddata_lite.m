@@ -42,10 +42,10 @@ global TRI
 %%% removed input argument checks %%%
 
 % Need x,y and z to be column vectors
-sz = prod(size(x));
+sz = numel(x);
 x = reshape(x,sz,1);
 y = reshape(y,sz,1);
-z = reshape(z,sz,1);
+z = reshape(z,numel(z),1);
 %the following added by acrosby to fix for NaN in coordinates
 tempindexx = find(isnan(x));
  x(tempindexx)=-[];

@@ -74,8 +74,9 @@ classdef ncgeovariable < ncvariable
                 case 'GeoZ'
                   pos_z = char(javaaxisvar.getPositive());
                   z_sn = src.dataset.attribute('standard_name', tempname);
-                  switch z_sn
-                    case 'ocean_s_coordinate_g1'
+                  k = strfind(z_sn, 'ocean_s');
+                  switch isempty(k)
+                    case 0
 %                       n = max(size(src.size));
 %                       trange = java.util.ArrayList(n);
 %                       zrange = trange;
