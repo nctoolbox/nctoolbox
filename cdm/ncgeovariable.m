@@ -73,12 +73,46 @@ classdef ncgeovariable < ncvariable
                   
                 case 'GeoZ'
                   pos_z = char(javaaxisvar.getPositive());
-                  if strcmp(pos_z, 'POSITIVE_DOWN')
-                    tmp = g.(tempname);
-                    ig.z = tmp.*-1; %adjust for positive direction
-                  else
-                    ig.z = g.(tempname);
+                  z_sn = src.dataset.attribute('standard_name', tempname);
+                  switch z_sn
+                    case 'ocean_s_coordinate_g1'
+%                       n = max(size(src.size));
+%                       trange = java.util.ArrayList(n);
+%                       zrange = trange;
+%                       xrange = trange;
+%                       yrange = trange;
+                      trange = ucar.ma2.Range(first(1) - 1, last(1) - 1, stride(1));
+                      zrange = ucar.ma2.Range(first(2) - 1, last(2) - 1, stride(2));
+                      xrange = ucar.ma2.Range(first(4) - 1, last(4) - 1, stride(4));
+                      yrange = ucar.ma2.Range(first(3) - 1, last(3) - 1, stride(3));
+%                       coordinates.GridCoordSys.getVerticalTransform.getCoordinateArray
+%                          temp = src.variable.getCoordinateSystems();
+                         grid = ucar.nc2.dt.grid.GridDataset.open(src.dataset.location);
+                         grid = grid.findGridByName(src.name);
+                         grid = grid.getCoordinateSystem();
+                         subgrid = grid.getVerticalTransform();
+                         subgrid = subgrid.subset(trange, zrange, yrange, xrange);
+%                            try
+                             array = subgrid.getCoordinateArray(0);
+%                            catch
+%                              array = subgrid.getCoordinateArray();
+%                            end
+
+                         ig.z = array.copyToNDJavaArray();
+                         if strcmp(pos_z, 'POSITIVE_DOWN')
+                           tmp = g.z;
+                           ig.z = tmp.*-1; %adjust for positive direction
+                         end
+                    otherwise
+                      
+                      if strcmp(pos_z, 'POSITIVE_DOWN')
+                        tmp = g.(tempname);
+                        ig.z = tmp.*-1; %adjust for positive direction
+                      else
+                        ig.z = g.(tempname);
+                      end
                   end
+                  
                   
                 case 'Time'
                   tmp = g.(tempname);
