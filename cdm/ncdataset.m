@@ -190,7 +190,7 @@ classdef ncdataset < handle
                         ex.throw;
                     end
                 end
-                d = double(d);
+%                 d = double(d);
             else
                 s = obj.size(variable);
                 
