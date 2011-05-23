@@ -155,13 +155,21 @@ classdef ncdataset < handle
             %     u = ds.data('u_component_uncorrected'); % u is a matlab 'single' type
             %     u = double(u) % promote single to double precision
             try
+              if nargin < 5
+                d = obj.readdata(variable);
+              else
                 d = obj.readdata(variable, first, last, stride);
+              end
             catch me
                 % Sometimes the variable name needs to be escaped. We can't
                 % escape 1st as it causes problems with nested data
                 % structures.
                 variable = ucar.nc2.NetcdfFile.escapeName(variable);
-                d = obj.readdata(variable, first, last, stride);
+                if nargin < 5
+                  d = obj.readdata(variable);
+                else
+                  d = obj.readdata(variable, first, last, stride);
+                end
             end
         end
         
