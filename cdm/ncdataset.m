@@ -51,76 +51,7 @@ classdef ncdataset < handle
         variables       % cell array containing the variable names as strings in netcdf
     end
     
-    methods (Access = protected)
-        function opencheck
-           % TODO check ncdataset open/closed status and reopen if needed 
-        end
-    end
-    
-    methods (Access = public)
-        %%
-        function delete(obj)
-            % NCDATASET.DELETE Closes netcdf files when object NCDATASET object is disposed or leaves scope
-            try
-                obj.netcdf.close()
-            catch me
-                % Do nothing
-        
-        
-        function d = readdata(obj, variable)
-        % NETCDF.READDATA - Helper function that's called by NETCDF.DATA
-            v = obj.netcdf.findVariable(variable);
-            
-            if (nargin == 2)
-                array = v.read();
-                try
-                    d = array.copyToNDJavaArray(); % this fails if the variable has no java shape/no dimension was assigned
-                catch me1
-                    try
-                        % TODO (Alex added this code) Where is a file where
-                        % this code section gets called?
-                        d = array.toString;  % different way to get single value out of java array
-                        d = d.toCharArray';  % must transpose
-                        d = str2double(d);   % matlab string to matlab numeric
-                    catch me2
-                        ex = MException('NCTOOLBOX:ncdataset:data', ['Failed to open "' variable '" in ' url]);
-                        ex = ex.addCause(me2);
-                        ex.throw;
-                    end
-                end
-                d = double(d);
-            else
-                s = obj.size(variable);
-                
-                % Fill in missing arguments
-                % default stride is 1
-                if (nargin < 5)
-                    stride = ones(1, length(s));
-                end
-                
-                % Default last is the end
-                if (nargin < 4)
-                    last = s;
-                end
-                
-                % Construct the range objects needed to subset the data
-                n = max(size(obj.size(variable)));
-                ranges = java.util.ArrayList(n);
-                for i = 1:n
-                    ranges.add(ucar.ma2.Range(first(i) - 1, last(i) - 1, stride(i)));
-                end
-                
-                array = v.read(ranges);
-                d = array.copyToNDJavaArray();
-                % d = double(d); % TODO Alex adde this call to promote
-                % type. Is this required? There are cases where the data
-                % should be returned as it was stored.
-            end
-            
-        end
-    end
-    
-    
+  
     methods
         
         %%
@@ -224,13 +155,13 @@ classdef ncdataset < handle
             %     u = ds.data('u_component_uncorrected'); % u is a matlab 'single' type
             %     u = double(u) % promote single to double precision
             try
-                d = obj.readdata(variable);
+                d = obj.readdata(variable, first, last, stride);
             catch me
                 % Sometimes the variable name needs to be escaped. We can't
                 % escape 1st as it causes problems with nested data
                 % structures.
                 variable = ucar.nc2.NetcdfFile.escapeName(variable);
-                d = obj.readdata(variable);
+                d = obj.readdata(variable, first, last, stride);
             end
         end
         
@@ -406,6 +337,73 @@ classdef ncdataset < handle
         % netcdf dataset
         
     end
+    methods (Access = protected)
+      function opencheck
+        % TODO check ncdataset open/closed status and reopen if needed
+      end
+    end
+    
+    methods (Access = public)
+      %%
+      function delete(obj)
+        % NCDATASET.DELETE Closes netcdf files when object NCDATASET object is disposed or leaves scope
+        try
+          obj.netcdf.close()
+        catch me
+          % Do nothing
+        end
+      end
+      
+      function d = readdata(obj, variable, first, last, stride)
+        % NETCDF.READDATA - Helper function that's called by NETCDF.DATA
+        v = obj.netcdf.findVariable(variable);
+        
+        if (nargin == 2)
+          array = v.read();
+          try
+            d = array.copyToNDJavaArray(); % this fails if the variable has no java shape/no dimension was assigned
+          catch me1
+            try
+              % TODO (Alex added this code) Where is a file where
+              % this code section gets called?
+              d = array.toString;  % different way to get single value out of java array
+              d = d.toCharArray';  % must transpose
+              d = str2double(d);   % matlab string to matlab numeric
+            catch me2
+              ex = MException('NCTOOLBOX:ncdataset:data', ['Failed to open "' variable '" in ' url]);
+              ex = ex.addCause(me2);
+              ex.throw;
+            end
+          end
+          d = double(d);
+        else
+          s = obj.size(variable);
+          
+          % Fill in missing arguments
+          % default stride is 1
+          if (nargin < 5)
+            stride = ones(1, length(s));
+          end
+          
+          % Default last is the end
+          if (nargin < 4)
+            last = s;
+          end
+          
+          % Construct the range objects needed to subset the data
+          n = max(size(obj.size(variable)));
+          ranges = java.util.ArrayList(n);
+          for i = 1:n
+            ranges.add(ucar.ma2.Range(first(i) - 1, last(i) - 1, stride(i)));
+          end
+          
+          array = v.read(ranges);
+          d = array.copyToNDJavaArray();
+
+        end
+        
+      end
+    end
     
 end
 
@@ -486,6 +484,7 @@ end
 t = data * conversion + offset;
 
 end
+
 
 
 
