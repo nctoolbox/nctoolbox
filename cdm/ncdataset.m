@@ -104,23 +104,28 @@ classdef ncdataset < handle
         
         %%
         function s = size(obj, variable)
-            % NCDATASET.SIZE  Returns the size of the variable in the persistent store
-            % without fetching the data. Helps to know what you're getting yourself
-            % into. ;-)
-            %
-            % Use as:
-            %   ds = ncdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/m1_metsys_20081008_original.nc')
-            %   s = ds.size(variableName)
-            %
-            % Arguments:
-            %   variableName = The name of the variable who's size you wish to query
-            %
-            % Return:
-            %   The size of the data for the variable. Includes all dimensions,
-            %   even the singleton dimensions
+          % NCDATASET.SIZE  Returns the size of the variable in the persistent store
+          % without fetching the data. Helps to know what you're getting yourself
+          % into. ;-)
+          %
+          % Use as:
+          %   ds = ncdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/m1_metsys_20081008_original.nc')
+          %   s = ds.size(variableName)
+          %
+          % Arguments:
+          %   variableName = The name of the variable who's size you wish to query
+          %
+          % Return:
+          %   The size of the data for the variable. Includes all dimensions,
+          %   even the singleton dimensions
+          try
+            v = obj.netcdf.findVariable(variable);
+            s = v.getShape()';
+          catch me
             variable = ucar.nc2.NetcdfFile.escapeName(variable);
             v = obj.netcdf.findVariable(variable);
             s = v.getShape()';
+          end
         end
         
         %%
@@ -155,21 +160,31 @@ classdef ncdataset < handle
             %     u = ds.data('u_component_uncorrected'); % u is a matlab 'single' type
             %     u = double(u) % promote single to double precision
             try
-              if nargin < 5
-                d = obj.readdata(variable);
-              else
-                d = obj.readdata(variable, first, last, stride);
+              switch nargin
+                case 2
+                  d = obj.readdata(variable);
+                case 3
+                  d = obj.readdata(variable, first);
+                case 4
+                  d = obj.readdata(variable, first, last);
+                case 5
+                  d = obj.readdata(variable, first, last, stride);
               end
             catch me
-                % Sometimes the variable name needs to be escaped. We can't
-                % escape 1st as it causes problems with nested data
-                % structures.
-                variable = ucar.nc2.NetcdfFile.escapeName(variable);
-                if nargin < 5
+              % Sometimes the variable name needs to be escaped. We can't
+              % escape 1st as it causes problems with nested data
+              % structures.
+              variable = ucar.nc2.NetcdfFile.escapeName(variable);
+              switch nargin
+                case 2
                   d = obj.readdata(variable);
-                else
+                case 3
+                  d = obj.readdata(variable, first);
+                case 4
+                  d = obj.readdata(variable, first, last);
+                case 5
                   d = obj.readdata(variable, first, last, stride);
-                end
+              end
             end
         end
         
@@ -189,17 +204,28 @@ classdef ncdataset < handle
             % Return:
             %   An (n, 1) cell array containing the names (in order) of the variable
             %   names representing the coordinate axes for the specified variableName.
-            variable = ucar.nc2.NetcdfFile.escapeName(variable);
-            v = obj.netcdf.findVariable(variable);
-            dims = v.getDimensions();
-            cv = cell(dims.size(), 1);
-            for i = 1:dims.size();
+            try
+              v = obj.netcdf.findVariable(variable);
+              dims = v.getDimensions();
+              cv = cell(dims.size(), 1);
+              for i = 1:dims.size();
                 ca = obj.netcdf.findCoordinateAxis(dims.get(i - 1).getName());
                 if ~isempty(ca)
-                    cv{i} = char(ca.getName());
+                  cv{i} = char(ca.getName());
                 end
+              end
+            catch me
+              variable = ucar.nc2.NetcdfFile.escapeName(variable);
+              v = obj.netcdf.findVariable(variable);
+              dims = v.getDimensions();
+              cv = cell(dims.size(), 1);
+              for i = 1:dims.size();
+                ca = obj.netcdf.findCoordinateAxis(dims.get(i - 1).getName());
+                if ~isempty(ca)
+                  cv{i} = char(ca.getName());
+                end
+              end
             end
-            
         end
         
         %%
@@ -231,16 +257,24 @@ classdef ncdataset < handle
             %     i = find(ismember(keys, 'units')); % search for units attribute
             %     units = values{i};  % Retrieve the units value
             if (nargin < 2)
-                % Get global attributes
-                aa = obj.netcdf.getGlobalAttributes();
+              % Get global attributes
+              aa = obj.netcdf.getGlobalAttributes();
             else
+              try
+                v = obj.netcdf.findVariable(variable);
+                if isempty(v)
+                  warning('NCTOOLBOX:ncdataset:attributes', ['Could not find the variable ']);
+                end
+                aa = v.getAttributes();
+              catch me
                 % Get attributes for the variable
                 variable = ucar.nc2.NetcdfFile.escapeName(variable);
                 v = obj.netcdf.findVariable(variable);
                 if isempty(v)
-                    warning('NCTOOLBOX:ncdataset:attributes', ['Could not find the variable ']);
+                  warning('NCTOOLBOX:ncdataset:attributes', ['Could not find the variable ']);
                 end
                 aa = v.getAttributes();
+              end
             end
             
             if ~isempty(aa)
@@ -383,7 +417,7 @@ classdef ncdataset < handle
               ex.throw;
             end
           end
-          d = double(d);
+%           d = double(d);
         else
           s = obj.size(variable);
           
