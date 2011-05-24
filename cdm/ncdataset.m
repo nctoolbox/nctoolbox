@@ -51,7 +51,7 @@ classdef ncdataset < handle
         variables       % cell array containing the variable names as strings in netcdf
     end
     
-  
+    
     methods
         
         %%
@@ -64,7 +64,7 @@ classdef ncdataset < handle
             % OpenDAP URLs.
             %
             % If the argument is another instance of ncdataset or one of it's
-            % subtypes, such as cfdataset or ncgeodataset then this creates 
+            % subtypes, such as cfdataset or ncgeodataset then this creates
             % a new ncdataset that shares the underlying data.
             if isa(url, 'ncdataset')
                 obj.location = url.location;
@@ -73,7 +73,7 @@ classdef ncdataset < handle
             elseif isa(url, 'char')
                 try
                     obj.netcdf = ucar.nc2.dataset.NetcdfDataset.openDataset(url);
-
+                    
                     % Fetches the names of all variables from the netcdf ncdataset
                     % and stores them in a cell array
                     vars = obj.netcdf.getVariables();
@@ -82,9 +82,9 @@ classdef ncdataset < handle
                     for i = 1:(n)
                         obj.variables{i, 1} = char(vars.get(i - 1).getName());
                     end
-
+                    
                     obj.location = url;
-
+                    
                 catch me
                     ex = MException('NCTOOLBOX:ncdataset', ['Failed to open ' url]);
                     ex = ex.addCause(me);
@@ -104,28 +104,23 @@ classdef ncdataset < handle
         
         %%
         function s = size(obj, variable)
-          % NCDATASET.SIZE  Returns the size of the variable in the persistent store
-          % without fetching the data. Helps to know what you're getting yourself
-          % into. ;-)
-          %
-          % Use as:
-          %   ds = ncdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/m1_metsys_20081008_original.nc')
-          %   s = ds.size(variableName)
-          %
-          % Arguments:
-          %   variableName = The name of the variable who's size you wish to query
-          %
-          % Return:
-          %   The size of the data for the variable. Includes all dimensions,
-          %   even the singleton dimensions
-          try
-            v = obj.netcdf.findVariable(variable);
+            % NCDATASET.SIZE  Returns the size of the variable in the persistent store
+            % without fetching the data. Helps to know what you're getting yourself
+            % into. ;-)
+            %
+            % Use as:
+            %   ds = ncdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/m1_metsys_20081008_original.nc')
+            %   s = ds.size(variableName)
+            %
+            % Arguments:
+            %   variableName = The name of the variable who's size you wish to query
+            %
+            % Return:
+            %   The size of the data for the variable. Includes all dimensions,
+            %   even the singleton dimensions
+            v = obj.findvariable(variable);
             s = v.getShape()';
-          catch me
-            variable = ucar.nc2.NetcdfFile.escapeName(variable);
-            v = obj.netcdf.findVariable(variable);
-            s = v.getShape()';
-          end
+            
         end
         
         %%
@@ -159,33 +154,17 @@ classdef ncdataset < handle
             %     ds = ncdataset('/Volumes/oasis/m1/netcdf/m1_adcp_20051020_longranger.nc')
             %     u = ds.data('u_component_uncorrected'); % u is a matlab 'single' type
             %     u = double(u) % promote single to double precision
-            try
-              switch nargin
+            switch nargin
                 case 2
-                  d = obj.readdata(variable);
+                    d = obj.readdata(variable);
                 case 3
-                  d = obj.readdata(variable, first);
+                    d = obj.readdata(variable, first);
                 case 4
-                  d = obj.readdata(variable, first, last);
+                    d = obj.readdata(variable, first, last);
                 case 5
-                  d = obj.readdata(variable, first, last, stride);
-              end
-            catch me
-              % Sometimes the variable name needs to be escaped. We can't
-              % escape 1st as it causes problems with nested data
-              % structures.
-              variable = ucar.nc2.NetcdfFile.escapeName(variable);
-              switch nargin
-                case 2
-                  d = obj.readdata(variable);
-                case 3
-                  d = obj.readdata(variable, first);
-                case 4
-                  d = obj.readdata(variable, first, last);
-                case 5
-                  d = obj.readdata(variable, first, last, stride);
-              end
+                    d = obj.readdata(variable, first, last, stride);
             end
+            
         end
         
         
@@ -204,27 +183,14 @@ classdef ncdataset < handle
             % Return:
             %   An (n, 1) cell array containing the names (in order) of the variable
             %   names representing the coordinate axes for the specified variableName.
-            try
-              v = obj.netcdf.findVariable(variable);
-              dims = v.getDimensions();
-              cv = cell(dims.size(), 1);
-              for i = 1:dims.size();
+            v = obj.findvariable(variable);
+            dims = v.getDimensions();
+            cv = cell(dims.size(), 1);
+            for i = 1:dims.size();
                 ca = obj.netcdf.findCoordinateAxis(dims.get(i - 1).getName());
                 if ~isempty(ca)
-                  cv{i} = char(ca.getName());
+                    cv{i} = char(ca.getName());
                 end
-              end
-            catch me
-              variable = ucar.nc2.NetcdfFile.escapeName(variable);
-              v = obj.netcdf.findVariable(variable);
-              dims = v.getDimensions();
-              cv = cell(dims.size(), 1);
-              for i = 1:dims.size();
-                ca = obj.netcdf.findCoordinateAxis(dims.get(i - 1).getName());
-                if ~isempty(ca)
-                  cv{i} = char(ca.getName());
-                end
-              end
             end
         end
         
@@ -257,24 +223,11 @@ classdef ncdataset < handle
             %     i = find(ismember(keys, 'units')); % search for units attribute
             %     units = values{i};  % Retrieve the units value
             if (nargin < 2)
-              % Get global attributes
-              aa = obj.netcdf.getGlobalAttributes();
+                % Get global attributes
+                aa = obj.netcdf.getGlobalAttributes();
             else
-              try
-                v = obj.netcdf.findVariable(variable);
-                if isempty(v)
-                  warning('NCTOOLBOX:ncdataset:attributes', ['Could not find the variable ']);
-                end
+                v = obj.findvariable(variable);
                 aa = v.getAttributes();
-              catch me
-                % Get attributes for the variable
-                variable = ucar.nc2.NetcdfFile.escapeName(variable);
-                v = obj.netcdf.findVariable(variable);
-                if isempty(v)
-                  warning('NCTOOLBOX:ncdataset:attributes', ['Could not find the variable ']);
-                end
-                aa = v.getAttributes();
-              end
             end
             
             if ~isempty(aa)
@@ -297,34 +250,34 @@ classdef ncdataset < handle
         end
         
         function val = attribute(obj, key, var)
-          % NCDATASET.ATTRIBUTE returns the value a global attribute specified by its key or the
-          % variable attribute specified by key and variable.
-          %
-          % Use as:
-          %   a = ncdataset.attribute('title')
-          %   a = ncdataset.attribute(key)
-          %
-          %   a = ncdataset.attribute('title', 'temp')
-          %   a = ncdataset.attribute(key, variableName)
-          %
-          % Inputs:
-          %   key = The name of the attribute field like 'title' or 'units'...
-          %   variableName = The name of the variable whos attributes you want
-          %       to retrieve. If no argument is specified then the
-          %       global attributes are returned.
-          %
-          % Return:
-          %   The value associated with the attribute field corresponding to key (and optionally 
-          %   variableName)
-          if nargin < 3
-            atlist = obj.attributes;
-            val = value4key(atlist, key);
-          elseif nargin > 1
-            atlist = obj.attributes(var);
-            val = value4key(atlist, key);
-          else
-            warning('NCTOOLBOX:ncdataset:attribute', 'No key or variable specified.');
-          end
+            % NCDATASET.ATTRIBUTE returns the value a global attribute specified by its key or the
+            % variable attribute specified by key and variable.
+            %
+            % Use as:
+            %   a = ncdataset.attribute('title')
+            %   a = ncdataset.attribute(key)
+            %
+            %   a = ncdataset.attribute('title', 'temp')
+            %   a = ncdataset.attribute(key, variableName)
+            %
+            % Inputs:
+            %   key = The name of the attribute field like 'title' or 'units'...
+            %   variableName = The name of the variable whos attributes you want
+            %       to retrieve. If no argument is specified then the
+            %       global attributes are returned.
+            %
+            % Return:
+            %   The value associated with the attribute field corresponding to key (and optionally
+            %   variableName)
+            if nargin < 3
+                atlist = obj.attributes;
+                val = value4key(atlist, key);
+            elseif nargin > 1
+                atlist = obj.attributes(var);
+                val = value4key(atlist, key);
+            else
+                warning('NCTOOLBOX:ncdataset:attribute', 'No key or variable specified.');
+            end
         end
         %%
         function save(obj, filename)
@@ -375,76 +328,83 @@ classdef ncdataset < handle
             
         end
         
+        %%
+        function delete(obj)
+            % NCDATASET.DELETE Closes netcdf files when object NCDATASET object is disposed or leaves scope
+            try
+                obj.netcdf.close()
+            catch me
+                % Do nothing
+            end
+        end
+        
         % TODO Add ncml method that returns a string of NcML for this
         % netcdf dataset
         
     end
     methods (Access = protected)
-      function opencheck
-        % TODO check ncdataset open/closed status and reopen if needed
-      end
-    end
-    
-    methods (Access = public)
-      %%
-      function delete(obj)
-        % NCDATASET.DELETE Closes netcdf files when object NCDATASET object is disposed or leaves scope
-        try
-          obj.netcdf.close()
-        catch me
-          % Do nothing
-        end
-      end
-      
-      function d = readdata(obj, variable, first, last, stride)
-        % NETCDF.READDATA - Helper function that's called by NETCDF.DATA
-        v = obj.netcdf.findVariable(variable);
         
-        if (nargin == 2)
-          array = v.read();
-          try
-            d = array.copyToNDJavaArray(); % this fails if the variable has no java shape/no dimension was assigned
-          catch me1
-            try
-              % TODO (Alex added this code) Where is a file where
-              % this code section gets called?
-              d = array.toString;  % different way to get single value out of java array
-              d = d.toCharArray';  % must transpose
-              d = str2double(d);   % matlab string to matlab numeric
-            catch me2
-              ex = MException('NCTOOLBOX:ncdataset:data', ['Failed to open "' variable '" in ' url]);
-              ex = ex.addCause(me2);
-              ex.throw;
+        function v = findvariable(obj, variable)
+            % NETCDF.FINDVARIABLE - Helper function that will escape a variable name if needed. 
+            v = obj.netcdf.findVariable(variable);
+            if isempty(v)
+                v = obj.netcdf.findVariable(ucar.nc2.NetcdfFile.escapeName(variable))
             end
-          end
-%           d = double(d);
-        else
-          s = obj.size(variable);
-          
-          % Fill in missing arguments
-          % default stride is 1
-          if (nargin < 5)
-            stride = ones(1, length(s));
-          end
-          
-          % Default last is the end
-          if (nargin < 4)
-            last = s;
-          end
-          
-          % Construct the range objects needed to subset the data
-          n = max(size(obj.size(variable)));
-          ranges = java.util.ArrayList(n);
-          for i = 1:n
-            ranges.add(ucar.ma2.Range(first(i) - 1, last(i) - 1, stride(i)));
-          end
-          
-          array = v.read(ranges);
-          d = array.copyToNDJavaArray();
-
+            if isempty(v)
+                warning('NCTOOLBOX:ncdataset:findvariable', ['Could not find the variable: ' variable]);
+            end
         end
         
-      end
+        %%
+        function d = readdata(obj, variable, first, last, stride)
+            % NETCDF.READDATA - Helper function that's called by NETCDF.DATA
+            v = obj.findvariable(variable);
+            
+            if (nargin == 2)
+                array = v.read();
+                try
+                    d = array.copyToNDJavaArray(); % this fails if the variable has no java shape/no dimension was assigned
+                catch me1
+                    try
+                        % TODO (Alex added this code) Where is a file where
+                        % this code section gets called?
+                        d = array.toString;  % different way to get single value out of java array
+                        d = d.toCharArray';  % must transpose
+                        d = str2double(d);   % matlab string to matlab numeric
+                    catch me2
+                        ex = MException('NCTOOLBOX:ncdataset:data', ['Failed to open "' variable '" in ' url]);
+                        ex = ex.addCause(me2);
+                        ex.throw;
+                    end
+                end
+                %           d = double(d);
+            else
+                s = obj.size(variable);
+                
+                % Fill in missing arguments
+                % default stride is 1
+                if (nargin < 5)
+                    stride = ones(1, length(s));
+                end
+                
+                % Default last is the end
+                if (nargin < 4)
+                    last = s;
+                end
+                
+                % Construct the range objects needed to subset the data
+                n = max(size(obj.size(variable)));
+                ranges = java.util.ArrayList(n);
+                for i = 1:n
+                    ranges.add(ucar.ma2.Range(first(i) - 1, last(i) - 1, stride(i)));
+                end
+                
+                array = v.read(ranges);
+                d = array.copyToNDJavaArray();
+                
+            end
+            
+        end
     end
     
 end
