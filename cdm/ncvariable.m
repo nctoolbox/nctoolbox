@@ -95,20 +95,20 @@ classdef ncvariable < handle
         end
         
         function val = attribute(obj, key)
-          % NCVARIABLE.ATTRIBUTE returns the value a global attribute specified by its key or the
-          % variable attribute specified by key and variable.
-          %
-          % Use as:
-          %   a = ncvariable.attribute('title')
-          %   a = ncvariable.attribute(key)
-          %
-          %
-          % Inputs:
-          %   key = The name of the attribute field like 'title' or 'units'...
-          %
-          % Return:
-          %   The value associated with the attribute field corresponding to key.
-          val = obj.dataset.attribute(key, obj.name);
+            % NCVARIABLE.ATTRIBUTE returns the value a global attribute specified by its key or the
+            % variable attribute specified by key and variable.
+            %
+            % Use as:
+            %   a = ncvariable.attribute('title')
+            %   a = ncvariable.attribute(key)
+            %
+            %
+            % Inputs:
+            %   key = The name of the attribute field like 'title' or 'units'...
+            %
+            % Return:
+            %   The value associated with the attribute field corresponding to key.
+            val = obj.dataset.attribute(key, obj.name);
         end
         
         %%
@@ -228,34 +228,34 @@ classdef ncvariable < handle
         end
         
         %%
-        % TODO this does not make valid assumption. Will not be included 
-%         function t = gettime(obj, varargin)
-%             g = obj.grid;
-%             if isfield(g, 'time')
-%                 t_converted = g.time; % this is a bad assumption
-%                 if nargin > 2
-%                     t_index1 = t_converted > varargin{2};
-%                     t_index2 = t_converted < varargin{3};
-%                     t_index = find(t_index1==t_index2);
-%                     t = t_converted(t_index);
-%                 else
-%                     t = t_converted;
-%                 end
-%             else
-%                 error('gettime:ncvariable','No variable that netcdf-java recognizes as time.');
-%             end
-%         end
+        % TODO this does not make valid assumption. Will not be included
+        %         function t = gettime(obj, varargin)
+        %             g = obj.grid;
+        %             if isfield(g, 'time')
+        %                 t_converted = g.time; % this is a bad assumption
+        %                 if nargin > 2
+        %                     t_index1 = t_converted > varargin{2};
+        %                     t_index2 = t_converted < varargin{3};
+        %                     t_index = find(t_index1==t_index2);
+        %                     t = t_converted(t_index);
+        %                 else
+        %                     t = t_converted;
+        %                 end
+        %             else
+        %                 error('gettime:ncvariable','No variable that netcdf-java recognizes as time.');
+        %             end
+        %         end
         
-
+        
         %%
         
-         function e = end(obj, k, n)
-           n = obj.dataset.size(obj.name);
-           e = n(k);
-         end % Added to deal with end indexing functionality,
-                                                     % otherwise the indexing arugment is ignored.
-
-         function sref = subsref(obj,s)
+        function e = end(obj, k, n)
+            n = obj.dataset.size(obj.name);
+            e = n(k);
+        end % Added to deal with end indexing functionality,
+        % otherwise the indexing arugment is ignored.
+        
+        function sref = subsref(obj,s)
             switch s(1).type
                 % Use the built-in subsref for dot notation
                 case '.'
@@ -286,7 +286,7 @@ classdef ncvariable < handle
                                         [first last stride] = indexing(s(2).subs, double(nums));
                                         sref = obj.grid(first, last, stride);
                                 end
-
+                                
                             else
                                 warning('NCTOOLBOX:ncvariable:subsref', ...
                                     ['Variable "' name '" has no netcdf dimension associated with it. Errors may result from non CF compliant files.'])
@@ -357,67 +357,67 @@ classdef ncvariable < handle
             if withData == 0
                 for i = 1:length(obj.axesVariables)
                     name = char(obj.axesVariables{i}.getName());
-%                     type = char(obj.axesVariables{i}.getAxisType());
+                    %                     type = char(obj.axesVariables{i}.getAxisType());
                     % ---- Step 4: figure out how to subset the data properly
                     vs = obj.dataset.size(name);
                     if numel(vs) > 0 % Added to solve work around somedata calls that involve variables with
-                                            % no netcdf dim. (This will be frequent in some OOI files.)
-                      if (length(vs) == length(s))
-                        %% case: sizes are the same
-                        if isequal(vs, s)
-                          vFirst = first;
-                          vLast = last;
-                          vStride = stride;
-                        else
-                          me = MException('NCTOOLBOX:ncvariable:somedata', ...
-                            ['The data size of the coordinate variable,' ...
-                            name ', does not fit the size of ' obj.name]);
-                          me.throw;
-                        end
-                        
-                      elseif length(vs) == 1
-                        %% case: singleton dimension. Find side of data with
-                        % the same length
-                        
-                        % TODO: the following line  will give bogus results if
-                        % the data has 2 dimensions of the same length
-                        dim = find(s == vs, 1);
-                        if ~isempty(dim)
-                          vFirst = first(dim);
-                          vLast = last(dim);
-                          vStride = stride(dim);
-                        else
-                          me = MException('NCTOOLBOX:ncvariable:somedata', ...
-                            ['The data size of the coordinate variable,' ...
-                            name ', does not fit the size of ' obj.name]);
-                          me.throw;
-                        end
-                        
-                      else
-                        %% case: variable is coordiantes. Look for size
-                        % TODO this is a lame implementation.
-                        dim = find(s == vs(1), 1);
-                        if ~isempty(dim)
-                          for j = 2:length(vs)
-                            if vs(j) ~= s(dim + j - 1)
-                              me = MException('NCTOOLBOX:ncvariable:somedata', ...
-                                ['The data size of the coordinate variable,' ...
-                                name ', does not fit the size of ' obj.name]);
-                              me.throw;
+                        % no netcdf dim. (This will be frequent in some OOI files.)
+                        if (length(vs) == length(s))
+                            %% case: sizes are the same
+                            if isequal(vs, s)
+                                vFirst = first;
+                                vLast = last;
+                                vStride = stride;
+                            else
+                                me = MException('NCTOOLBOX:ncvariable:somedata', ...
+                                    ['The data size of the coordinate variable,' ...
+                                    name ', does not fit the size of ' obj.name]);
+                                me.throw;
                             end
-                          end
-                          k = dim:dim + length(vs) - 1;
-                          vFirst = first(k);
-                          vLast = last(k);
-                          vStride = stride(k);
+                            
+                        elseif length(vs) == 1
+                            %% case: singleton dimension. Find side of data with
+                            % the same length
+                            
+                            % TODO: the following line  will give bogus results if
+                            % the data has 2 dimensions of the same length
+                            dim = find(s == vs, 1);
+                            if ~isempty(dim)
+                                vFirst = first(dim);
+                                vLast = last(dim);
+                                vStride = stride(dim);
+                            else
+                                me = MException('NCTOOLBOX:ncvariable:somedata', ...
+                                    ['The data size of the coordinate variable,' ...
+                                    name ', does not fit the size of ' obj.name]);
+                                me.throw;
+                            end
+                            
+                        else
+                            %% case: variable is coordiantes. Look for size
+                            % TODO this is a lame implementation.
+                            dim = find(s == vs(1), 1);
+                            if ~isempty(dim)
+                                for j = 2:length(vs)
+                                    if vs(j) ~= s(dim + j - 1)
+                                        me = MException('NCTOOLBOX:ncvariable:somedata', ...
+                                            ['The data size of the coordinate variable,' ...
+                                            name ', does not fit the size of ' obj.name]);
+                                        me.throw;
+                                    end
+                                end
+                                k = dim:dim + length(vs) - 1;
+                                vFirst = first(k);
+                                vLast = last(k);
+                                vStride = stride(k);
+                            end
+                            
                         end
-                        
-                      end
-                      data.(name) = obj.dataset.data(name, vFirst, vLast, vStride);
+                        data.(name) = obj.dataset.data(name, vFirst, vLast, vStride);
                     else
-                      data.(name) = obj.dataset.data(name);
+                        data.(name) = obj.dataset.data(name);
                     end
-              end
+                end
             end
         end
     end
