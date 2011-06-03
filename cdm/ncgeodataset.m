@@ -228,7 +228,20 @@ classdef ncgeodataset < cfdataset
                             case 'data'
                                 B = v.data(s(2).subs);
                             case 'grid'
-                                B = v.grid_interop(s(2).subs{:});
+                              A = v.grid_interop(s(2).subs{:});
+                              try %Filtering added for njtbx similar results, entire syntax will be deprecated in the future
+                                B.time = A.time;
+                              catch me
+                              end
+                              try
+                                B.lon = A.lon;
+                              catch me
+                              end
+                              B.lat = A.lat;
+                              try
+                                B.z = A.z;
+                              catch me
+                              end
                         end
                     else
                         B = v;
