@@ -25,5 +25,5 @@ for itime=1:length(dn);
     pcolor(grd.lon,grd.lat,abs(w));shading flat;colorbar
     title(sprintf('NCOM Fukushima forecast surface currents (m/s): %s',...
         datestr(dn(itime))));
-    caxis([0 2]);set(gca,'tickdir','out');shg
+    caxis([0 2]);set(gca,'tickdir','out');
 end
