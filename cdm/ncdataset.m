@@ -329,6 +329,12 @@ classdef ncdataset < handle
         end
         
         %%
+        function close(obj)
+            % NCDATASET.CLOSE Added to prevent throwing an error. This is problematic since close is a 
+            % keyword in matlab for closing figure windows, but requested by Rich to avoid throwing errors
+            % in legacy njtbx code...
+        end
+        
         function delete(obj)
             % NCDATASET.DELETE Closes netcdf files when object NCDATASET object is disposed or leaves scope
             try
