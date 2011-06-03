@@ -85,22 +85,22 @@ classdef ncgeodataset < cfdataset
                 % Testing combining the axes from both the variable axes and dataset axes
                 % maybe temporary stop gap...?
                 for i = 1:length(axesVariableNames)
-                  axesVariables{i,1} = axesVariableNames{i};
+                    axesVariables{i,1} = axesVariableNames{i};
                 end
                 
                 dsaxes = obj.axes(variableName);
                 alreadythere = 0;
                 for i = 1:length(dsaxes)
-                  if ~isempty(dsaxes{i})
-                    for j = 1:length(axesVariables)
-                      if strcmp(axesVariables{j}, dsaxes{i})
-                        alreadythere = 1;
-                      end
+                    if ~isempty(dsaxes{i})
+                        for j = 1:length(axesVariables)
+                            if strcmp(axesVariables{j}, dsaxes{i})
+                                alreadythere = 1;
+                            end
+                        end
+                        if ~alreadythere
+                            axesVariables{length(axesVariables)+1,1} = dsaxes{i};
+                        end
                     end
-                    if ~alreadythere
-                      axesVariables{length(axesVariables)+1,1} = dsaxes{i};
-                    end
-                  end
                 end
                 
                 v = ncgeovariable(obj, variableName, axesVariables);
@@ -119,56 +119,56 @@ classdef ncgeodataset < cfdataset
         end
         
         function m = metadata(obj)
-          % NCGEODATASET.METADATA - Function to grab all of the attributes (global and variables) all
-          % at once. 
-          % Useage: >> metadatastructure = ds.metadata;
-          %
-          vars = obj.variables;
-          m.global_attributes = obj.attributes;
-          for i=1:length(vars);
-            m.(vars{i}) = obj.attributes(vars{i});
-          end
+            % NCGEODATASET.METADATA - Function to grab all of the attributes (global and variables) all
+            % at once.
+            % Useage: >> metadatastructure = ds.metadata;
+            %
+            vars = obj.variables;
+            m.global_attributes = obj.attributes;
+            for i=1:length(vars);
+                m.(vars{i}) = obj.attributes(vars{i});
+            end
         end % function metadata end
         
         function e = extent(obj, variableName)
-          % NCGEODATASET.extent - Function to calculate lat/lon bounding box of variable.
-          v = obj.geovariable(variableName);
-          s = v.size;
-          switch length(s) % hopefully this speeds up the grid_interop call when time is involved
-            case 1
-              error('')
-            case 2
-              g = v.grid_interop(:,:);
-            case 3
-              g = v.grid_interop(1,:,:);
-            case 4
-              g = v.grid_interop(1,1,:,:);
-          end
-          e.lon = [min(min(g.lon)) max(max(g.lon))];
-          e.lat = [min(min(g.lat)) max(max(g.lat))];
+            % NCGEODATASET.extent - Function to calculate lat/lon bounding box of variable.
+            v = obj.geovariable(variableName);
+            s = v.size;
+            switch length(s) % hopefully this speeds up the grid_interop call when time is involved
+                case 1
+                    error('')
+                case 2
+                    g = v.grid_interop(:,:);
+                case 3
+                    g = v.grid_interop(1,:,:);
+                case 4
+                    g = v.grid_interop(1,1,:,:);
+            end
+            e.lon = [min(min(g.lon)) max(max(g.lon))];
+            e.lat = [min(min(g.lat)) max(max(g.lat))];
         end
         
-%% Should be called as ncpoint(nc), etc.
-%
-%         function p = point(obj)
-%             p = ncpoint(obj);       
-%         end
-%         
-%         function r = rgrid(obj)
-%             r = ncrgrid(obj);
-%         end
-%         
-%         function c = cgrid(obj)
-%             c = nccgrid(obj);
-%         end
-%         
-%         function sg = sgrid(obj)
-%             sg = ncsgrid(obj);
-%         end
-%         
-%         function ug = ugrid(obj)
-%             ug = ncugrid(obj);
-%         end
+        %% Should be called as ncpoint(nc), etc.
+        %
+        %         function p = point(obj)
+        %             p = ncpoint(obj);
+        %         end
+        %
+        %         function r = rgrid(obj)
+        %             r = ncrgrid(obj);
+        %         end
+        %
+        %         function c = cgrid(obj)
+        %             c = nccgrid(obj);
+        %         end
+        %
+        %         function sg = sgrid(obj)
+        %             sg = ncsgrid(obj);
+        %         end
+        %
+        %         function ug = ugrid(obj)
+        %             ug = ncugrid(obj);
+        %         end
         %%
         % CFDATASET.NUMEL Overridden function required for supporting
         % SUBSREF
@@ -213,11 +213,11 @@ classdef ncgeodataset < cfdataset
                             'Unexpected reference notation or method call')
                     end
                     
-                 case '()'
-                     error('NCTOOLBOX:ncgeodataset:subsref',...
-                            'Call with "()" as first type unsupported at this time')
+                case '()'
+                    error('NCTOOLBOX:ncgeodataset:subsref',...
+                        'Call with "()" as first type unsupported at this time')
                     
-                 case '{}'    
+                case '{}'
                     v = obj.geovariable(s(1).subs);
                     if length(s) == 1
                         B = v;
@@ -228,20 +228,23 @@ classdef ncgeodataset < cfdataset
                             case 'data'
                                 B = v.data(s(2).subs);
                             case 'grid'
-                              A = v.grid_interop(s(2).subs{:});
-                              try %Filtering added for njtbx similar results, entire syntax will be deprecated in the future
-                                B.time = A.time;
-                              catch me
-                              end
-                              try
-                                B.lon = A.lon;
-                              catch me
-                              end
-                              B.lat = A.lat;
-                              try
-                                B.z = A.z;
-                              catch me
-                              end
+                                A = v.grid_interop(s(2).subs{:});
+                                try %Filtering added for njtbx similar results, entire syntax will be deprecated in the future
+                                    B.time = A.time;
+                                catch me
+                                end
+                                try
+                                    B.lon = A.lon;
+                                catch me
+                                end
+                                try
+                                    B.lat = A.lat;
+                                catch me
+                                end
+                                try
+                                    B.z = A.z;
+                                catch me
+                                end
                         end
                     else
                         B = v;
