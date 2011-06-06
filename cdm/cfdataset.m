@@ -61,6 +61,11 @@ classdef cfdataset < ncdataset
             end
         end
         
+        %% 
+        % function d = data(obj, variable, first, last, stride)
+        %    d = squeeze(data@ncdataset(variable, first, last, stride)) 
+        % end
+        
         %%
         function v = variable(obj, variableName)
             % CFDATASET.VARIABLE Returns an ncvariable object that provides
