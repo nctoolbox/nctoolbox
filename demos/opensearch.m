@@ -8,6 +8,9 @@ function [ links, params] = opensearch( q )
 %   q.bbox= 'xmin,ymin,xmax,ymax'
 %   q.time_start = start time string
 %   q.time_end  = ending time string
+% 
+% For full options and more explanation, see the GI-CAT OpenSearch doc
+%    http://essi-lab.eu/cgi-bin/twiki/view/GIcat/OpenSearchGuide
 %
 % Example 1:
 % q.endpoint='http://geoport.whoi.edu/gi-cat/services/opensearch';
@@ -44,20 +47,32 @@ if ~isfield(q,'string_text'); q.string_text='';end
 if ~isfield(q,'bbox'); q.bbox='';end
 if ~isfield(q,'time_start'); q.time_start='';end
 if ~isfield(q,'time_end'); q.time_end='';end
+if ~isfield(q,'loc'); q.loc='';end
+if ~isfield(q,'si'); q.si='';end
+
+% Default "&ct=&" returns only 10 records so specify default to be very 
+% large if not supplied.  
+if ~isfield(q,'ct'); q.ct='10000';end
+
+% In GI-CAT 8.4, default "&rel=&" for rel:{geo:relation} returns 
+% records outside bounding box, so here we specify the default 
+% to be 'overlaps' if not supplied.  Options are
+% {disjoint|overlaps|contains}
+if ~isfield(q,'rel'); q.rel='overlaps';end  
 
 params = {
-'si';'';
-'ct';'';
-'rel';'';
-'st'; q.string_text;
+'si';   q.si;
+'ct';   q.ct; 
+'rel';  q.rel;   
+'st';   q.string_text;
 'bbox'; q.bbox;
-'loc';'';
-'ts';q.time_start;
-'te';q.time_end; 
+'loc';  q.loc;
+'ts';   q.time_start;
+'te';   q.time_end; 
 'outputFormat';'application/atom+xml';
 };
 
-results = urlread(q.endpoint,'get', params);
+[results] = urlread(q.endpoint,'get', params);
 
 [startIndex, endIndex, tokIndex, matchStr, links, exprNames,splitStr] = ...
     regexp(results, '<gmd:URL>(.*?)</gmd:URL>','match');
