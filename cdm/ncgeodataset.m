@@ -25,7 +25,7 @@ classdef ncgeodataset < cfdataset
         end
         
         %%
-        function v = geovariable(obj, variableName)
+        function v = geovariable(obj, variableName, axes)
             % NCGEODATASET.VARIABLE Returns an ncgeovariable object that provides
             % advanced access to the data contained within that variable based on geo-
             % graphically located data.
@@ -88,34 +88,38 @@ classdef ncgeodataset < cfdataset
                     axesVariables{i,1} = axesVariableNames{i};
                 end
                 
-                dsaxes = obj.axes(variableName);
-                alreadythere = 0;
-                for i = 1:length(dsaxes)
-                    if ~isempty(dsaxes{i})
-                        for j = 1:length(axesVariables)
-                            if strcmp(axesVariables{j}, dsaxes{i})
-                                alreadythere = 1;
+                try % Maybe a try? but i dont want people opening datasets that don't have cdm coordinate
+                    % information associated with them, because the methods wont work...
+                    dsaxes = obj.axes(variableName);
+                    alreadythere = 0;
+                    for i = 1:length(dsaxes)
+                        if ~isempty(dsaxes{i})
+                            for j = 1:length(axesVariables)
+                                if strcmp(axesVariables{j}, dsaxes{i})
+                                    alreadythere = 1;
+                                end
+                            end
+                            if ~alreadythere
+                                axesVariables{length(axesVariables)+1,1} = dsaxes{i};
                             end
                         end
-                        if ~alreadythere
-                            axesVariables{length(axesVariables)+1,1} = dsaxes{i};
+                    end
+                    
+                    v = ncgeovariable(obj, variableName, axesVariables);
+                    if ~isempty(v)
+                        for i = 1:length(obj.variables)
+                            if strcmp(obj.ncvariables{i, 1}, variableName)
+                                obj.ncvariables{i, 2} = v;
+                                break;
+                            end
                         end
                     end
-                end
-                
-                v = ncgeovariable(obj, variableName, axesVariables);
-                if ~isempty(v)
-                    for i = 1:length(obj.variables)
-                        if strcmp(obj.ncvariables{i, 1}, variableName)
-                            obj.ncvariables{i, 2} = v;
-                            break;
-                        end
-                    end
+                catch
+                    warning('NCGEODATASET:GEOVARIABLE', 'The netcdf-java cdm contains no coordinate information associated with the variable. Please try ncvariable class.');
+                    v = ncgeovariable(obj, variableName, axes);
                 end
                 
             end
-            
-            
         end
         
         function m = metadata(obj)
