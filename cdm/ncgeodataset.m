@@ -88,8 +88,8 @@ classdef ncgeodataset < cfdataset
                     axesVariables{i,1} = axesVariableNames{i};
                 end
                 
-                try % Maybe a try? but i dont want people opening datasets that don't have cdm coordinate
-                    % information associated with them, because the methods wont work...
+                if ~exist('axes', 'var')
+                    try
                     dsaxes = obj.axes(variableName);
                     alreadythere = 0;
                     for i = 1:length(dsaxes)
@@ -114,8 +114,10 @@ classdef ncgeodataset < cfdataset
                             end
                         end
                     end
-                catch
-                    warning('NCGEODATASET:GEOVARIABLE', 'The netcdf-java cdm contains no coordinate information associated with the variable. Please try ncvariable class.');
+                    catch
+                        warning('NCGEODATASET:GEOVARIABLE', 'The netcdf-java cdm contains no coordinate information associated with the variable. Please try ncvariable class. Methods that rely on coordinate information may have inconsistent behavior (timewindow, geosubset, grid, grid_interop, struct, geoij, etc.).');
+                    end
+                else
                     v = ncgeovariable(obj, variableName, axes);
                 end
                 

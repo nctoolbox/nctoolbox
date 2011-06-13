@@ -149,7 +149,7 @@ classdef ncgeovariable < ncvariable
             % Useage: >> time = geovar.timewindow([2004 1 1 0 0 0], [2005 12 31 0 0 0]);
             %              >> time = geovar.timewindow(731947, 732677);
             d = src.timewindowij(starttime, stoptime);
-            tw = d.time;
+            tw = d;
         end
         
         %         function [index,distance]=nearxy(src, lon, lat, dist);
