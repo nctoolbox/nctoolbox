@@ -1,6 +1,6 @@
-% NCUNITS - Function to do unit conversions using the ucar.units library in the Unidata netcdf-java 
-% package. 
-% 
+% NCUNITS - Function to do unit conversions using the ucar.units library in the Unidata netcdf-java
+% package.
+%
 % NCTOOLBOX (http://code.google.com/p/nctoolbox)
 %
 % Usage: converted_data = ncunits(data, 'm/s', 'cm/s');
@@ -13,14 +13,25 @@ function converted = ncunits(unconverted, originalunits, newunits)
 %
 import ucar.nc2.units.*
 
+% Convert uppercase chars to lowercase (required)
+originalunits = lower(originalunits);
+newunits = lower(newunits);
+
+% Check if conversion is possible, if not throw error
 if SimpleUnit.isCompatible(originalunits, newunits)
-    converter = SimpleUnit.getConversionFactor(originalunits, newunits);
+    converter = SimpleUnit.getConversionFactor(originalunits, newunits); % Get conversion
     
-    converted = unconverted .* converter;
+    
 else
-    error('NCTOOLBOX:NCUNITS', 'Input or output units are illegal, or input units are unable to be converted into the output units.');
+    try
+        originalunits = strrep(originalunits, 's/', '/');
+        newunits = strrep(newunits, 's/', '/');
+%         SimpleUnit.isCompatible(originalunits, newunits);
+        converter = SimpleUnit.getConversionFactor(originalunits, newunits); % Get conversion
+    catch
+        error('NCTOOLBOX:NCUNITS', 'Input or output units are illegal, or input units are unable to be converted into the output units.');
+    end
 end
 
-% That was easier than I thought!
-
+converted = unconverted .* converter; % Apply conversion
 end
