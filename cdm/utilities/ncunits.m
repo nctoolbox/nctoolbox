@@ -5,19 +5,21 @@
 %
 %
 function converted = ncunits(unconverted, originalunits, newunits)
-    % NCUNITS - Function to convert data in one unit set to another set of units.
-    %
-    % Usage: converted_data = ncunits(data, 'm/s', 'cm/s');
-    %
-    %
-    import ucar.nc2.units.*
-    
+% NCUNITS - Function to convert data in one unit set to another set of units.
+%
+% Usage: converted_data = ncunits(data, 'm/s', 'cm/s');
+%
+%
+import ucar.nc2.units.*
 
-converter = SimpleUnit.getConversionFactor(originalunits, newunits);
+if SimpleUnit.isCompatible(originalunits, newunits)
+    converter = SimpleUnit.getConversionFactor(originalunits, newunits);
     
-converted = unconverted .* converter;
-    
-    
+    converted = unconverted .* converter;
+else
+    error('NCTOOLBOX:NCUNITS', 'Input or output units are illegal, or input units are unable to be converted into the output units.');
+end
+
 % That was easier than I thought!
-    
+
 end
