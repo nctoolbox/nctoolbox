@@ -1,6 +1,7 @@
 % SGRID Extention of dataset object class for structured grids.
 % Alexander Crosby, Applied Science Associates 2010
 % 
+% NCTOOLBOX (http://code.google.com/p/nctoolbox)
 classdef ncsgrid < handle
     
   properties (SetAccess = private)

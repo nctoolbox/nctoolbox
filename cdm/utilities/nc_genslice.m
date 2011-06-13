@@ -25,6 +25,7 @@ function [Tvar,Tdis,Tzed,Tlon,Tlat] = ...
 %  modified by Weifeng Gordon Zhang
 %  This version by John Wilkin 2011-01-26
 %  Alexander Crosby 2011 April - Update to using new toolbox
+% NCTOOLBOX (http://code.google.com/p/nctoolbox)
 
 verbose = false;
 ncks = false;

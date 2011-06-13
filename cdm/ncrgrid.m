@@ -1,6 +1,7 @@
 % RGRID Extention of dataset object class for regular grids (1-D lat, lon).
 % Alexander Crosby, Applied Science Associates 2010
 % 
+% NCTOOLBOX (http://code.google.com/p/nctoolbox)
 classdef ncrgrid < ncsgrid
     
   properties (SetAccess = private)

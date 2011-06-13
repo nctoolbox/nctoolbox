@@ -10,6 +10,8 @@ function varz = zsliceg(data, z, depth)
 % [t,g]=nj_tslice(uri,'temp',1);% grab 3d field of 'temp' at time step 1
 % tz = zsliceg(t,g.z,-5);  % return temperature slice at 5 m depth
 % pcolorjw(g.lon,g.lat,double(tz));  % plot temp at 5 m depth
+%
+% NCTOOLBOX (http://code.google.com/p/nctoolbox)
 
 [NZ,NY,NX]=size(data);
 [nz,ny,nx]=size(z);

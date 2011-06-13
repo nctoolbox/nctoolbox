@@ -1,5 +1,6 @@
 % UGRID Extention of dataset object class for unstructured grid datasets.
 %
+% NCTOOLBOX (http://code.google.com/p/nctoolbox)
 classdef ncugrid < handle
     
     properties (SetAccess = private)

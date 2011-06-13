@@ -42,7 +42,7 @@
 % Brian Schlining (brian@mbari.org)
 % 2009-05-12
 % Alexander Crosby 2010, 2011
-
+% NCTOOLBOX (http://code.google.com/p/nctoolbox)
 classdef ncdataset < handle
     
     properties (SetAccess = private)

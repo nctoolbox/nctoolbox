@@ -12,6 +12,8 @@
 %  % Look at properties
 %  v.name
 %  v.axes
+%
+% NCTOOLBOX (http://code.google.com/p/nctoolbox)
 
 classdef ncgeovariable < ncvariable
     

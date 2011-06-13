@@ -3,6 +3,8 @@
           % NCGEOVARIABLE.INTERPTOXY - Interpolate gridded data at an x/y (lon/lat) location or set of locat-
           % ions when inputs are vectors of the same length.
           % Useage: >> data = interptoxy(data, datalon, datalat, -77, 45, 'linear');
+          %
+          % NCTOOLBOX (http://code.google.com/p/nctoolbox)
           s = size(data);
           if length(x) ~= length(y)
             error('NCTOOLBOX:interptoxy','Input coordinate vectors do not agree.')

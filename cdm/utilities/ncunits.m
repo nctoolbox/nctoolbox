@@ -3,6 +3,7 @@
 % 
 % NCTOOLBOX (http://code.google.com/p/nctoolbox)
 %
+% Usage: converted_data = ncunits(data, 'm/s', 'cm/s');
 %
 function converted = ncunits(unconverted, originalunits, newunits)
 % NCUNITS - Function to convert data in one unit set to another set of units.

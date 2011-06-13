@@ -1,3 +1,6 @@
+% NCGEODATASET
+%
+% NCTOOLBOX (http://code.google.com/p/nctoolbox)
 classdef ncgeodataset < cfdataset
     
     properties (SetAccess = private, GetAccess = private)

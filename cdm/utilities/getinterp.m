@@ -1,8 +1,9 @@
         
         function int = getinterp(data, lon, lat, method)
-          % NCGEOVARIABLE.INTERPTOXY - Interpolate gridded data at an x/y (lon/lat) location or set of locat-
-          % ions when inputs are vectors of the same length.
-          % Useage: >> data = interptoxy(data, datalon, datalat, -77, 45, 'linear');
+          % GETINTERP - Get interpolant of gridded data.
+          % Useage: >> int = getinterp(data, lon, lat, method);
+          %
+          % NCTOOLBOX (http://code.google.com/p/nctoolbox)
           s = size(data);
 %           if length(x) ~= length(y)
 %             error('NCTOOLBOX:interptoxy','Input coordinate vectors do not agree.')

@@ -1,5 +1,7 @@
 % NCUVARIABLE Extention of variable object class for unstructured grid/mesh variables.
 % Trying out sort of an interface approach, I think I like it - Acrosby
+%
+% NCTOOLBOX (http://code.google.com/p/nctoolbox)
 classdef ncuvariable < handle
     
     properties (SetAccess = private)

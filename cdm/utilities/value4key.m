@@ -20,6 +20,8 @@ function v = value4key(a, key)
 %   ds = ncdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/OS_M1_20081008_TS.nc');
 %   at = ds.attributes('TEMP');
 %   units = value4key(at, 'units'); % returns 'celsius'
+%
+% NCTOOLBOX (http://code.google.com/p/nctoolbox)
 
 keys = a(:, 1);    % Cell array of keys
 values = a(:, 2);  % Cell array of values

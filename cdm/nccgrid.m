@@ -2,6 +2,7 @@
 % lon) often from curvilinear things like ROMS(staggered) or SLOSH. Alexander Crosby,
 % Applied Science Associates 2010
 % 
+% NCTOOLBOX (http://code.google.com/p/nctoolbox)
 classdef nccgrid < ncsgrid
     
   properties (SetAccess = private)

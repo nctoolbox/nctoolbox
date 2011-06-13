@@ -6,6 +6,7 @@
 %
 % Alexander Crosby, Applied Science Associates 2010
 % 
+% NCTOOLBOX (http://code.google.com/p/nctoolbox)
 classdef ncpoint < handle
   % should it be able to handle just points or also collections/grids...?  
   properties (SetAccess = private)
