@@ -141,11 +141,12 @@ classdef ncgeodataset < cfdataset
         
         function e = extent(obj, variableName)
             % NCGEODATASET.extent - Function to calculate lat/lon bounding box of variable.
+            % Usage: ex = nc.extent('temp')
             v = obj.geovariable(variableName);
             s = v.size;
             switch length(s) % hopefully this speeds up the grid_interop call when time is involved
                 case 1
-                    error('')
+                    g = v.grid_interop(:);
                 case 2
                     g = v.grid_interop(:,:);
                 case 3
@@ -155,8 +156,26 @@ classdef ncgeodataset < cfdataset
             end
             e.lon = [min(min(g.lon)) max(max(g.lon))];
             e.lat = [min(min(g.lat)) max(max(g.lat))];
+            
         end
         
+        function te = timeextent(obj, variableName)
+            % NCGEODATASET.timeextent - Function to calculate the start and stop times of for a variable.
+            % Usage: t = nc.timeextent('salt')
+            v = obj.geovariable(variableName);
+            s = v.size;
+            switch length(s) 
+                case 1
+                    g = v.grid_interop(1:end);
+                case 2
+                    g = v.grid_interop(1:end,1);
+                case 3
+                    g = v.grid_interop(1:end,1,1);
+                case 4
+                    g = v.grid_interop(1:end,1,1,1);
+            end
+            te = [min(g.time) max(g.time)];
+        end
         %% Should be called as ncpoint(nc), etc.
         %
         %         function p = point(obj)
