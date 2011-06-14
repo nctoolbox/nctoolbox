@@ -319,6 +319,22 @@ classdef cfdataset < ncdataset
                 
             end
         end
+        
+        function sn = standard_name(obj, standardName)
+            % CFDATASET.STANDARD_NAME - Function to get a list of variable names that correspond to
+            % to the input standard_name.
+            vars = obj.variables;
+            for i = 1:length(vars) % Loop through variables to get standard_name attribute if it exists
+                tempsn = obj.attribute('standard_name', vars{i});
+                if ~isempty(tempsn) % Make list of standard names, maybe this is not effcient, but it can't
+                                               % be too bad?
+%                     hash{i, 1} = vars{i};
+                    hash{i} = tempsn;
+                end
+            end
+            matches = strcmp(standardName, hash);
+            sn = vars(matches);
+        end
 
     end
     

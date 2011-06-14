@@ -72,7 +72,7 @@ classdef ncgeovariable < ncvariable
 %             end
             e.lon = [min(min(g.lon)) max(max(g.lon))];
             e.lat = [min(min(g.lat)) max(max(g.lat))];
-        end
+        end % end extent
         
         function te = timeextent(src)
             % NCGEOVARIABLE.timeextent - Function to find the start and stop time of the variable.
@@ -95,6 +95,8 @@ classdef ncgeovariable < ncvariable
                 error('NCGEOVARIABLE:TIMEEXTENT',...
                     'There appears to be no time axis associated with the variable.');
             end
+        
+        end % end timeextent
         
         function ig = grid_interop(src, first, last, stride)
             % NCGEOVARIABLE.GRID_INTEROP - Method to get the coordinate variables and their data as a
