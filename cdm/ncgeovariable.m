@@ -47,6 +47,55 @@ classdef ncgeovariable < ncvariable
             
         end % ncgeovariable end
         
+        function e = extent(src)
+            % NCGEOVARIABLE.extent - Function to found geographic bounding box coordinates.
+            % Usage e = var.extent;
+             s = src.size;
+             lens = length(s);
+             first = ones(1,lens);
+             if lens > 1
+                 s(1) = 1;
+                 if lens > 3;
+                     s(2) = 1;
+                 end
+             end
+             stride = first;
+%             switch length(s) % hopefully this speeds up the grid_interop call when time is involved
+%                 case 1
+%                     g = src.grid_interop(:);
+%                 case 2
+%                     g = src.grid_interop(:,:);
+%                 case 3
+%                     g = src.grid_interop(1,:,:);
+%                 case 4
+                    g = src.grid_interop(first, s, stride);
+%             end
+            e.lon = [min(min(g.lon)) max(max(g.lon))];
+            e.lat = [min(min(g.lat)) max(max(g.lat))];
+        end
+        
+        function te = timeextent(src)
+            % NCGEOVARIABLE.timeextent - Function to find the start and stop time of the variable.
+            % Usage e = var.timeextent;
+            s = src.size;
+            lens = length(s);
+            first = ones(1, lens);
+            stride = first;
+            last = first;
+            last(1) = s(1);
+            
+            %                     g1 = src.grid_interop(first, first, stride);
+            %                     g2 = src.grid_interop(s, s, stride);
+            g = src.grid_interop(first, last, stride);
+            
+            %             te = [g1.time g2.time];
+            if isfield(g, 'time')
+                te = [min(g.time) max(g.time)];
+            else
+                error('NCGEOVARIABLE:TIMEEXTENT',...
+                    'There appears to be no time axis associated with the variable.');
+            end
+        
         function ig = grid_interop(src, first, last, stride)
             % NCGEOVARIABLE.GRID_INTEROP - Method to get the coordinate variables and their data as a
             % a structure with standardized field names for lat, lon, time, and z. Other coordiante variables
@@ -145,50 +194,21 @@ classdef ncgeovariable < ncvariable
             
         end % grid_interop end
         
-        function tw = timewindow(src, starttime, stoptime)
+        function tw = timewindow(src, varargin)
             % NCGEOVARIABLE.TIMEWINDOW - Function to pull the time coordinates within the specified
             % start and stop times from the variable object.
             % Useage: >> time = geovar.timewindow([2004 1 1 0 0 0], [2005 12 31 0 0 0]);
             %              >> time = geovar.timewindow(731947, 732677);
-            d = src.timewindowij(starttime, stoptime);
+            if nargin < 3
+                d = src.timewindowij(varargin{1});
+            elseif nargin == 3
+                d = src.timewindowij(varargin{1}, varargin{2});
+            else
+                error('NCGEOVARIABLE:TIMEWINDOW',...
+                    'Too many input arugments.');
+            end
             tw = d;
         end
-        
-        %         function [index,distance]=nearxy(src, lon, lat, dist);
-        %           % NEARXY  finds the indices of the grid that are closest to the point (lon, lat).
-        %           %        [index,distance]=nearxy(lon, lat) finds the closest point and
-        %           %                                           the distance
-        %           %        [index,distance]=nearxy(lon, lat,dist) finds all points closer than
-        %           %                                           the value of dist.
-        %           % rsignell@crusty.er.usgs.gov
-        %           % A Crosby - added perfect sphere assumption for geographic coordinates
-        %
-        %           % Grab x/y part of grid
-        %           s = src.size;
-        %           first = ones(1, length(s));
-        %           last = s;
-        %           if length(s) > 3
-        %             last(1) = 1;
-        %             last(2) = 1;
-        %           elseif length(s) > 2
-        %             last(1) = 1;
-        %           end
-        %           stride = first;
-        %           g = src.grid_interop(first, last, stride);
-        %
-        %           gridx = g.lon;
-        %           gridy = g.lat;
-        %
-        %           distance=sqrt((gridx-lon).^2+(gridy-lat).^2); % TODO: Change this formulation to haversine...
-        %           if (nargin > 4),
-        %             index=find(distance<=dist);     %finds points closer than dist
-        %           else,
-        %             index=find(distance==min(distance));  % finds closest point
-        %             index=index(1);
-        %           end
-        %           distance=distance(index);
-        %
-        %         end % nearxy end
         
         %% These functions would rather output multiple outputs instead of struct, must reconcile
         %     with the subsref in either ncgeovariable or ncvariable. Wait, why, then, does geoij work???
@@ -206,6 +226,7 @@ classdef ncgeovariable < ncvariable
             g = src.grid_interop(first, last, stride);
             
             if isfield(g, 'time') % are any of the fields recognized as time explictly
+                if nargin > 2 % If two times are input, do window
                 starttime = datenum(varargin{1});
                 stoptime = datenum(varargin{2});
                 if isempty(starttime)
@@ -219,94 +240,24 @@ classdef ncgeovariable < ncvariable
                 t_index2 = g.time <= stoptime;
                 d.index = find(t_index1==t_index2);
                 d.time = g.time(d.index);
+                elseif nargin < 3 % If theres only one time, do nearest
+                    neartime = datenum(varargin{1});
+                    diff = abs(g.time-neartime);
+                    ind = find(diff==min(diff));
+                    d.index = ind(1);
+                    d.time = g.time(d.index);
+                    if length(ind) > 1;
+                        warning('NCGEOVARIABLE:TIMEWINDOWIJ',...
+                            ['Multiple time indices determined to be nearest to the supplied time,'...
+                            'only the first index was output.']);
+                    end
+                end
             else
                 me = MException(['NCTOOLBOX:ncgeovariable:timewindowij'], ...
                     'No grid variable returned as time.');
                 me.throw;
             end
         end % end timewindowij
-        
-        %function d = timegeosubset(src, struct)
-        % NCGEOVARIABLE.TIMEGEOSUBSET - Function to request a time/lat/lon subset of data and the
-        % the corresponding grid, using a z indices if relevant.
-        % Useage: >> subsetstructure = geosubset_construct(731947, 732677, [], 1, 1, [], -77, -75.5, [],  36, 38, 1));
-        %              >> struct = geovar.timegeosubset(subsetstructure);
-        %              struct is struct.data, struct.grid.lat, struct.grid.lon, struct.grid.time, etc...
-        %
-        %           nums = src.size;
-        %
-        %             [indstart_r indend_r indstart_c indend_c] = src.geoij(struct);
-        %
-        %             if isfield(struct, 'time')
-        %               if iscell(struct.time)
-        %                 t = src.timewindowij(struct.time{1}, struct.time{2});
-        %               else
-        %                 t = src.timewindowij(struct.time(1), struct.time(1));
-        %               end
-        %             else
-        %               t.index(1) = 1;
-        %               t.index(2) = nums(1);
-        %             end
-        %
-        %             if isfield(struct, 'xy_stride');
-        %             else
-        %               struct.xy_stride = [1 1];
-        %             end
-        %
-        %             if isfield(struct, 'z_stride');
-        %             else
-        %               struct.z_stride = [1 1];
-        %             end
-        %
-        %             if isfield(struct, 't_stride');
-        %             else
-        %               struct.t_stride = [1 1];
-        %             end
-        %
-        %             if isfield(struct, 'z_index');
-        %             else
-        %               struct.z_index = [1 nums(2)];
-        %             end
-        %
-        %             if length(nums) < 2
-        %               me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
-        %                 ['Expected data of ', src.name, ' to be at least rank 2.']);
-        %               me.throw;
-        %             elseif length(nums) <3
-        %               ax = src.grid([1 1],[1 1],[1 1]);
-        %               if isfield(ax, 'time')
-        %                 first = [min(t.index) indstart_r];
-        %                 last = [max(t.index) indend_r];
-        %                 stride = [struct.t_stride struct.xy_stride(2)];
-        %               else
-        %                 me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
-        %                   'Expected either a coordinate variable acknowleged as time.');
-        %                 me.throw;
-        %               end
-        %             elseif length(nums) < 4
-        %               ax = src.grid([1 1 1],[1 1 1],[1 1 1]);
-        %               if isfield(ax, 'time')
-        %                 first = [min(t.index) indstart_r indstart_c];
-        %                 last = [max(t.index) indend_r indend_c];
-        %                 stride = [struct.t_stride struct.xy_stride(2) struct.xy_stride(1)];
-        %               else
-        %                 me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
-        %                   'Expected either a coordinate variable acknowleged as time.');
-        %                 me.throw;
-        %               end
-        %             elseif length(nums) < 5
-        %               first = [min(t.index) struct.z_index(1) indstart_r indstart_c];
-        %               last = [max(t.index) struct.z_index(2) indend_r indend_c];
-        %               stride = [struct.t_stride struct.z_stride struct.xy_stride(2) struct.xy_stride(1)];
-        %             else
-        %               me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
-        %                 ['Expected data of ', obj.name, ' to be less than rank 5.']);
-        %               me.throw;
-        %             end
-        %             d.data = src.data(first, last, stride);
-        %             d.grid = src.grid_interop(first, last, stride);
-        %
-        %         end % end of timegeosubset
         
         function d = geosubset(obj, struct)
             % NCGEOVARIABLE.GEOSUBSET -
