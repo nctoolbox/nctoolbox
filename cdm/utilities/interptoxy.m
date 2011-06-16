@@ -41,6 +41,8 @@
                   relon(flags1) = [];
                   int = TriScatteredInterp(relon, relat, redata, method);
                   clear redata
+                  clear relat
+                  clear relon
                   if isvector(x)
                     for k = 1:length(x)
                       interpolatedvalues(j,i,k) = int(x(k),y(k));
@@ -65,6 +67,8 @@
                 relon(flags1) = [];
                 int = TriScatteredInterp(relon, relat, redata, method);
                 clear redata
+                clear relat
+                  clear relon
                 if isvector(x)
                   for k = 1:length(x)
                     interpolatedvalues(j,k) = int(x(k),y(k));
@@ -91,6 +95,8 @@
             relon(flags1) = [];
             int = TriScatteredInterp(relon, relat, redata, method);
             clear redata
+            clear relat
+                  clear relon
             if isvector(x)
               for k = 1:length(x)
                 interpolatedvalues(k) = int(x(k),y(k));
