@@ -17,23 +17,37 @@ end
 [select, ok] = listdlg('ListString', sizes,'SelectionMode','sing le', 'Name', 'ModelLook: Quick nc vis',...
     'PromptString', 'Please Select Variable:' );
 var = nc.geovariable(vars{select});
-tind = var.timewindow(date);
-var_struct.data = var.data(tind.index, :, :, :);
-var_struct.grid = var.grid_interop(tind.index, :, :, :);
-
+try
+    tind = var.timewindow(date);
+    var_struct.data = var.data(tind.index, :, :, :);
+    var_struct.grid = var.grid_interop(tind.index, :, :, :);
+    out.ind = tind.index;
+catch
+    switch length(var.size)
+        case 3
+    var_struct.data = var.data(1, :, :);
+    var_struct.grid = var.grid_interop(1, :, :);
+        case 2
+            var_struct.data = var.data(:, :);
+    var_struct.grid = var.grid_interop(:, :);
+    end
+end
 a = @press;
 figure;
 out.var = var;
 out.var_struct = var_struct;
-out.ind = tind.index;
+
 
 set(gcf, 'UserData', out);
-if var.size > 3
+if length(var.size) > 3
     h = pcolor(squeeze(double(var_struct.grid.lon)), squeeze(double(var_struct.grid.lat)),...
         squeeze(double(var_struct.data(1, 1, :,:))));
-elseif var.size > 2
+elseif length(var.size) > 2
     h = pcolor(squeeze(double(var_struct.grid.lon)), squeeze(double(var_struct.grid.lat)),...
         squeeze(double(var_struct.data(1, :,:))));
+elseif length(var.size) > 1
+    h = pcolor(squeeze(double(var_struct.grid.lon)), squeeze(double(var_struct.grid.lat)),...
+        squeeze(double(var_struct.data(:,:))));
 end
 set(h, 'ButtonDownFcn', a)
 % shading flat
@@ -65,15 +79,18 @@ title({'ModelLook:';'Ctl-Click to create a path for vertical section and Shift-C
                     temp.profile = [];
 %                     try
 %                         temp.data = temp.var.data(temp.ind, :, :, :);
-                        temp.profile = interptoxy(double(squeeze(temp.var_struct.data)), temp.var_struct.grid.lon,...
-                            temp.var_struct.grid.lat, temp.tspoints(1), temp.tspoints(2), 'linear');
+%                         temp.profile = interptoxy(double(squeeze(temp.var_struct.data(1, ~isnan(squeeze(temp.var_struct.data(1, :, nearxy(temp.var_struct.grid.lon, temp.var_struct.grid.lat, temp.tspoints(1), temp.tspoints(2))))), :, :))), temp.var_struct.grid.lon,...
+%                             temp.var_struct.grid.lat, temp.tspoints(1), temp.tspoints(2), 'natural');
                         if length(size(temp.var_struct.grid.z)) > 2
-                            temp.depths = interptoxy(double(squeeze(temp.var_struct.grid.z)),...
-                                temp.var_struct.grid.lon, temp.var_struct.grid.lat, temp.tspoints(1),...
-                                temp.tspoints(2), 'linear');
+%                             temp.depths = interptoxy(double(squeeze(temp.var_struct.grid.z(1, ~isnan(squeeze(temp.var_struct.data(1, :, nearxy(temp.var_struct.grid.lon, temp.var_struct.grid.lat, temp.tspoints(1), temp.tspoints(2))))), :, :))),...
+%                                 temp.var_struct.grid.lon, temp.var_struct.grid.lat, temp.tspoints(1),...
+%                                 temp.tspoints(2), 'natural');
+                            temp.depths = double(squeeze(temp.var_struct.grid.z(:, nearxy(temp.var_struct.grid.lon, temp.var_struct.grid.lat, temp.tspoints(1), temp.tspoints(2)))));
                         else 
-                            temp.depths = temp.var_struct.grid.z;
+                            
+                            temp.depths = temp.var_struct.grid.z; %(~isnan(squeeze(temp.var_struct.data(1, :, nearxy(temp.var_struct.grid.lon, temp.var_struct.grid.lat, temp.tspoints(1), temp.tspoints(2))))));
                         end
+                        temp.profile = double(squeeze(temp.var_struct.data(1, :, nearxy(temp.var_struct.grid.lon, temp.var_struct.grid.lat, temp.tspoints(1), temp.tspoints(2)))));
 %                     catch
 %                         temp.data = temp.var.data(out:end, :, :, :);
 %                         temp.ts(:,out:end) = interptoxy(temp.data, temp.var_struct.grid.lon,...
@@ -85,7 +102,7 @@ title({'ModelLook:';'Ctl-Click to create a path for vertical section and Shift-C
                 plot(temp.profile, temp.depths)
                 xlabel(temp.var.attribute('units'))
                 ylabel('Depth')
-                title([temp.var.name, ' at ', num2str(temp.tspoints(1)), ', ', num2str(temp.tspoints(2))])
+                title([temp.var.name, ' at ', num2str(temp.var_struct.grid.lon(nearxy(temp.var_struct.grid.lon, temp.var_struct.grid.lat, temp.tspoints(1), temp.tspoints(2)))), ', ', num2str(temp.var_struct.grid.lat(nearxy(temp.var_struct.grid.lon, temp.var_struct.grid.lat, temp.tspoints(1), temp.tspoints(2))))])
                 grid('on')
 %                 for out = 1:length(temp.ts(:,1))
 %                     plot(time.ts(out, :));

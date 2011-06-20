@@ -10,7 +10,7 @@ distance=sqrt((x-x0).^2+(y-y0).^2);
 if (nargin > 4),
   index=find(distance<=dist);     %finds points closer than dist
 else,
-  index=find(distance==min(distance));  % finds closest point
+  index=find(distance==min(min(distance)));  % finds closest point
   index=index(1);
 end
 distance=distance(index);
