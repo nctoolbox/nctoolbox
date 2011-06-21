@@ -1,4 +1,7 @@
 % MODELLOOK - Infrastructure for quick model visualization.
+%
+% Useful to look at 2d, 3d, and 4d variables from gridded model netcdf files.
+%
 % Usage : >> modellook(daplink, datevec)
 %             >> modellook(daplink, datenum)
 %
