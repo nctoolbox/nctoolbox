@@ -117,7 +117,10 @@ classdef ncgeovariable < ncvariable
                     switch type
                         case 'Height'
                             pos_z = char(javaaxisvar.getPositive());
-                            if strcmp(pos_z, 'POSITIVE_DOWN')
+                            if strcmpi(pos_z, 'POSITIVE_DOWN')
+                                tmp = g.(tempname);
+                                ig.z = tmp.*-1; %adjust for positive direction
+                            elseif strcmpi(pos_z, 'down')
                                 tmp = g.(tempname);
                                 ig.z = tmp.*-1; %adjust for positive direction
                             else

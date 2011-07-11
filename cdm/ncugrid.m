@@ -13,6 +13,7 @@ classdef ncugrid < handle
         nodes % number of nodes
         edges % number of edges
         faces % number of faces
+        variables % list of variable names
     end
     
     methods
@@ -48,6 +49,10 @@ classdef ncugrid < handle
                 obj.dataset = nc;             % src is a ncdataset
                 cancelTask = [];
                 obj.netcdfugrid = FeatureDatasetFactoryManager.open(FeatureType.UGRID, nc.link, cancelTask, Formatter());
+            elseif isa(nc,'ucar.nc2.dt.ugrid.UGridDataset')
+                obj.dataset = nc;             % src is a raw ugriddataset in memory
+                cancelTask = [];
+                obj.netcdfugrid = FeatureDatasetFactoryManager.open(FeatureType.UGRID, nc, cancelTask, Formatter());
             else
                 ex = MException('NCUGRID:ncugrid', 'Invalid dataset was specified');
                 ex.throw;
@@ -55,6 +60,14 @@ classdef ncugrid < handle
             
             %set properties
             u = obj.netcdfugrid;
+            
+            vars = u.getMeshVariables();
+                    n = size(vars);
+                    obj.variables = cell(n, 1);
+                    for i = 1:(n)
+                        obj.variables{i, 1} = char(vars.get(i - 1).getName());
+                    end
+                    
             meshsets = u.getMeshsets();
             %       UGridDataset.getMeshsets().get(0).getMesh()
             obj.meshes = meshsets;
@@ -73,7 +86,7 @@ classdef ncugrid < handle
             uvar = ncuvariable(obj, varName);
         end % uvariable end
         
-        function ss = unstructuredLatLonSubset(obj, varName, struct) % input subset structure
+        function ss = unstructuredLatLonSubset(obj, varargin) % input subset structure
             % NCUGRID.unstructuredLatLonSubset  - Function to subset an unstructured model grid by lat/lon
             % bounding box using subsetting methods in the ugrid-java.
             import ucar.nc2.dt.ugrid.geom.LatLonPolygon2D;
@@ -81,6 +94,16 @@ classdef ncugrid < handle
             import ucar.unidata.geoloc.LatLonPoint;
             import ucar.unidata.geoloc.LatLonPointImpl;
             import ucar.unidata.geoloc.LatLonRect;
+            if nargin ==3
+                struct = varargin{2};
+                varName = varargin{1};
+                % Find the mesh that contains the variable of interest.
+                mesh_ident = obj.attribute('mesh', varName);
+                mesh_vars = regexp(mesh_ident, ' ', 'split');
+                mesh_ind = str2double(mesh_vars{1}(5:end));
+            elseif nargin == 2
+                struct = varargin{1};
+            end
             % Need to construct lat/lon rect:
             maxlat  = max(struct.lat);
             minlon = min(struct.lon);
@@ -88,49 +111,37 @@ classdef ncugrid < handle
             maxlon = max(struct.lon);
             bbox = LatLonRect(LatLonPointImpl(maxlat, minlon), LatLonPointImpl(minlat, maxlon));
             
-            % Find the mesh that contains the variable of interest.
-            mesh_ident = obj.attribute('mesh', varName);
-            mesh_vars = regexp(mesh_ident, ' ', 'split');
-            mesh_ind = str2double(mesh_vars{1}(5:end));
             
-            % Get all the meshes, access the correct mesh for the variable, then call subset method on mesh.
-            meshes = obj.meshes;
-            if meshes.get(mesh_ind-1).getTreeSize() == 0
-                meshes.get(mesh_ind-1).buildRTree();
+            if nargin == 3
+                % Get all the meshes, access the correct mesh for the variable, then call subset method on mesh.
+                meshes = obj.meshes;
+                mesh = meshes.get(mesh_ind-1).getMesh();
+                if mesh.getTreeSize() == 0
+                    mesh.buildRTree();
+                end
+%                 v = obj.netcdfugrid.getMeshVariableByName(varName);
+%                 subsat = v.subsetToDataset(bbox); % Subsat is ugriddataset
+                v = obj.netcdfugrid;
+                subsat = v.subset(bbox); % Subsat is ugriddataset
+            elseif nargin == 2
+                v = obj.netcdfugrid;
+                subsat = v.subset(bbox); % Subsat is ugriddataset
             end
-            v = obj.netcdfugrid.getMeshVariableByName(varName);
-            subsat = v.subset(bbox); % Subsat is ugriddataset
-            
-            
+           
             % Get netcdfj variable class and read all (since we already subset)
             submeshv = subsat.getMeshVariableByName(varName);
-            connect_meshset = subsat.getMeshset(0);
-            
-            %       inds = subsat.getNodeIndexes;
-            %       nodes = subsat.getUniqueNodes();
-            % Kyle made a method to do this automatically mesh.getNodeLatLons() and getNodeIndexes()
-            %       for i = 1:nodes.size();
-            %         inds(i,1) = nodes.get(i-1).getDataIndex();
-            %       end
-            %       s = obj.size(varName);
-            %       first = ones(1, length(s));
-            %       last = s;
-            %       stride = first;
-            
-            %       This gets the data at indices, one at a time, very slow but works...
-            %       for j = 1:length(inds)
-            %         first(1,end) = inds(j);
-            %         last(1, end) = inds(j);
-            %         ss.data(:,j) = obj.data(varName, first, last, stride);
-            %       end
+            connect_meshset = submeshv.getMeshset();
+            temp = connect_meshset.getMesh();
+            temp.toString()
             
             % Get variable values from subsat meshVariable
+            submeshv = submeshv.getVariable();
             array = submeshv.read();
             values = array.copyToNDJavaArray();
             ss.data = values;
             % Related coordinates and connectivity
-            ss.grid = obj.getMeSomeCoordinateData(varName, connect_meshset);
-            
+            ss.grid = obj.getSomeCoordinateData(varName, connect_meshset);
+%         end
             
         end % end subset
         
@@ -234,14 +245,14 @@ classdef ncugrid < handle
             coordinates = obj.attribute('coordinates', varName);
             coordinate_vars = regexp(coordinates, ' ', 'split');
             
-            %       location = obj.attribute('location', varName);
-            %       connectivity_var = obj.attribute([location, '_connectivity'], mesh_vars{1});
+                  location = obj.attribute('location', varName);
+                  connectivity_var = obj.attribute([location, '_connectivity'], mesh_vars{1});
             
             % Get coordinates (time, lat, lon,...)
             for i = 1:length(coordinate_vars)
                 switch coordinate_vars{i}
                     case 'time'
-                        v = mesh.findVariable(coordinate_vars{i});
+                        v = meshset.getMeshVariableByName(coordinate_vars{i});
                         if isempty(v)
                             v = obj.netcdfugrid.getNetcdfFile().findVariable(coordinate_vars{i});
                         else
@@ -264,12 +275,19 @@ classdef ncugrid < handle
                 gs.lon(i,1) = point.getLongitude();
                 gs.index(i,1) = nodes.get(i-1).getDataIndex();
             end
-            % Get connectivity
-            %         v = obj.netcdfugrid.getNetcdfFile().findVariable(connectivity_var);
-            v = meshset.getTopology();
-            array = v.read();
-            values = array.copyToNDJavaArray();
-            gs.connectivity = values;
+            
+            try
+                % Get connectivity
+                %                     v = obj.netcdfugrid.getNetcdfFile().findVariable(connectivity_var);
+                v = meshset.getMesh();
+                v = v.getConnectivityVariable();
+                v = v.getVariable();
+                
+                array = v.read();
+                values = array.copyToNDJavaArray();
+                gs.connectivity = values;
+            catch
+            end
             
         end % end
         

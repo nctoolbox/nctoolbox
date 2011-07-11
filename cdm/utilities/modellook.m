@@ -100,6 +100,10 @@ xlabel(nc.attribute('title'))
                     temp.profile = [];
                     switch length(temp.size)
                         case 4
+                            if length(temp.var_struct.grid.lon) ~= length(temp.var_struct.grid.lat);
+                                [temp.var_struct.grid.lon temp.var_struct.grid.lat] = meshgrid(temp.var_struct.grid.lon, temp.var_struct.grid.lat);
+                            else
+                            end
                             if length(size(temp.var_struct.grid.z)) > 2
                                 
                                 temp.depths = double(squeeze(temp.var_struct.grid.z(:, nearxy(temp.var_struct.grid.lon, temp.var_struct.grid.lat, temp.tspoints(1), temp.tspoints(2)))));
@@ -107,6 +111,8 @@ xlabel(nc.attribute('title'))
                                 
                                 temp.depths = temp.var_struct.grid.z;
                             end
+                            
+                      
                             temp.profile = double(squeeze(temp.var_struct.data(1, :, nearxy(temp.var_struct.grid.lon, temp.var_struct.grid.lat, temp.tspoints(1), temp.tspoints(2)))));
                             
                             figure;
@@ -167,6 +173,7 @@ xlabel(nc.attribute('title'))
                 set(h, 'EdgeColor', 'k', 'EdgeAlpha', .1);
                 title(out.var.attribute('units'))
                 ylabel('Depth')
+                xlabel('Distance in km');
                 end
 
         end
