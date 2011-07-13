@@ -266,18 +266,33 @@ classdef ncgeovariable < ncvariable
         
         function d = geosubset(obj, struct)
             % NCGEOVARIABLE.GEOSUBSET -
+            % Create subset structure:
+            % s.time=[now-3 now]; % Can be omitted or s.t_index=[i1 i2]; can be used for subsetting time using indices
+            % s.t_stride=2; % Can be omitted
+            % s.lat=[22 27];
+            % s.lon=[117 123];
+            % s.h_stride=[2 2]; % Can be omitted
+            % s.z_index=[1 30]; % Can be omitted
+            % s.v_stride=2; % Can be omitted
             %
+            % Usage:
+            % sub = gvar.geosubset(s); % Subset method
             %
+            % Returns:
+            % Structure with fields 'data' for data values, and 'grid' for structure of coordinate variables 
+            % (that come from grid_interop).
+            
+            
             %           if ~regexp(obj.dataset.attribute('Conventions'), 'UGRID')
             nums = obj.size;
-            if isfield(struct, 'xy_stride');
+            if isfield(struct, 'h_stride');
             else
-                struct.xy_stride = [1 1];
+                struct.h_stride = [1 1];
             end
             
-            if isfield(struct, 'z_stride');
+            if isfield(struct, 'v_stride');
             else
-                struct.z_stride = 1;
+                struct.v_stride = 1;
             end
             
             if isfield(struct, 't_stride');
@@ -333,18 +348,18 @@ classdef ncgeovariable < ncvariable
                 if isfield(ax, 'time')
                     first = [tmin_i indstart_r];
                     last = [tmax_i indend_r];
-                    stride = [struct.t_stride struct.xy_stride(2)];
+                    stride = [struct.t_stride struct.h_stride(2)];
                 else
                     first = [indstart_r indstart_c];
                     last = [indend_r indend_c];
-                    stride = [struct.xy_stride(2) struct.xy_stride(1)];
+                    stride = [struct.h_stride(2) struct.h_stride(1)];
                 end
             elseif length(nums) < 4
                 ax = obj.grid([1 1 1],[1 1 1],[1 1 1]);
                 if isfield(ax, 'time')
                     first = [tmin_i indstart_r indstart_c];
                     last = [tmax_i indend_r indend_c];
-                    stride = [struct.t_stride struct.xy_stride(2) struct.xy_stride(1)];
+                    stride = [struct.t_stride struct.h_stride(2) struct.h_stride(1)];
                 elseif isfield(ax, 'z')
                     if isfield(struct, 'z_index');
                     else
@@ -352,7 +367,7 @@ classdef ncgeovariable < ncvariable
                     end
                     first = [struct.z_index(1) indstart_r indstart_c];
                     last = [struct.z_index(2) indend_r indend_c];
-                    stride = [struct.z_stride struct.xy_stride(2) struct.xy_stride(1)];
+                    stride = [struct.v_stride struct.h_stride(2) struct.h_stride(1)];
                 else
                     me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
                         'Expected either a coordinate variable acknowleged as time or as z.');
@@ -365,7 +380,7 @@ classdef ncgeovariable < ncvariable
                 end
                 first = [tmin_i struct.z_index(1) indstart_r indstart_c];
                 last = [tmax_i struct.z_index(2) indend_r indend_c];
-                stride = [struct.t_stride struct.z_stride struct.xy_stride(2) struct.xy_stride(1)];
+                stride = [struct.t_stride struct.v_stride struct.h_stride(2) struct.h_stride(1)];
             else
                 me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
                     ['Expected data of ', obj.name, ' to be less than rank 5.']);
