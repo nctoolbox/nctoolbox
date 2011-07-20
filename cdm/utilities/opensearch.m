@@ -1,4 +1,4 @@
-function [ links, params] = opensearch( q )
+function [ links, params, requesturl] = opensearch( q )
 %OPENSEARCH Queries GI-cat using the opensearch interface
 % returns a list of available links from the matching resources
 % Usage:  [ links, params ] = opensearch(q )
@@ -48,11 +48,11 @@ if ~isfield(q,'bbox'); q.bbox='';end
 if ~isfield(q,'time_start'); q.time_start='';end
 if ~isfield(q,'time_end'); q.time_end='';end
 if ~isfield(q,'loc'); q.loc='';end
-if ~isfield(q,'si'); q.si='';end
+if ~isfield(q,'si'); q.si='1';end
 
 % Default "&ct=&" returns only 10 records so specify default to be very 
 % large if not supplied.  
-if ~isfield(q,'ct'); q.ct='10000';end
+if ~isfield(q,'ct'); q.ct='400';end
 
 % In GI-CAT 8.4, default "&rel=&" for rel:{geo:relation} returns 
 % records outside bounding box, so here we specify the default 
@@ -70,12 +70,24 @@ params = {
 'ts';   q.time_start;
 'te';   q.time_end; 
 'outputFormat';'application/atom+xml';
+'enableCrawling'; 'false';
 };
 
 [results] = urlread(q.endpoint,'get', params);
 
 [startIndex, endIndex, tokIndex, matchStr, links, exprNames,splitStr] = ...
     regexp(results, '<gmd:URL>(.*?)</gmd:URL>','match');
+
+requesturl = [q.endpoint, '?&', params{1},'=',params{2},'&',...
+    params{3},'=',params{4},'&',...    
+    params{5},'=',params{6},'&',...
+    params{7},'=',params{8},'&',...
+    params{9},'=',params{10},'&',...
+    params{11},'=',params{12},'&',...
+    params{13},'=',params{14},'&',...
+    params{15},'=',params{16},'&',...
+    params{17},'=',params{18},'&',...
+    params{19},'=',params{20}];
 
 end
 
