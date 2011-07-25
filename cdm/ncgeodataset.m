@@ -131,18 +131,6 @@ classdef ncgeodataset < cfdataset
             end
         end
         
-        function m = metadata(obj)
-            % NCGEODATASET.METADATA - Function to grab all of the attributes (global and variables) all
-            % at once.
-            % Useage: >> metadatastructure = ds.metadata;
-            %
-            vars = obj.variables;
-            m.global_attributes = obj.attributes;
-            for i=1:length(vars);
-                m.(vars{i}) = obj.attributes(vars{i});
-            end
-        end % function metadata end
-        
         function e = extent(obj, variableName)
             % NCGEODATASET.extent - Function to calculate lat/lon bounding box of variable.
             % Usage: ex = nc.extent('temp')

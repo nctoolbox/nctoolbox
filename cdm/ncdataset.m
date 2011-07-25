@@ -200,8 +200,9 @@ classdef ncdataset < handle
             % n x 2 cell array.
             %
             % Use as:
-            %   a = ncdataset.attributes
-            %   a = ncdataset.attributes(variableName)
+            %   ds = ncdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/m1_metsys_20081008_original.nc')
+            %   ga = ds.attributes               % Return global attributes
+            %   a = ds.attributes(variableName)  % Return the attributes of the given variable
             %
             % Inputs:
             %   variableName = The name of the variable whos attributes you want
@@ -218,10 +219,9 @@ classdef ncdataset < handle
             %   and search for a particular key (or attribute name)
             %     ds = ncdataset('http://somewhere/data.nc');
             %     attr = ds.attributes('time');
-            %     keys = attr(:, 1);    % Cell array of keys
-            %     values = attr(:, 2);  % Cell array of values
-            %     i = find(ismember(keys, 'units')); % search for units attribute
-            %     units = values{i};  % Retrieve the units value
+            %     units = value4key(attr, 'units');
+            %
+            % See Also: value4key, ncdataset.attribute, ncdataset.metadata
             if (nargin < 2)
                 % Get global attributes
                 aa = obj.netcdf.getGlobalAttributes();
@@ -249,26 +249,32 @@ classdef ncdataset < handle
             end
         end
         
+        %%
         function val = attribute(obj, key, var)
             % NCDATASET.ATTRIBUTE returns the value a global attribute specified by its key or the
             % variable attribute specified by key and variable.
             %
-            % Use as:
-            %   a = ncdataset.attribute('title')
-            %   a = ncdataset.attribute(key)
             %
-            %   a = ncdataset.attribute('title', 'temp')
-            %   a = ncdataset.attribute(key, variableName)
+            % Use as:
+            %   ds = ncdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/m1_metsys_20081008_original.nc')
+            %   a = ds.attribute('title') % Look for the global attribute named 'title'
+            %   a = ds.attribute(key)
+            %
+            %   a = ds.attribute('title', 'temp') % Look for the 'title' attribute on the variable 'temp'
+            %   a = ds.attribute(key, variableName)
             %
             % Inputs:
             %   key = The name of the attribute field like 'title' or 'units'...
             %   variableName = The name of the variable whos attributes you want
             %       to retrieve. If no argument is specified then the
-            %       global attributes are returned.
+            %       matching global attribute is returned.
             %
             % Return:
             %   The value associated with the attribute field corresponding to key (and optionally
             %   variableName)
+            %
+            % Note: This method is a convience method and is equivalent to the following
+            %   a = 
             if nargin < 3
                 atlist = obj.attributes;
                 val = value4key(atlist, key);
@@ -279,6 +285,39 @@ classdef ncdataset < handle
                 warning('NCTOOLBOX:ncdataset:attribute', 'No key or variable specified.');
             end
         end
+        
+        %%
+        function m = metadata(obj)
+            % NCDATASET.METADATA - Returns all the global and variable attributes
+            % as a single structure. 
+            %
+            % Use as: 
+            %   ds = ncdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/m1_metsys_20081008_original.nc')
+            %   m = ds.metadata
+            %
+            % Return:
+            %    All the global and variable attributes in a single data structure.
+            %    The structure, m,  will have fields like:
+            %        global_attributes = a cell array of key value pairs of the global attributes
+            %        variablename1
+            %        variablename2
+            %         ...
+            %        variablenameN
+            %
+            % Note: You can use value4key to retrive a specific value for a given key 
+            % For example:
+            %     ds = ncdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/m1_metsys_20081008_original.nc')
+            %     m = ds.metadata
+            %     timeunits = value4key(m.time, 'units')
+            %
+            % See Also: value4key, ncdataset.attributes, ncdataset.attribute
+            v = obj.variables;
+            m.global_attributes = obj.attributes;
+            for i=1:length(v);
+                m.(v{i}) = obj.attributes(v{i});
+            end
+        end % function metadata end
+        
         %%
         function save(obj, filename)
             % NCDATASET.SAVE Save the data to a local netcdf file
