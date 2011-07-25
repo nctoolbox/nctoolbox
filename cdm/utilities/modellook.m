@@ -7,8 +7,16 @@
 %
 % NCTOOLBOX (http://code.google.com/p/nctoolbox)
 %
-function [] = modellook(dap, date)
+function [] = modellook(varargin)
+input_hash = arg2hash(varargin);
 
+dap = value4key(input_hash, 'uri'); % Required
+date = value4key(input_hash, 'date'); % Required
+level = value4key(input_hash, 'level'); % Default to 1
+
+if isempty(level)
+    level = 1;
+end
 
 nc = ncgeodataset(dap);
 vars = nc.variables;
@@ -46,14 +54,14 @@ set(gcf, 'UserData', out);
 
 if length(var.size) > 3
     h = pcolor(squeeze(double(var_struct.grid.lon)), squeeze(double(var_struct.grid.lat)),...
-        squeeze(double(var_struct.data(1, 1, :,:)))); % remember to change back
+        squeeze(double(var_struct.data(1, level, :,:)))); % remember to change back
     title({'ModelLook:';'Ctl-Click to create a path for vertical section and Shift-Click to plot.';...
         'Double-Click to create a profile plot at model location.';...
         ' '; [var.name, ' in ', var.attribute('units'), ' on ', datestr(tind.time)]}, 'interpreter', 'none');
 elseif length(var.size) > 2
     if isfield(var_struct.grid, 'z')
         h = pcolor(squeeze(double(var_struct.grid.lon)), squeeze(double(var_struct.grid.lat)),...
-            squeeze(double(var_struct.data(1, :,:)))); 
+            squeeze(double(var_struct.data(level, :,:)))); 
         title({'ModelLook:';...
             [var.name, ' in ', var.attribute('units')]}, 'interpreter', 'none');
     elseif isfield(var_struct.grid, 'time')
