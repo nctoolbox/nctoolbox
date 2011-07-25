@@ -108,7 +108,10 @@ classdef ncgeodataset < cfdataset
                         end
                     end
                     
+                  
                     v = ncgeovariable(obj, variableName, axesVariables);
+                    
+                    
                     if ~isempty(v)
                         for i = 1:length(obj.variables)
                             if strcmp(obj.ncvariables{i, 1}, variableName)
@@ -118,7 +121,8 @@ classdef ncgeodataset < cfdataset
                         end
                     end
                     catch
-                        warning('NCGEODATASET:GEOVARIABLE', 'The netcdf-java cdm contains no coordinate information associated with the variable. Please try ncvariable class. Methods that rely on coordinate information may have inconsistent behavior (timewindow, geosubset, grid, grid_interop, struct, geoij, etc.).');
+                        warning('NCGEODATASET:GEOVARIABLE', 'The netcdf-java cdm contains no coordinate information associated with the variable. Returning ncvariable instead of ncgeovariable object. (Methods that rely on coordinate information like ''grid'' or ''geosubset'' are not available.');
+                        v = ncvariable(obj, variableName);
                     end
                 else
                     v = ncgeovariable(obj, variableName, axes);
