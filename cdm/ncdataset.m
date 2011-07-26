@@ -250,7 +250,7 @@ classdef ncdataset < handle
         end
         
         %%
-        function val = attribute(obj, var, key)
+        function val = attribute(obj, varargin)
             % NCDATASET.ATTRIBUTE returns the value a global attribute specified by its key or the
             % variable attribute specified by key and variable.
             %
@@ -260,8 +260,8 @@ classdef ncdataset < handle
             %   a = ds.attribute('title') % Look for the global attribute named 'title'
             %   a = ds.attribute(key)
             %
-            %   a = ds.attribute('title', 'temp') % Look for the 'title' attribute on the variable 'temp'
-            %   a = ds.attribute(key, variableName)
+            %   a = ds.attribute('temp', 'title') % Look for the 'title' attribute on the variable 'temp'
+            %   a = ds.attribute(variableName, key)
             %
             % Inputs:
             %   key = The name of the attribute field like 'title' or 'units'...
@@ -277,10 +277,10 @@ classdef ncdataset < handle
             %   a = 
             if nargin < 3
                 atlist = obj.attributes;
-                val = value4key(atlist, key);
+                val = value4key(atlist, varargin{1});
             elseif nargin > 1
-                atlist = obj.attributes(var);
-                val = value4key(atlist, key);
+                atlist = obj.attributes(varargin{1});
+                val = value4key(atlist, varargin{2});
             else
                 warning('NCTOOLBOX:ncdataset:attribute', 'No key or variable specified.');
             end

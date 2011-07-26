@@ -109,7 +109,7 @@ classdef ncvariable < handle
             %
             % Return:
             %   The value associated with the attribute field corresponding to key.
-            val = obj.dataset.attribute(key, obj.name);
+            val = obj.dataset.attribute(obj.name, key);
         end
         
         %%
