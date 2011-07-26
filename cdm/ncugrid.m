@@ -1,4 +1,6 @@
-% UGRID Extention of dataset object class for unstructured grid datasets.
+% NCUGRID Extention of dataset object class for unstructured grid datasets.
+% Usage:
+%            >> dataset = ncugrid(uri);
 %
 % NCTOOLBOX (http://code.google.com/p/nctoolbox)
 classdef ncugrid < handle
@@ -83,12 +85,24 @@ classdef ncugrid < handle
         end % end constructor
         
         function uvar = uvariable(obj, varName)
+            % NCUGRID.UVARIABLE - Instantiates a ugrid variable object from the variable 'varName'.
+            % Usage:
+            %             uvar_obj = nc.uvariable(varName);
+            %
             uvar = ncuvariable(obj, varName);
         end % uvariable end
         
         function ss = unstructuredLatLonSubset(obj, varargin) % input subset structure
             % NCUGRID.unstructuredLatLonSubset  - Function to subset an unstructured model grid by lat/lon
             % bounding box using subsetting methods in the ugrid-java.
+            %
+            % Usage:
+            %              d = nc.unstructuredLatLonSubset(variableName, subsetstructure)
+            %
+            % Subset-structure:
+            %              subsetstructure.lat = [minlat maxlat];
+            %              subsetstructure.lon = [minlon maxlon];
+            %
             import ucar.nc2.dt.ugrid.geom.LatLonPolygon2D;
             import ucar.nc2.dt.ugrid.geom.LatLonRectangle2D;
             import ucar.unidata.geoloc.LatLonPoint;
@@ -204,16 +218,16 @@ classdef ncugrid < handle
             end
         end % end attributes
         
-        function val = attribute(obj, key, var)
-            % NCDATASET.ATTRIBUTE returns the value a global attribute specified by its key or the
+        function val = attribute(obj, varargin)
+            % NCUGRID.ATTRIBUTE returns the value a global attribute specified by its key or the
             % variable attribute specified by key and variable.
             %
             % Use as:
             %   a = ncdataset.attribute('title')
             %   a = ncdataset.attribute(key)
             %
-            %   a = ncdataset.attribute('title', 'temp')
-            %   a = ncdataset.attribute(key, variableName)
+            %   a = ncdataset.attribute('temp', 'title')
+            %   a = ncdataset.attribute(variableName, key)
             %
             % Inputs:
             %   key = The name of the attribute field like 'title' or 'units'...
@@ -226,10 +240,10 @@ classdef ncugrid < handle
             %   variableName)
             if nargin < 3
                 atlist = obj.attributes;
-                val = value4key(atlist, key);
+                val = value4key(atlist, varargin{1});
             elseif nargin > 1
-                atlist = obj.attributes(var);
-                val = value4key(atlist, key);
+                atlist = obj.attributes(varargin{1});
+                val = value4key(atlist, varargin{2});
             else
                 warning('NCTOOLBOX:ncugrid:attribute', 'No key or variable specified.');
             end
@@ -292,6 +306,14 @@ classdef ncugrid < handle
         end % end
         
         function d = data(obj, variable, first, last, stride)
+            % NCUGRID.DATA - Get variable data based on vector of elements (nodes, faces, etc.) representation of the unstructured data.
+            %
+            % Usage:
+            %              d = nc.data(variableName)
+            %              d = nc.data(variableName, first)
+            %              d = nc.data(variableName, first, last)
+            %              d = nc.data(variableName, first, last, stride)
+            %
             
             variable = ucar.nc2.NetcdfFile.escapeName(variable);
             v = obj.netcdfugrid.getNetcdfFile().findVariable(variable);
@@ -341,11 +363,13 @@ classdef ncugrid < handle
         end % end data
         
         function ig = grid_interop(src, varName, first, last, stride)
-            % NCGEOVARIABLE.GRID_INTEROP - Method to get the coordinate variables and their data as a
+            % NCUGRID.GRID_INTEROP - Method to get the coordinate variables and their data as a
             % a structure with standardized field names for lat, lon, time, and z. Other coordiante variables
             % that are not recognized by netcdf-java as the previous four types have field names directly
             % taken from their variable names.
-            % Useage: >> gridstruct = geovar.grid_interop(1,:,:,1:2:50);
+            % Usage: 
+            %          >> gridstruct = geovar.grid_interop(1,:,:,1:2:50);
+            %
             g = src.grid(varName, first, last, stride);
             names = fieldnames(g);
             
@@ -408,6 +432,16 @@ classdef ncugrid < handle
         end % grid_interop end
         
         function gr = grid(obj, varName, first, last, stride)
+            % NCUGRID.GRID - Return a matlab structure of the coordinate variables of 'variableName',
+            % subsetted using first, last, and stride index arguments in relation to the variable of interest
+            % 'variableName'.
+            %
+            % Usage:
+            %              d = nc.grid(variableName)
+            %              d = nc.grid(variableName, first)
+            %              d = nc.grid(variableName, first, last)
+            %              d = nc.grid(variableName, first, last, stride)
+            %
             mesh_ident = obj.attribute('mesh', varName);
             mesh_vars = regexp(mesh_ident, ' ', 'split');
             if nargin < 3
@@ -506,6 +540,11 @@ classdef ncugrid < handle
         end % end grid
         
         function vs = size(obj, varName)
+            % NCUGRID.SIZE - Return the dimensional sizes of the variable of interest.
+            %
+            % Usage:
+            %              d = nc.size(variableName)
+            %
             v = obj.dataset.netcdf.findVariable(varName);
             vs = v.getShape;
             vs = vs';
@@ -514,8 +553,8 @@ classdef ncugrid < handle
         function d = timewindowij(src, varargin)
             % NCGEOVARIABLE.TIMEWINDOWIJ - Function to get indices from start and stop times for sub-
             % setting. TODO: There must be a better/fast way to do this using the java library.
-            % Useage: >> timestruct = geovar.timewindowij([2004 1 1 0 0 0], [2005 12 31 0 0 0]);
-            %              >> timestruct = geovar.timewindowij(731947, 732677);
+            % Useage: >> timestruct = nc.timewindowij([2004 1 1 0 0 0], [2005 12 31 0 0 0]);
+            %              >> timestruct = nc.timewindowij(731947, 732677);
             % Result: time.time = time data
             %            time.index = time indices
             s = src.size(varargin{1});

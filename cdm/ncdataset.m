@@ -310,6 +310,9 @@ classdef ncdataset < handle
             %     m = ds.metadata
             %     timeunits = value4key(m.time, 'units')
             %
+            % Equivalent to:
+            %     timeunits = ds.attribute('time', 'units')
+            %
             % See Also: value4key, ncdataset.attributes, ncdataset.attribute
             v = obj.variables;
             m.global_attributes = obj.attributes;

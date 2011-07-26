@@ -48,7 +48,7 @@ classdef ncgeovariable < ncvariable
         end % ncgeovariable end
         
         function e = extent(src)
-            % NCGEOVARIABLE.extent - Function to found geographic bounding box coordinates.
+            % NCGEOVARIABLE.extent - Function to find geographic bounding box coordinates.
             % Usage e = var.extent;
              s = src.size;
              lens = length(s);

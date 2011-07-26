@@ -136,8 +136,7 @@ classdef ncvariable < handle
             %       matrix returned by NCDATASET.SIZE or SIZE
             %
             % Returns:
-            %   The data is returned as a structure containing the actual data for the variable
-            %   of interest as well as each coordinate variable
+            %   The data is returned as a variable containing the actual data for the netcdf variable
             %
             % Example:
             %

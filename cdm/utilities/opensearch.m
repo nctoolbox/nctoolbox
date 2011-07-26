@@ -1,7 +1,7 @@
 function [ links, params, requesturl] = opensearch( q )
 %OPENSEARCH Queries GI-cat using the opensearch interface
 % returns a list of available links from the matching resources
-% Usage:  [ links, params ] = opensearch(q )
+% Usage:  [ links, params, requesturl ] = opensearch( q )
 %
 %   q.endpoint = URL to opensearch server
 %   q.string_text = text string to match 
@@ -52,7 +52,7 @@ if ~isfield(q,'si'); q.si='1';end
 
 % Default "&ct=&" returns only 10 records so specify default to be very 
 % large if not supplied.  
-if ~isfield(q,'ct'); q.ct='400';end
+if ~isfield(q,'ct'); q.ct='1000';end
 
 % In GI-CAT 8.4, default "&rel=&" for rel:{geo:relation} returns 
 % records outside bounding box, so here we specify the default 
