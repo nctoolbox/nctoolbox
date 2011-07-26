@@ -250,7 +250,7 @@ classdef ncdataset < handle
         end
         
         %%
-        function val = attribute(obj, key, var)
+        function val = attribute(obj, var, key)
             % NCDATASET.ATTRIBUTE returns the value a global attribute specified by its key or the
             % variable attribute specified by key and variable.
             %

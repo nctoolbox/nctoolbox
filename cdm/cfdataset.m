@@ -325,7 +325,7 @@ classdef cfdataset < ncdataset
             % to the input standard_name.
             vars = obj.variables;
             for i = 1:length(vars) % Loop through variables to get standard_name attribute if it exists
-                tempsn = obj.attribute('standard_name', vars{i});
+                tempsn = obj.attribute(vars{i},'standard_name');
                 if ~isempty(tempsn) % Make list of standard names, maybe this is not effcient, but it can't
                                                % be too bad?
 %                     hash{i, 1} = vars{i};
