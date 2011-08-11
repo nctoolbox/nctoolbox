@@ -129,7 +129,7 @@ classdef ncgeovariable < ncvariable
                             
                         case 'GeoZ'
                             pos_z = char(javaaxisvar.getPositive());
-                            z_sn = src.dataset.attribute('standard_name', tempname);
+                            z_sn = src.dataset.attribute(tempname, 'standard_name');
                             k = strfind(z_sn, 'ocean_s');
                             switch isempty(k)
                                 case 0

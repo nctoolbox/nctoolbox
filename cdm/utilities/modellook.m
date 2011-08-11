@@ -45,6 +45,9 @@ catch
 end
 a = @press;
 figure;
+% usa = shaperead('usastatelo');
+% mapshow(usa);
+% hold on;
 out.var = var;
 out.var_struct = var_struct;
 
