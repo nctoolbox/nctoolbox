@@ -1,4 +1,4 @@
-function varargout = vsliceg(njData,njGrid,cx,cy)
+function varargout = vsliceg(njData,njGrid,cx,cy, varargin)
 % VSLICEG:  create a vertical slice along curve
 %
 % [X,Z,VDATA] = vsliceg(DATA,GRD,CX,CY) creates a vertical slice along
@@ -35,6 +35,11 @@ if numpts < 100
     ft = linspace(0,1,100);
     slice_x = spline(t,coords(:,1),ft);
     slice_y = spline(t,coords(:,2),ft);
+elseif strcmp(varargin{1}, 'linear')
+    t = linspace(0,1,numpts);
+    ft = linspace(0,1,100);
+    slice_x = interp1(t,coords(:,1),ft);
+    slice_y = interp1(t,coords(:,2),ft);
 else
     slice_x = coords(:,1);
     slice_y = coords(:,2);

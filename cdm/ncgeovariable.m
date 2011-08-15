@@ -304,13 +304,28 @@ classdef ncgeovariable < ncvariable
             
             if isfield(struct, 'time') % Deal with time (values) or t_index (indices) bounds
                 if iscell(struct.time)
-                    t = obj.timewindowij(struct.time{1}, struct.time{2});
-                    tmin_i = min(t.index);
-                    tmax_i = max(t.index);
+                    switch length(struct.time)
+                        case 1
+                            t = obj.timewindowij(struct.time{1});
+                            tmin_i = t.index;
+                            tmax_i = t.index;
+                        case 2
+                            t = obj.timewindowij(struct.time{1}, struct.time{2});
+                            tmin_i = min(t.index);
+                            tmax_i = max(t.index);
+                    end
                 else
-                    t = obj.timewindowij(struct.time(1), struct.time(2));
-                    tmin_i = min(t.index);
-                    tmax_i = max(t.index);
+                    switch length(struct.time)
+                        case 1
+                            t = obj.timewindowij(struct.time);
+                            tmin_i = t.index;
+                            tmax_i = t.index;
+                        case 2
+                            t = obj.timewindowij(struct.time(1), struct.time(2));
+                            tmin_i = min(t.index);
+                            tmax_i = max(t.index);
+                    end
+                    
                 end
             elseif isfield(struct, 't_index')
                 if iscell(struct.t_index)
@@ -418,70 +433,90 @@ classdef ncgeovariable < ncvariable
             
             %Unpack geosubset_structure
             if isfield(struct, 'lat');
-                north_max = struct.lat(2);
-                north_min = struct.lat(1);
+                switch length(struct.lat)
+                    case 1 
+                        flag = 1;
+                    case 2
+                        north_max = struct.lat(2);
+                        north_min = struct.lat(1);
+                end
+                
             else
                 north_max = max(g.lat);
                 north_min = min(g.lat);
             end
             
             if isfield(struct,'lon');
-                east_max = struct.lon(2);
-                east_min = struct.lon(1);
+                switch length(struct.lon)
+                    case 1
+                        flag = 1;
+                    case 2
+                        east_max = struct.lon(2);
+                        east_min = struct.lon(1);
+                end
+                
             else
                 east_max = max(g.lon);
                 east_min = min(g.lon);
             end
             
-            
-            if ~isvector(g.lat)
-                [indlat_l1] = ((g.lat <= north_max)); %2d
-                [indlat_l2] = ((g.lat >= north_min)); %2d
-                [indlat_r indlat_c] = find((indlat_l1&indlat_l2)); % 1d each
-                indlon_l1 = zeros(size(indlat_l1));
-                indlon_l2 = zeros(size(indlat_l1));
-                for i = 1:length(indlat_r)
-                    if g.lon(indlat_r(i), indlat_c(i)) <= east_max;
-                        indlon_l1(indlat_r(i), indlat_c(i)) = true;
-                    end
-                    if g.lon(indlat_r(i), indlat_c(i)) >= east_min;
-                        indlon_l2(indlat_r(i), indlat_c(i)) = true;
-                    end
-                end
-                [ind_r, ind_c] = find((indlon_l1&indlon_l2));
-                indstart_c = min(ind_c); % Out
-                indend_c = max(ind_c);
-                indstart_r = min(ind_r);
-                indend_r = max(ind_r);
-            else
-                indlat1 = (g.lat <= north_max);
-                indlat2 = (g.lat >= north_min);
-                indlat = find(indlat1&indlat2);
-                indlon1 = (g.lon <= east_max);
-                indlon2 = (g.lon >= east_min);
-                indlon = find(indlon1&indlon2);
-                % Out
-                attrs = obj.dataset.attributes;
-                key = value4key(attrs, 'CF:featureType');
-                
-                if strcmp(key, 'timeSeries')
-                    a = [];
-                    for i = 1:length(indlon)
-                        if ~isempty(find(indlon(i)==indlat, 1))
-                            a(length(a)+1) = indlon(i);
+            switch flag
+                case 0
+                    if ~isvector(g.lat)
+                        [indlat_l1] = ((g.lat <= north_max)); %2d
+                        [indlat_l2] = ((g.lat >= north_min)); %2d
+                        [indlat_r indlat_c] = find((indlat_l1&indlat_l2)); % 1d each
+                        indlon_l1 = zeros(size(indlat_l1));
+                        indlon_l2 = zeros(size(indlat_l1));
+                        for i = 1:length(indlat_r)
+                            if g.lon(indlat_r(i), indlat_c(i)) <= east_max;
+                                indlon_l1(indlat_r(i), indlat_c(i)) = true;
+                            end
+                            if g.lon(indlat_r(i), indlat_c(i)) >= east_min;
+                                indlon_l2(indlat_r(i), indlat_c(i)) = true;
+                            end
+                        end
+                        [ind_r, ind_c] = find((indlon_l1&indlon_l2));
+                        indstart_c = min(ind_c); % Out
+                        indend_c = max(ind_c);
+                        indstart_r = min(ind_r);
+                        indend_r = max(ind_r);
+                    else
+                        indlat1 = (g.lat <= north_max);
+                        indlat2 = (g.lat >= north_min);
+                        indlat = find(indlat1&indlat2);
+                        indlon1 = (g.lon <= east_max);
+                        indlon2 = (g.lon >= east_min);
+                        indlon = find(indlon1&indlon2);
+                        % Out
+                        attrs = obj.dataset.attributes;
+                        key = value4key(attrs, 'CF:featureType');
+                        
+                        if strcmp(key, 'timeSeries')
+                            a = [];
+                            for i = 1:length(indlon)
+                                if ~isempty(find(indlon(i)==indlat, 1))
+                                    a(length(a)+1) = indlon(i);
+                                end
+                            end
+                            indstart_c = min(a);
+                            indend_c = max(a);
+                            indstart_r = min(a);
+                            indend_r = max(a);
+                        else
+                            indstart_c = min(indlon); % testing temp, i switched lon and lat here
+                            indend_c = max(indlon);
+                            indstart_r = min(indlat);
+                            indend_r = max(indlat);
+                            %
                         end
                     end
-                    indstart_c = min(a);
-                    indend_c = max(a);
-                    indstart_r = min(a);
-                    indend_r = max(a);
-                else
-                    indstart_c = min(indlon); % testing temp, i switched lon and lat here
-                    indend_c = max(indlon);
-                    indstart_r = min(indlat);
-                    indend_r = max(indlat);
-                    flag = 1;
-                end
+                case 1
+                    [a b indexes] = nearxy(g.lon, g.lat, struct.lon, struct.lat);
+                    indstart_c = indexes(2);
+                    indend_c = indexes(2);
+                    indstart_r = indexes(1);
+                    indend_r = indexes(1);
             end
             
             
