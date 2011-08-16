@@ -3,7 +3,9 @@ function setup_nctoolbox
 home = fileparts(which(mfilename));
 addpath(fullfile(home, 'java'));
 addpath(fullfile(home, 'cdm'));
-addpath(fullfile(home, 'cdm', 'utilities'));
+addpath(genpath(fullfile(home, 'cdm', 'utilities'))); % Added so that we can swap out utitlies modules
+                                                                          % for different user groups, like sura shelf_hypoxia
+
 
 
 warning off
