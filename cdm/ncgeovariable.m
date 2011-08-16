@@ -517,7 +517,12 @@ classdef ncgeovariable < ncvariable
                         indstart_r = near(g.lat,struct.lat);
                         indend_c = indstart_c;
                         indend_r = indstart_r;
-                    else
+                    else 
+                        % This way does't require the addtional step, or the additional function and is verified
+                        % to return the same results as using nearxy with first output and ind2ij.
+                        % Ind2ij doesn't seem to add any value to the toolbox, everything is already here to
+                        % get rows and columns. The third nearxy output can remain private if it confusing to
+                        % users (no mention of it in help docs).
                         [a b indexes] = nearxy(g.lon, g.lat, struct.lon, struct.lat);
                         indstart_c = indexes(2);
                         indend_c = indexes(2);
