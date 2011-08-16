@@ -512,11 +512,18 @@ classdef ncgeovariable < ncvariable
                         end
                     end
                 case 1
-                    [a b indexes] = nearxy(g.lon, g.lat, struct.lon, struct.lat);
-                    indstart_c = indexes(2);
-                    indend_c = indexes(2);
-                    indstart_r = indexes(1);
-                    indend_r = indexes(1);
+                    if isvector(g.lat)
+                        indstart_c = near(g.lon,struct.lon);
+                        indstart_r = near(g.lat,struct.lat);
+                        indend_c = indstart_c;
+                        indend_r = indstart_r;
+                    else
+                        [a b indexes] = nearxy(g.lon, g.lat, struct.lon, struct.lat);
+                        indstart_c = indexes(2);
+                        indend_c = indexes(2);
+                        indstart_r = indexes(1);
+                        indend_r = indexes(1);
+                    end
             end
             
             
