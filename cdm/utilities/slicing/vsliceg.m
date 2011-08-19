@@ -23,7 +23,7 @@ function varargout = vsliceg(njData,njGrid,cx,cy, varargin)
 %
 % NCTOOLBOX (http://code.google.com/p/nctoolbox)
 
-error(nargchk(4,4,nargin,'struct'));
+% error(nargchk(4,4,nargin,'struct'));
 coords=[cx(:) cy(:)];
 
 num_levels = size(njGrid.z,1);

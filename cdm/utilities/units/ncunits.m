@@ -21,11 +21,27 @@ switch originalunits
         originalunits = 'cm/s';
     case {'M/S', 'M/SEC', 'METERS/S', 'METERS/SEC', 'MS/SEC'};
         originalunits = 'm/s';
-     case {'deg C', 'degree C', 'degrees C'};
+    case {'deg C', 'degree C', 'degrees C'};
         originalunits = 'degC';
+    case {'ppt', 'psu', 'PPT', 'PSU'};
+        originalunits = 'psu';
     otherwise
         % pass
 end
+
+switch newunits
+    case {'CM/S', 'CMS/SEC', 'CMS/SEC', 'CENTIMETERS/S', 'CENTIMETERS/SEC'};
+        newunits = 'cm/s';
+    case {'M/S', 'M/SEC', 'METERS/S', 'METERS/SEC', 'MS/SEC'};
+        newunits = 'm/s';
+    case {'deg C', 'degree C', 'degrees C'};
+        newunits = 'degC';
+    case {'ppt', 'psu', 'PPT', 'PSU'};
+        newunits = 'psu';
+    otherwise
+        % pass
+end
+
 
 % Check if conversion is possible, if not throw error
 if SimpleUnit.isCompatible(originalunits, newunits)
