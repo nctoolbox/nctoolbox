@@ -149,17 +149,22 @@ classdef ncgeovariable < ncvariable
                                     grid = grid.getCoordinateSystem();
                                     subgrid = grid.getVerticalTransform();
                                     subgrid = subgrid.subset(trange, zrange, yrange, xrange);
-                                    %                            try
-                                    array = subgrid.getCoordinateArray(0);
-                                    %                            catch
-                                    %                              array = subgrid.getCoordinateArray();
-                                    %                            end
-                                    
-                                    ig.z = array.copyToNDJavaArray();
-                                    if strcmp(pos_z, 'POSITIVE_DOWN')
-                                        tmp = g.z;
-                                        ig.z = tmp.*-1; %adjust for positive direction
+                                   
+                                    for q = first(1):stride(1):last(1)
+                                        %                            try
+                                        array = subgrid.getCoordinateArray(q-1);
+                                        %                            catch
+                                        %                              array = subgrid.getCoordinateArray();
+                                        %                            end
+                                        
+                                        ig.z(q, :, :, :) = array.copyToNDJavaArray();
+                                        
+%                                         if strcmp(pos_z, 'POSITIVE_DOWN')
+%                                             tmp = g.z;
+%                                             ig.z = tmp.*-1; %adjust for positive direction
+%                                         end
                                     end
+                                    
                                 otherwise
                                     
                                     if strcmp(pos_z, 'POSITIVE_DOWN')
@@ -302,114 +307,120 @@ classdef ncgeovariable < ncvariable
             
             [indstart_r indend_r indstart_c indend_c] = obj.geoij(struct);
             
-            if isfield(struct, 'time') % Deal with time (values) or t_index (indices) bounds
-                if iscell(struct.time)
-                    switch length(struct.time)
-                        case 1
-                            t = obj.timewindowij(struct.time{1});
-                            tmin_i = t.index;
-                            tmax_i = t.index;
-                        case 2
-                            t = obj.timewindowij(struct.time{1}, struct.time{2});
-                            tmin_i = min(t.index);
-                            tmax_i = max(t.index);
+            if ~isempty(indstart_r)
+                if isfield(struct, 'time') % Deal with time (values) or t_index (indices) bounds
+                    if iscell(struct.time)
+                        switch length(struct.time)
+                            case 1
+                                t = obj.timewindowij(struct.time{1});
+                                tmin_i = t.index;
+                                tmax_i = t.index;
+                            case 2
+                                t = obj.timewindowij(struct.time{1}, struct.time{2});
+                                tmin_i = min(t.index);
+                                tmax_i = max(t.index);
+                        end
+                    else
+                        switch length(struct.time)
+                            case 1
+                                t = obj.timewindowij(struct.time);
+                                tmin_i = t.index;
+                                tmax_i = t.index;
+                            case 2
+                                t = obj.timewindowij(struct.time(1), struct.time(2));
+                                tmin_i = min(t.index);
+                                tmax_i = max(t.index);
+                        end
+                        
+                    end
+                elseif isfield(struct, 't_index')
+                    if iscell(struct.t_index)
+                        if numel(struct.t_index{1}) > 1 % check to see if someone used str or datevec by accident
+                            me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
+                                'Expected min time to be an index/integer.');
+                            me.throw;
+                        else
+                            tmin_i = struct.t_index{1};
+                        end
+                        if numel(struct.t_index{2}) > 1 % check to see if someone used str or datevec by accident
+                            me = MException(['NCTOOLBOX:' mfilename ':geosubset'], ...
+                                'Expected max time to be an index/integer.');
+                            me.throw;
+                        else
+                            tmax_i = struct.t_index{2};
+                        end
+                    else
+                        tmin_i = struct.t_index(1);
+                        tmax_i = struct.t_index(2);
                     end
                 else
-                    switch length(struct.time)
-                        case 1
-                            t = obj.timewindowij(struct.time);
-                            tmin_i = t.index;
-                            tmax_i = t.index;
-                        case 2
-                            t = obj.timewindowij(struct.time(1), struct.time(2));
-                            tmin_i = min(t.index);
-                            tmax_i = max(t.index);
-                    end
-                    
+                    tmin_i = 1;
+                    tmax_i = nums(1);
                 end
-            elseif isfield(struct, 't_index')
-                if iscell(struct.t_index)
-                    if numel(struct.t_index{1}) > 1 % check to see if someone used str or datevec by accident
+                
+                
+                
+                if length(nums) < 2
+                    me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
+                        ['Expected data of ', obj.name, ' to be at least rank 2.']);
+                    me.throw;
+                elseif length(nums) < 3
+                    ax = obj.grid([1 1],[1 1],[1 1]);
+                    if isfield(ax, 'time')
+                        first = [tmin_i indstart_r];
+                        last = [tmax_i indend_r];
+                        stride = [struct.t_stride struct.h_stride(2)];
+                    else
+                        first = [indstart_r indstart_c];
+                        last = [indend_r indend_c];
+                        stride = [struct.h_stride(2) struct.h_stride(1)];
+                    end
+                elseif length(nums) < 4
+                    ax = obj.grid([1 1 1],[1 1 1],[1 1 1]);
+                    if isfield(ax, 'time')
+                        first = [tmin_i indstart_r indstart_c];
+                        last = [tmax_i indend_r indend_c];
+                        stride = [struct.t_stride struct.h_stride(2) struct.h_stride(1)];
+                    elseif isfield(ax, 'z')
+                        if isfield(struct, 'z_index');
+                        else
+                            struct.z_index = [1 nums(1)];
+                        end
+                        first = [struct.z_index(1) indstart_r indstart_c];
+                        last = [struct.z_index(2) indend_r indend_c];
+                        stride = [struct.v_stride struct.h_stride(2) struct.h_stride(1)];
+                    else
                         me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
-                            'Expected min time to be an index/integer.');
+                            'Expected either a coordinate variable acknowleged as time or as z.');
                         me.throw;
-                    else
-                        tmin_i = struct.t_index{1};
                     end
-                    if numel(struct.t_index{2}) > 1 % check to see if someone used str or datevec by accident
-                        me = MException(['NCTOOLBOX:' mfilename ':geosubset'], ...
-                            'Expected max time to be an index/integer.');
-                        me.throw;
-                    else
-                        tmax_i = struct.t_index{2};
-                    end
-                else
-                    tmin_i = struct.t_index(1);
-                    tmax_i = struct.t_index(2);
-                end
-            else
-                tmin_i = 1;
-                tmax_i = nums(1);
-            end
-            
-            
-            
-            if length(nums) < 2
-                me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
-                    ['Expected data of ', obj.name, ' to be at least rank 2.']);
-                me.throw;
-            elseif length(nums) < 3
-                ax = obj.grid([1 1],[1 1],[1 1]);
-                if isfield(ax, 'time')
-                    first = [tmin_i indstart_r];
-                    last = [tmax_i indend_r];
-                    stride = [struct.t_stride struct.h_stride(2)];
-                else
-                    first = [indstart_r indstart_c];
-                    last = [indend_r indend_c];
-                    stride = [struct.h_stride(2) struct.h_stride(1)];
-                end
-            elseif length(nums) < 4
-                ax = obj.grid([1 1 1],[1 1 1],[1 1 1]);
-                if isfield(ax, 'time')
-                    first = [tmin_i indstart_r indstart_c];
-                    last = [tmax_i indend_r indend_c];
-                    stride = [struct.t_stride struct.h_stride(2) struct.h_stride(1)];
-                elseif isfield(ax, 'z')
+                elseif length(nums) < 5
                     if isfield(struct, 'z_index');
                     else
-                        struct.z_index = [1 nums(1)];
+                        struct.z_index = [1 nums(2)];
                     end
-                    first = [struct.z_index(1) indstart_r indstart_c];
-                    last = [struct.z_index(2) indend_r indend_c];
-                    stride = [struct.v_stride struct.h_stride(2) struct.h_stride(1)];
+                    first = [tmin_i struct.z_index(1) indstart_r indstart_c];
+                    last = [tmax_i struct.z_index(2) indend_r indend_c];
+                    stride = [struct.t_stride struct.v_stride struct.h_stride(2) struct.h_stride(1)];
                 else
                     me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
-                        'Expected either a coordinate variable acknowleged as time or as z.');
+                        ['Expected data of ', obj.name, ' to be less than rank 5.']);
                     me.throw;
+                    
                 end
-            elseif length(nums) < 5
-                if isfield(struct, 'z_index');
-                else
-                    struct.z_index = [1 nums(2)];
-                end
-                first = [tmin_i struct.z_index(1) indstart_r indstart_c];
-                last = [tmax_i struct.z_index(2) indend_r indend_c];
-                stride = [struct.t_stride struct.v_stride struct.h_stride(2) struct.h_stride(1)];
+                
+                % Get the corresponding data and interop grid...
+                d.data = obj.data(first, last, stride);
+                d.grid = obj.grid_interop(first, last, stride);
+                %           else
+                %             ugrid = ncugrid(obj); % Starting to add place holders for ugrid subsetting functionality
+                %             d = ugrid.unstructuredLatLonSubset(struct);
+                %           end % end of ugrid if
             else
                 me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
-                    ['Expected data of ', obj.name, ' to be less than rank 5.']);
+                        ['No indices returned cooresponding to geographic subset.']);
                 me.throw;
-                
             end
-            
-            % Get the corresponding data and interop grid...
-            d.data = obj.data(first, last, stride);
-            d.grid = obj.grid_interop(first, last, stride);
-            %           else
-            %             ugrid = ncugrid(obj); % Starting to add place holders for ugrid subsetting functionality
-            %             d = ugrid.unstructuredLatLonSubset(struct);
-            %           end % end of ugrid if
         end % end of geosubset
         %%
         function [indstart_r indend_r indstart_c indend_c] =...
