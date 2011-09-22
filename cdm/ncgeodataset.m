@@ -215,12 +215,17 @@ classdef ncgeodataset < cfdataset
                         'Call with "()" as first type unsupported at this time')
                     
                 case '{}'
+                    echo off
                     v = obj.geovariable(s(1).subs);
+                    echo on
                     if length(s) == 1
                         B = v;
                     elseif length(s) == 2
+                        echo off
                         B = v.data(s(2).subs{:});
+                        echo on
                     elseif length(s) == 3
+                        echo off
                         switch s(3).subs
                             case 'data'
                                 B = v.data(s(2).subs);
@@ -243,6 +248,7 @@ classdef ncgeodataset < cfdataset
                                 catch me
                                 end
                         end
+                        echo on
                     else
                         B = v;
                     end
