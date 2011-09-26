@@ -190,10 +190,14 @@ classdef ncgeovariable < ncvariable
                             tmp = g.(tempname);
                             ind = find(tmp > 180); % convert 0-360 convention to -180-180
                             tmp(ind) = tmp(ind)-360;
-                            ig.lon = tmp;
-                            
+                            ig.lon = tmp;    
                         case 'Lat'
                             ig.lat = g.(tempname);
+                            
+                        case 'GeoY'
+                            ig.y = g.(tempname);
+                        case 'GeoX'
+                            ig.x = g.(tempname);
                             
                         otherwise
                             ig.(tempname) = g.(tempname);

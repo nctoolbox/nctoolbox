@@ -247,6 +247,14 @@ classdef ncgeodataset < cfdataset
                                     B.z = A.z;
                                 catch me
                                 end
+                                try
+                                    B.x = A.x;
+                                catch me
+                                end
+                                try
+                                    B.y = A.y;
+                                catch me
+                                end
                         end
                         echo on
                     else
