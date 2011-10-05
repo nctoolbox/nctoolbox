@@ -274,7 +274,7 @@ classdef ncvariable < handle
                             else
                                 sref = obj.data;
                                 warning('NCTOOLBOX:ncvariable:subsref', ...
-                                    ['Variable "' name '" has no netcdf dimension associated with it. Errors may result from non CF compliant files.'])
+                                    ['Variable "' obj.name '" has no netcdf dimension associated with it. Errors may result from non CF compliant files.'])
                             end
                         case 'grid'
                             nums = size(obj);
