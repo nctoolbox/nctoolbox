@@ -264,6 +264,23 @@ classdef ncgeovariable < ncvariable
             tw = d;
         end
         
+        function tv = gettimevar(src)
+            % NCGEODATASET.gettimevar()
+            tn = src.gettimename();
+            tv = src.dataset.geovariable(tn);
+        end
+        
+        function tn = gettimename(src)
+            % NCGEODATASET.gettimename()
+            for i = 1:length(src.axes)
+                tempname = src.axes{i};
+                javaaxisvar  =   src.dataset.netcdf.findVariable(tempname);
+                type{i} = char(javaaxisvar.getAxisType());
+            end
+            match = strcmp('Time', type);
+            tn = src.axes(match);
+        end
+        
         %% These functions would rather output multiple outputs instead of struct, must reconcile
         %     with the subsref in either ncgeovariable or ncvariable. Wait, why, then, does geoij work???
         function d = timewindowij(src, varargin)
