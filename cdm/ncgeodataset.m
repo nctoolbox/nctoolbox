@@ -145,6 +145,20 @@ classdef ncgeodataset < cfdataset
             v = obj.geovariable(variableName);
             te = v.timeextent;
         end
+        
+        function tv = gettimevar(obj, variableName)
+            % NCGEODATASET.gettimevar
+            var = obj.geovariable(variableName);
+            tv = var.gettimevar();
+        end
+        
+        function tv = gettimename(obj, variableName)
+            % NCGEODATASET.gettimename
+            var = obj.geovariable(variableName);
+            tv = var.gettimename();
+        end
+        
+        
         %% Should be called as ncpoint(nc), etc.
         %
         %         function p = point(obj)
