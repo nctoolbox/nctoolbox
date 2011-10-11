@@ -144,8 +144,8 @@ classdef ncgeovariable < ncvariable
                                     yrange = ucar.ma2.Range(first(3) - 1, last(3) - 1, stride(3));
                                     %                       coordinates.GridCoordSys.getVerticalTransform.getCoordinateArray
                                     %                          temp = src.variable.getCoordinateSystems();
-                                    grid = ucar.nc2.dt.grid.GridDataset.open(src.dataset.location);
-                                    grid = grid.findGridByName(src.name);
+                                    griddataset = ucar.nc2.dt.grid.GridDataset.open(src.dataset.location);
+                                    grid = griddataset.findGridByName(src.name);
                                     grid = grid.getCoordinateSystem();
                                     subgrid = grid.getVerticalTransform();
                                     subgrid = subgrid.subset(trange, zrange, yrange, xrange);
@@ -196,9 +196,49 @@ classdef ncgeovariable < ncvariable
                             
                         case 'GeoY'
                             ig.y = g.(tempname);
-                        case 'GeoX'
-                            ig.x = g.(tempname);
-                            
+                            if exist('griddataset', 'var')
+                                grid = griddataset.findGridByName(src.name);
+                                grid = grid.getCoordinateSystem();
+                            else
+                                griddataset = ucar.nc2.dt.grid.GridDataset.open(src.dataset.location);
+                                grid = griddataset.findGridByName(src.name);
+                                grid = grid.getCoordinateSystem();
+                            end
+                            try
+                                %ig.y = grid.getYHorizAxis;
+                                %ig.x = grid.getXHorizAxis;
+                                [x, y] = meshgrid(g.x,g.y);
+                                s = size(x);
+                                x = reshape(x, [1 numel(x)]);
+                                y = reshape(y, [1 numel(y)]);
+                                tempXY = [x; y];
+                                projection = grid.getProjection();
+                                tempLatLon = projection.projToLatLon(tempXY);
+                                ig.lon = reshape(tempLatLon(1,:), s); 
+                                ig.lat = reshape(tempLatLon(2,:), s); 
+                                
+                            catch me
+                            end
+
+%                         case 'GeoX'
+%                             ig.x = g.(tempname);
+%                             if exist('griddataset', 'var')
+%                                 grid = griddataset.findGridByName(src.name);
+%                                 grid = grid.getCoordinateSystem();
+%                             else
+%                                 griddataset = ucar.nc2.dt.grid.GridDataset.open(src.dataset.location);
+%                                 grid = griddataset.findGridByName(src.name);
+%                                 grid = grid.getCoordinateSystem();
+%                                 
+%                             end
+%                             try
+%                                 ig.x = grid.getXHorizAxis;
+%                                 projection = grid.getProjection();
+%                                 ig.lon = projection.projToLatLon();
+%                             catch me
+%                             end
+
+                
                         otherwise
                             ig.(tempname) = g.(tempname);
                             
