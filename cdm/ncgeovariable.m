@@ -150,19 +150,24 @@ classdef ncgeovariable < ncvariable
                                     subgrid = grid.getVerticalTransform();
                                     subgrid = subgrid.subset(trange, zrange, yrange, xrange);
                                    
-                                    for q = first(1):stride(1):last(1)
-                                        %                            try
-                                        array = subgrid.getCoordinateArray(q-1);
-                                        %                            catch
-                                        %                              array = subgrid.getCoordinateArray();
-                                        %                            end
-                                        
-                                        ig.z(q, :, :, :) = array.copyToNDJavaArray();
-                                        
-%                                         if strcmp(pos_z, 'POSITIVE_DOWN')
-%                                             tmp = g.z;
-%                                             ig.z = tmp.*-1; %adjust for positive direction
-%                                         end
+                                    try
+                                        for q = first(1):stride(1):last(1)
+                                            %                            try
+                                            array = subgrid.getCoordinateArray(q-1);
+                                            %                            catch
+                                            %                              array = subgrid.getCoordinateArray();
+                                            %                            end
+                                            
+                                            ig.z(q, :, :, :) = array.copyToNDJavaArray();
+                                            
+                                            %                                         if strcmp(pos_z, 'POSITIVE_DOWN')
+                                            %                                             tmp = g.z;
+                                            %                                             ig.z = tmp.*-1; %adjust for positive direction
+                                            %                                         end
+                                        end
+                                    catch
+                                        array = subgrid.getCoordinateArray();
+                                        ig.z = array.copyToNDJavaArray();
                                     end
                                     
                                 otherwise
@@ -214,8 +219,8 @@ classdef ncgeovariable < ncvariable
                                 tempXY = [x; y];
                                 projection = grid.getProjection();
                                 tempLatLon = projection.projToLatLon(tempXY);
-                                ig.lon = reshape(tempLatLon(1,:), s); 
-                                ig.lat = reshape(tempLatLon(2,:), s); 
+                                ig.lat = reshape(tempLatLon(1,:), s); 
+                                ig.lon = reshape(tempLatLon(2,:), s); 
                                 
                             catch me
                             end
