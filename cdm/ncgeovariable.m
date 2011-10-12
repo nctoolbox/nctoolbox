@@ -442,7 +442,7 @@ classdef ncgeovariable < ncvariable
                         stride = [struct.h_stride(2) struct.h_stride(1)];
                     end
                 elseif length(nums) < 4
-                    ax = obj.grid([1 1 1],[1 1 1],[1 1 1]);
+                    ax = obj.grid_interop([1 1 1],[1 1 1],[1 1 1]);
                     if isfield(ax, 'time')
                         first = [tmin_i indstart_r indstart_c];
                         last = [tmax_i indend_r indend_c];
