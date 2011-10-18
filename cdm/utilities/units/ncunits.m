@@ -17,9 +17,11 @@ import ucar.nc2.units.*
 % originalunits = lower(originalunits);
 % newunits = lower(newunits);
 switch originalunits
-    case {'CM/S', 'CMS/SEC', 'CMS/SEC', 'CENTIMETERS/S', 'CENTIMETERS/SEC'};
+    case {'MM/S', 'MM/SEC','MMS/SEC', 'MMS/SEC', 'MILLIMETERS/S', 'MILLIMETERS/SEC'};
+        originalunits = 'mm/s' 
+    case {'CM/S', 'CM/SEC','CMS/S', 'CMS/SEC', 'CENTIMETERS/S', 'CENTIMETERS/SEC'};
         originalunits = 'cm/s';
-    case {'M/S', 'M/SEC', 'METERS/S', 'METERS/SEC', 'MS/SEC'};
+    case {'M/S', 'M/SEC', 'METERS/S', 'METERS/SEC', 'MS/S', 'MS/SEC'};
         originalunits = 'm/s';
     case {'deg C', 'degree C', 'degrees C'};
         originalunits = 'degC';
@@ -30,9 +32,11 @@ switch originalunits
 end
 
 switch newunits
-    case {'CM/S', 'CMS/SEC', 'CMS/SEC', 'CENTIMETERS/S', 'CENTIMETERS/SEC'};
+    case {'MM/S', 'MM/SEC','MMS/SEC', 'MMS/SEC', 'MILLIMETERS/S', 'MILLIMETERS/SEC'};
+        newunits = 'mm/s'
+    case {'CM/S', 'CM/SEC','CMS/S', 'CMS/SEC', 'CENTIMETERS/S', 'CENTIMETERS/SEC'};
         newunits = 'cm/s';
-    case {'M/S', 'M/SEC', 'METERS/S', 'METERS/SEC', 'MS/SEC'};
+    case {'M/S', 'M/SEC', 'METERS/S', 'METERS/SEC', 'MS/S', 'MS/SEC'};
         newunits = 'm/s';
     case {'deg C', 'degree C', 'degrees C'};
         newunits = 'degC';
