@@ -148,26 +148,32 @@ classdef ncgeovariable < ncvariable
                                     grid = griddataset.findGridByName(src.name);
                                     grid = grid.getCoordinateSystem();
                                     subgrid = grid.getVerticalTransform();
-                                    subgrid = subgrid.subset(trange, zrange, yrange, xrange);
-                                   
+                                    subgrid = subgrid.subset(trange, zrange, yrange, xrange); %tempfortesting arc 10/18
+                                    %
+                                    % It looks like this dataset (http://geoport.whoi.edu/thredds/dodsC/usgs/vault0/models/examples/bora_feb.nc)
+                                    % works when the vertical transform isnt subset. NJTBX uses the same methodology but subsets the resulting
+                                    % z coordinate field in matlab after calling the getCoordinateArray method, not before in the java.
+                                    % Should I implement a try and then default to subsetting afterwards on catch? Or should I just always do it
+                                    % after? I am choosing the former. Anyone have any thoughts on the matter? -acrosby
                                     try
-                                        for q = first(1):stride(1):last(1)
-                                            %                            try
-                                            array = subgrid.getCoordinateArray(q-1);
-                                            %                            catch
-                                            %                              array = subgrid.getCoordinateArray();
-                                            %                            end
-                                            
-                                            ig.z(q, :, :, :) = array.copyToNDJavaArray();
-                                            
-                                            %                                         if strcmp(pos_z, 'POSITIVE_DOWN')
-                                            %                                             tmp = g.z;
-                                            %                                             ig.z = tmp.*-1; %adjust for positive direction
-                                            %                                         end
+                                        try
+                                            try
+                                                for q = first(1):stride(1):last(1)
+                                                    array = subgrid.getCoordinateArray(q-1);
+                                                    ig.z(q, :, :, :) = array.copyToNDJavaArray();
+                                                end
+                                            catch me
+                                                subgrid = grid.getVerticalTransform();
+                                                array = subgrid.getCoordinateArray(q-1);
+                                                z(q, :, :, :) = array.copyToNDJavaArray();
+                                                ig.z = z(:, first(2):stride(2):last(2),  first(3):stride(3):last(3),  first(4):stride(4):last(4));
+                                            end
+                                        catch me
+                                            array = subgrid.getCoordinateArray();
+                                            ig.z = array.copyToNDJavaArray();
                                         end
-                                    catch
-                                        array = subgrid.getCoordinateArray();
-                                        ig.z = array.copyToNDJavaArray();
+                                    catch me
+                                        error('There is a problem applying the vertical coordinate tranform and subsetting the resuting values.');
                                     end
                                     
                                 otherwise
