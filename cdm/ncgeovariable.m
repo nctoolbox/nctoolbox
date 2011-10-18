@@ -163,9 +163,13 @@ classdef ncgeovariable < ncvariable
                                                     ig.z(q, :, :, :) = array.copyToNDJavaArray();
                                                 end
                                             catch me
-                                                subgrid = grid.getVerticalTransform();
-                                                array = subgrid.getCoordinateArray(q-1);
-                                                z(q, :, :, :) = array.copyToNDJavaArray();
+                                                c = 1;
+                                                for q = first(1):stride(1):last(1)
+                                                    subgrid = grid.getVerticalTransform();
+                                                    array = subgrid.getCoordinateArray(q-1);
+                                                    z(c, :, :, :) = array.copyToNDJavaArray();
+                                                    c = c + 1;
+                                                end
                                                 ig.z = z(:, first(2):stride(2):last(2),  first(3):stride(3):last(3),  first(4):stride(4):last(4));
                                             end
                                         catch me
