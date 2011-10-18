@@ -28,7 +28,7 @@ function [data,grd]=nj_tslice(ncRef,var,iTime, level)
 
 if nargin < 2, help(mfilename), return, end
 
-%initialize 
+%initialize
 % data=[];
 % grd.lat=[];
 % grd.lon=[];
@@ -37,51 +37,52 @@ if nargin < 2, help(mfilename), return, end
 isNcRef=0;
 
 try
-    if (isa(ncRef, 'ncgeodataset')) %check for ncgeodataset Object
-        nc = ncRef;
-        isNcRef=1;
-    else
-        % open CF-compliant NetCDF File as a Common Data Model (CDM) "Grid Dataset"
-        nc = ncgeodataset(ncRef);
-    end
-    
-    gvar = nc.geovariable(var); %get geovariable
-    
-    switch nargin
-        case 2
-            % read the volume data (3D). All times.
-            data = squeeze(gvar.data(:,:,:,:));
-            if nargout==2,
-                grd = gvar.grid_interop(:,:,:,:);
-            end
-        case 3
-            if (isinf(iTime) || iTime == -1)
-                data = squeeze(gvar.data(end,:,:,:));
-                if nargout==2,
-                    grd = gvar.grid_interop(end,:,:,:);
-                end
-            else
-                data = squeeze(gvar.data(iTime,:,:,:));
-                if nargout==2,
-                    grd = gvar.grid_interop(iTime,:,:,:);
-                end
-            end
-        case 4
-            if ( (isinf(iTime)) || (isinf(level)) )
-                a=size(tvar);
-                if isinf(level);level=a(2);end
-                if isinf(iTime);iTime=a(1);end
-            end
-            data = squeeze(gvar.data(iTime,level,:,:));
-            if nargout==2,
-                grd = gvar.grid_interop(iTime,level,:,:);
-            end
-
-    end
-
+  if (isa(ncRef, 'ncgeodataset')) %check for ncgeodataset Object
+    nc = ncRef;
+    isNcRef=1;
+  else
+    % open CF-compliant NetCDF File as a Common Data Model (CDM) "Grid Dataset"
+    nc = ncgeodataset(ncRef);
+  end
+  
+  gvar = nc.geovariable(var); %get geovariable
+  
+  switch nargin
+    case 2
+      % read the volume data (3D). All times.
+      data = squeeze(gvar.data(:,:,:,:));
+      if nargout==2,
+        grd = gvar.grid_interop(:,:,:,:);
+      end
+    case 3
+      if (isinf(iTime) || iTime == -1)
+        data = squeeze(gvar.data(end,:,:,:));
+        if nargout==2,
+          grd = gvar.grid_interop(end,:,:,:);
+        end
+      else
+        data = squeeze(gvar.data(iTime,:,:,:));
+        if nargout==2,
+          grd = gvar.grid_interop(iTime,:,:,:);
+        end
+      end
+    case 4
+      if ( (isinf(iTime)) || (isinf(level)) )
+        a=size(tvar);
+        if isinf(level);level=a(2);end
+        if isinf(iTime);iTime=a(1);end
+      end
+      data = squeeze(gvar.data(iTime,level,:,:));
+      if nargout==2,
+        grd = gvar.grid_interop(iTime,level,:,:);
+        grd.z=squeeze(grd.z);
+      end
+      
+  end
+  
 catch
-    %gets the last error generated
-    err = lasterror();
-    disp(err.message);
+  %gets the last error generated
+  err = lasterror();
+  disp(err.message);
 end
 
