@@ -20,7 +20,7 @@ function [data,grd]=nj_subsetGrid(ncRef,var,lonLatRange,dn1,dn2)
 %   grd - structure containing lon,lat and time
 %
 %  e.g,
-%   ncRef='http://www.gri.msstate.edu/rsearch_data/nopp/bora_feb.nc';
+%   ncRef='http://geoport.whoi.edu/thredds/dodsC/usgs/vault0/models/examples/bora_feb.nc';
 %   var = 'temp';
 %   lonLatRange = [13.0 16.0 41.0 42.0];   [minlon maxlon minlat maxlat]
 %   dn1 = '14-Feb-2003 12:00:00';
