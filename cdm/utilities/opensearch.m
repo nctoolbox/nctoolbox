@@ -74,10 +74,10 @@ params = {
 };
 
 [results] = urlread(q.endpoint,'get', params);
-
-[startIndex, endIndex, tokIndex, matchStr, links, exprNames,splitStr] = ...
-    regexp(results, '<gmd:URL>(.*?)</gmd:URL>','match');
-
+% find all URL links
+[~,~,~,~,links]=regexp(results,'<gmd:URL>(.*?)</gmd:URL>','match');
+% find all box values (bounding box)
+[~,~,~,~,box]=regexp(results,'<box xmlns="http://www.georss.org/georss">(.*?)</box>','match');  
 requesturl = [q.endpoint, '?&', params{1},'=',params{2},'&',...
     params{3},'=',params{4},'&',...    
     params{5},'=',params{6},'&',...
