@@ -15,26 +15,22 @@ function [data,grd]=nj_subsetGrid(ncRef,var,lonLatRange,dn1,dn2)
 %   data = subset data  based on lonlat and time range
 %   grd = structure containing lon,lat and time
 %
-% Example:
-%   ncRef='http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc';
-%   var = 'temp';
+% Examples:
+%   Subsetting topography/bathymetry:
+%   url='http://geoport.whoi.edu/thredds/dodsC/bathy/crm_vol1.nc';
+%   [data, grd]=nj_subsetGrid(url,'topo',[-71.4 -70.2 41.0 42.0]); 
+%
+%   Subsetting model output:
+%   url='http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc';
+%   var = 'zeta';
 %   lonLatRange = [13.0 16.0 41.0 42.0];  % [minlon maxlon minlat maxlat]
 %   dn1 = '14-Feb-2003 12:00:00';
+%   [data, grd]=nj_subsetGrid(url,var,lonLatRange,dn1); %nearest time
 %   dn2 = [2003 2 16 14 0 0];
-%   [data, grd]=nj_subsetGrid(ncRef,var,lonLatRange,dn1, dn2);
-%   [data, grd]=nj_subsetGrid(ncRef,var,lonLatRange,dn1);
-%   [data, grd]=nj_subsetGrid(ncRef,var,lonLatRange);
-%   [data, grd]=nj_subsetGrid(ncRef,var);
+%   [data, grd]=nj_subsetGrid(url,var,lonLatRange,dn1, dn2);%time range
 %
 % NCTOOLBOX (http://code.google.com/p/nctoolbox)
 if nargin < 2, help(mfilename), return, end
-%initialize
-data=[];
-grd.lat=[];
-grd.lon=[];
-grd.time=[];
-grd.z=[];
-jdmat = [];
 if (isa(ncRef, 'ncgeodataset')) %check for ncgeodataset Object
   nc = ncRef;
 else
@@ -49,7 +45,7 @@ end
 switch nargin
   case 2
     % read all the data (all lon/lat, all time).
-    myData = squeeze(geoGridVar.data);
+    data = squeeze(geoGridVar.data);
     grd = geoGridVar.grid;
   case 3
     if length(lonLatRange)==4
@@ -60,7 +56,7 @@ switch nargin
       structure.lon=lonLatRange(1);
     end
     subs = geoGridVar.geosubset(structure);
-    myData = squeeze(subs.data);
+    data = squeeze(subs.data);
     grd=subs.grid;
   case 4
     if length(lonLatRange)==4
@@ -72,7 +68,7 @@ switch nargin
     end
     structure.time = [datenum(dn1) datenum(dn1)];
     subs = geoGridVar.geosubset(structure);
-    myData = squeeze(subs.data);
+    data = squeeze(subs.data);
     grd=subs.grid;
   case 5
     if length(lonLatRange)==4
@@ -84,8 +80,8 @@ switch nargin
     end
     structure.time = [datenum(dn1) datenum(dn2)];
     subs = geoGridVar.geosubset(structure);
-    myData = squeeze(subs.data);
-    grd=subs.grid;
+    data = squeeze(subs.data);
+    grd = subs.grid;
   otherwise, error('MATLAB:nj_subsetGrid:Nargin',...
       'Incorrect number of input arguments');
 end
