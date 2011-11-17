@@ -14,7 +14,6 @@
 %  v.axes
 %
 % NCTOOLBOX (http://code.google.com/p/nctoolbox)
-
 classdef ncgeovariable < ncvariable
     
     properties (SetAccess = private)
@@ -166,7 +165,7 @@ classdef ncgeovariable < ncvariable
                                                 c = 1;
                                                 for q = first(1):stride(1):last(1)
                                                     subgrid = grid.getVerticalTransform();
-                                                    array = subgrid.getCoordinateArray(q-1);
+                                                    array = subgrid.getCoordinateArray(q-1); % Issue 27 is failing here...
                                                     z(c, :, :, :) = array.copyToNDJavaArray();
                                                     c = c + 1;
                                                 end
@@ -367,6 +366,9 @@ classdef ncgeovariable < ncvariable
             %           if ~regexp(obj.dataset.attribute('Conventions'), 'UGRID')
             nums = obj.size;
             if isfield(struct, 'h_stride');
+                if length(struct.h_stride) < 2
+                    struct.h_stride(1, 2) = struct.h_stride(1,1); % Resoltution to Issue 24
+                end
             else
                 struct.h_stride = [1 1];
             end
