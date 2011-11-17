@@ -242,31 +242,31 @@ classdef ncgeodataset < cfdataset
                         echo off
                         switch s(3).subs
                             case 'data'
-                                B = v.data(s(2).subs);
+                                B = squeeze(v.data(s(2).subs)); % Adding squeeze of results related to Issue 23
                             case 'grid'
                                 A = v.grid_interop(s(2).subs{:});
                                 try %Filtering added for njtbx similar results, entire syntax will be deprecated in the future
-                                    B.time = A.time;
+                                    B.time = squeeze(A.time); % Adding squeeze of results related to Issue 23
                                 catch me
                                 end
                                 try
-                                    B.lon = A.lon;
+                                    B.lon = squeeze(A.lon); % Adding squeeze of results related to Issue 23
                                 catch me
                                 end
                                 try
-                                    B.lat = A.lat;
+                                    B.lat = squeeze(A.lat); % Adding squeeze of results related to Issue 23
                                 catch me
                                 end
                                 try
-                                    B.z = A.z;
+                                    B.z = squeeze(A.z); % Adding squeeze of results related to Issue 23
                                 catch me
                                 end
                                 try
-                                    B.x = A.x;
+                                    B.x = squeeze(A.x); % Adding squeeze of results related to Issue 23
                                 catch me
                                 end
                                 try
-                                    B.y = A.y;
+                                    B.y = squeeze(A.y); % Adding squeeze of results related to Issue 23
                                 catch me
                                 end
                         end
