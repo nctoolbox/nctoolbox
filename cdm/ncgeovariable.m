@@ -284,6 +284,14 @@ classdef ncgeovariable < ncvariable
             tv = src.dataset.geovariable(tn);
         end
         
+        function lv = getlonvar(src)
+            %
+        end
+        
+        function lv - getlatvar(src)
+            %
+        end
+        
         function tn = gettimename(src)
             % NCGEODATASET.gettimename()
             for i = 1:length(src.axes)
@@ -294,6 +302,16 @@ classdef ncgeovariable < ncvariable
             match = strcmp('Time', type);
             tn = src.axes(match);
         end
+        
+        function ln = getlonname(src)
+            %
+        end
+        
+        function ln = getlatname(src)
+            %
+        end
+        
+        
         
         %% These functions would rather output multiple outputs instead of struct, must reconcile
         %     with the subsref in either ncgeovariable or ncvariable. Wait, why, then, does geoij work???
