@@ -279,21 +279,25 @@ classdef ncgeovariable < ncvariable
         end
         
         function tv = gettimevar(src)
-            % NCGEODATASET.gettimevar()
+            % NCGEOVARIABLE.gettimevar()
             tn = src.gettimename();
             tv = src.dataset.geovariable(tn);
         end
         
         function lv = getlonvar(src)
-            %
+            % NCGEOVARIABLE.getlonvar()
+            tn = src.getlonname();
+            lv = src.dataset.geovariable(tn);
         end
         
-        function lv - getlatvar(src)
-            %
+        function lv = getlatvar(src)
+            % NCGEOVARIABLE.getlatvar()
+            tn = src.getlatename();
+            lv = src.dataset.geovariable(tn);
         end
         
         function tn = gettimename(src)
-            % NCGEODATASET.gettimename()
+            % NCGEOVARIABLE.gettimename()
             for i = 1:length(src.axes)
                 tempname = src.axes{i};
                 javaaxisvar  =   src.dataset.netcdf.findVariable(tempname);
@@ -304,11 +308,25 @@ classdef ncgeovariable < ncvariable
         end
         
         function ln = getlonname(src)
-            %
+            % NCGEOVARIABLE.getlonname()
+            for i = 1:length(src.axes)
+                tempname = src.axes{i};
+                javaaxisvar  =   src.dataset.netcdf.findVariable(tempname);
+                type{i} = char(javaaxisvar.getAxisType());
+            end
+            match = strcmp('Lon', type);
+            ln = src.axes(match);
         end
         
         function ln = getlatname(src)
-            %
+            % NCGEOVARIABLE.gelatname()
+            for i = 1:length(src.axes)
+                tempname = src.axes{i};
+                javaaxisvar  =   src.dataset.netcdf.findVariable(tempname);
+                type{i} = char(javaaxisvar.getAxisType());
+            end
+            match = strcmp('Lat', type);
+            ln = src.axes(match);
         end
         
         

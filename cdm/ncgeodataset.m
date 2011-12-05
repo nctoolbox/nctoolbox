@@ -93,33 +93,33 @@ classdef ncgeodataset < cfdataset
                 
                 if ~exist('axes', 'var')
                     try
-                    dsaxes = obj.axes(variableName);
-                    alreadythere = 0;
-                    for i = 1:length(dsaxes)
-                        if ~isempty(dsaxes{i})
-                            for j = 1:length(axesVariables)
-                                if strcmp(axesVariables{j}, dsaxes{i})
-                                    alreadythere = 1;
+                        dsaxes = obj.axes(variableName);
+                        alreadythere = 0;
+                        for i = 1:length(dsaxes)
+                            if ~isempty(dsaxes{i})
+                                for j = 1:length(axesVariables)
+                                    if strcmp(axesVariables{j}, dsaxes{i})
+                                        alreadythere = 1;
+                                    end
+                                end
+                                if ~alreadythere
+                                    axesVariables{length(axesVariables)+1,1} = dsaxes{i};
                                 end
                             end
-                            if ~alreadythere
-                                axesVariables{length(axesVariables)+1,1} = dsaxes{i};
+                        end
+                        
+                        
+                        v = ncgeovariable(obj, variableName, axesVariables);
+                        
+                        
+                        if ~isempty(v)
+                            for i = 1:length(obj.variables)
+                                if strcmp(obj.ncvariables{i, 1}, variableName)
+                                    obj.ncvariables{i, 2} = v;
+                                    break;
+                                end
                             end
                         end
-                    end
-                    
-                  
-                    v = ncgeovariable(obj, variableName, axesVariables);
-                    
-                    
-                    if ~isempty(v)
-                        for i = 1:length(obj.variables)
-                            if strcmp(obj.ncvariables{i, 1}, variableName)
-                                obj.ncvariables{i, 2} = v;
-                                break;
-                            end
-                        end
-                    end
                     catch
                         warning('NCGEODATASET:GEOVARIABLE', 'The netcdf-java cdm contains no coordinate information associated with the variable. Returning ncvariable instead of ncgeovariable object. (Methods that rely on coordinate information like ''grid'' or ''geosubset'' are not available.');
                         v = ncvariable(obj, variableName);
