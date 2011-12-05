@@ -444,6 +444,10 @@ classdef ncgeovariable < ncvariable
                                 t = obj.timewindowij(struct.time(1), struct.time(2));
                                 tmin_i = min(t.index);
                                 tmax_i = max(t.index);
+                            otherwise % for anything else assume that it is a single datevec
+                                t = obj.timewindowij(struct.time);
+                                tmin_i = t.index;
+                                tmax_i = t.index;
                         end
                         
                     end
