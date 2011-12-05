@@ -152,10 +152,34 @@ classdef ncgeodataset < cfdataset
             tv = var.gettimevar();
         end
         
+        function tv = getlonvar(obj, variableName)
+            % NCGEODATASET.gettimevar
+            var = obj.geovariable(variableName);
+            tv = var.getlonvar();
+        end
+        
+        function tv = getlatvar(obj, variableName)
+            % NCGEODATASET.gettimevar
+            var = obj.geovariable(variableName);
+            tv = var.getlatvar();
+        end
+        
         function tv = gettimename(obj, variableName)
             % NCGEODATASET.gettimename
             var = obj.geovariable(variableName);
             tv = var.gettimename();
+        end
+        
+        function tv = getlatname(obj, variableName)
+            % NCGEODATASET.gettimename
+            var = obj.geovariable(variableName);
+            tv = var.getlatname();
+        end
+        
+        function tv = getlonname(obj, variableName)
+            % NCGEODATASET.gettimename
+            var = obj.geovariable(variableName);
+            tv = var.getlonname();
         end
         
         
