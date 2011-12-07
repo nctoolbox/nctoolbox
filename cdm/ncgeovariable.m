@@ -329,6 +329,25 @@ classdef ncgeovariable < ncvariable
             ln = src.axes(match);
         end
         
+         function tn = gettimedata(src, start, last, stride)
+            % NCGEOVARIABLE.gettimedata()
+            var = src.gettimevar;
+            tn = var.data(start, last, stride);
+            tn = var.dataset.time(tn);
+        end
+        
+        function ln = getlondata(src, start, last, stride)
+            % NCGEOVARIABLE.getlondata()
+            var = src.getlonvar;
+            ln = var.data(start, last, stride);
+        end
+        
+        function ln = getlatdata(src, start, last, stride)
+            % NCGEOVARIABLE.gelatdata()
+            var = src.getlatvar;
+            ln = var.data(start, last, stride);
+        end
+        
         
         
         %% These functions would rather output multiple outputs instead of struct, must reconcile
@@ -681,6 +700,33 @@ classdef ncgeovariable < ncvariable
                 % Use the built-in subsref for dot notation
                 case '.'
                     switch s(1).subs
+                        case 'gettimedata'
+                            switch length(s)
+                                case 1
+                                    sref = obj;
+                                case 2
+                                    nums = obj.size;
+                                    [first last stride] = indexing(s(2).subs, double(nums));
+                                    sref = obj.gettimedata(first, last, stride);
+                            end
+                            case 'getlondata'
+                            switch length(s)
+                                case 1
+                                    sref = obj;
+                                case 2
+                                    nums = obj.size;
+                                    [first last stride] = indexing(s(2).subs, double(nums));
+                                    sref = obj.getlondata(first, last, stride);
+                            end
+                            case 'getlatdata'
+                            switch length(s)
+                                case 1
+                                    sref = obj;
+                                case 2
+                                    nums = obj.size;
+                                    [first last stride] = indexing(s(2).subs, double(nums));
+                                    sref = obj.getlatdata(first, last, stride);
+                            end
                         case 'grid_interop'
                             switch length(s)
                                 case 1
