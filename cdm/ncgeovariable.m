@@ -333,7 +333,7 @@ classdef ncgeovariable < ncvariable
             % NCGEOVARIABLE.gettimedata()
             var = src.gettimevar;
             tn = var.data(start, last, stride);
-            tn = var.dataset.time(tn);
+            tn = var.dataset.time(src.gettimename, tn);
         end
         
         function ln = getlondata(src, start, last, stride)
