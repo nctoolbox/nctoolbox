@@ -182,6 +182,24 @@ classdef ncgeodataset < cfdataset
             tv = var.getlonname();
         end
         
+        function tn = gettimedata(obj, variableName, start, last, stride)
+            % NCGEOVARIABLE.gettimedata()
+            var = obj.getimevar(variableName);
+            tn = var.gettimedata(start, last, stride);
+        end
+        
+        function ln = getlondata(obj, start, last, stride)
+            % NCGEOVARIABLE.getlondata()
+            var = obj.getlonvar(variableName);
+            ln = var.getlondata(start, last, stride);
+        end
+        
+        function ln = getlatdata(obj, start, last, stride)
+            % NCGEOVARIABLE.gelatdata()
+            var = obj.getlatvar(variableName);
+            ln = var.getlatdata(start, last, stride);
+        end
+        
         
         %% Should be called as ncpoint(nc), etc.
         %
