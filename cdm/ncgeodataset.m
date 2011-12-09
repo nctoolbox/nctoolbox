@@ -271,6 +271,7 @@ classdef ncgeodataset < cfdataset
                         'Call with "()" as first type unsupported at this time')
                     
                 case '{}'
+                    warning('off', 'all');
                     echo off
                     v = obj.geovariable(s(1).subs);
                     echo on
@@ -315,6 +316,7 @@ classdef ncgeodataset < cfdataset
                         echo on
                     else
                         B = v;
+                        warning('on', 'all');
                     end
                     
             end
