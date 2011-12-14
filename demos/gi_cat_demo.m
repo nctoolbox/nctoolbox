@@ -8,8 +8,8 @@ bbox =[-180 180 0 90];  % [lon_min lon_max lat_min lat_max]
 start=[1990 1 1 0 0 0]; %start
 stop =[2000 1 1 0 0 0];  %stop
 
-% opensearch query
-q.endpoint=open_url;
+% OpenSearch query
+q.endpoint = open_url;
 q.bbox=sprintf('%d,%d,%d,%d',bbox([1 3 2 4]));
 q.time_start=datestr(start,'yyyy-mm-ddTHH:MM:SSZ')% convert to ISO
 q.time_end=datestr(stop,'yyyy-mm-ddTHH:MM:SSZ')% convert to ISO
