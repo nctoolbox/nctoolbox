@@ -6,19 +6,19 @@
 open_url='http://geoport.whoi.edu/gi-cat/services/opensearch';
 
 % can search for any text, not just variable 'standard_names':
-%var='relative_humidity'; %free text search string
-var='sea_water_temperature';
+var='relative_humidity'; %free text search string
+%var='sea_water_temperature';
 %var='sea_water_salinity';  
 
 % time_var='time'; %time coordinate variable
-bbox =[-180 180 0 90];  % [lon_min lon_max lat_min lat_max]
+bbox =[-180 180 -70 80];  % [lon_min lon_max lat_min lat_max]
 
 % specify a certain search range.  Like this...
 start=[1990 1 1 0 0 0]; % specified start
 stop =[2000 1 1 0 0 0]; % specified stop
 
 % or like this....
-start=now_utc-7;  % 7 days ago
+start=now_utc-28;  % last 28 days
 stop=now;          % now
 
 % opensearch query
