@@ -35,7 +35,8 @@ isub=4;  %optionally subsample lon/lat array for speed/testing
 grd=u.grid_interop(:, 1, 1:isub:end, 1:isub:end);  % Returns a matlab structure with values corresponding to coordinates of a variable
 dn = grd.time;  % toolbox already converts whatever format time is in to matlab datenum format
 
-for itime=1:length(dn);
+%for itime=1:length(dn);
+for itime=1:10;
     % This calls a slice of data for every loop. Sometimes you want the entire variable as one chunk, but sometimes it makes sense to do it bit by
     % bit, especially if you hit server limits. (403 Type errors)
     udata=squeeze(u.data(itime, ksurface, 1:isub:end, 1:isub:end)); % Data is 4d but should be 2d for plotting since 2 of the dims are length of 1

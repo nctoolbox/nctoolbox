@@ -33,6 +33,8 @@ lon_range=[-71.5 -63];lat_range=[41 46];  % 4km lon is [-180 180]
 %lon_range=[-71.5 -63]+360;lat_range=[41 46]; % 32km lon is [0 360]
 
 nc=ncgeodataset(url);
+disp(['Opening dataset ' url '...'])
+
 uvar=nc.geovariable('ugrd10m');
 vvar=nc.geovariable('vgrd10m');
 
@@ -41,6 +43,7 @@ vvar=nc.geovariable('vgrd10m');
 s.time=datestr(jd);
 s.lon=lon_range;
 s.lat=lat_range
+disp(['Reading data...'])
 us=uvar.geosubset(s);
 vs=vvar.geosubset(s);
 lon=us.grid.lon;

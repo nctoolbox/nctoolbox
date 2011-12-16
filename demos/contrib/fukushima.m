@@ -1,29 +1,32 @@
-% Script to access surface currents from Fukushima ocean forecast
-% via OPeNDAP using NCTOOLBOX 
-% http://code.google.com/p/nctoolbox/
+% FUKUSHIIMA get surface currents from Fukushima ocean forecast via OPeNDAP
 
-%  This script uses latest version from Mecurial, which contain
-%  a new matlab-based indexing not yet in the public release:
-%  hg clone https://nctoolbox.googlecode.com/hg/ nctoolbox 
-%  Rich Signell (rsignell@usgs.gov)
-
+% NCTOOLBOX:  http://code.google.com/p/nctoolbox/
 url='http://edac-dap3.northerngulfinstitute.org/thredds/dodsC/ncom_fukushima_agg/Fukushima_best.ncd';
-nc=cfdataset(url);
-dn=nc.time('time');
-u=nc.variable('water_u');
-v=nc.variable('water_v');
+uvar='water_u';
+vvar='water_v';
 ksurface=1;
-%isub=1;
-isub=4;  %optionally subsample lon/lat array for speed/testing
-sz=size(u);
-grd=u.grid(1,1,1:isub:sz(3),1:isub:sz(4)); %nb: "1:end" does not work yet
-for itime=1:length(dn);
-    udata=u.data(itime,ksurface,1:isub:sz(3),1:isub:sz(4));
-    vdata=v.data(itime,ksurface,1:isub:sz(3),1:isub:sz(4));
-    disp(sprintf('Step %d/%d',itime,length(dn)))
-    w=double(squeeze(complex(udata,vdata)));
-    pcolor(grd.lon,grd.lat,abs(w));shading flat;colorbar
-    title(sprintf('NCOM Fukushima forecast surface currents (m/s): %s',...
-        datestr(dn(itime))));
-    caxis([0 2]);set(gca,'tickdir','out');
+start=[2011 3 20 0 0 0];  % want data closest to 2010-Mar-20 19:45:00Z
+stop=[2011 3 20 12 0 0];   %subsample lon,lat?
+%isub=1; %no subsampling in lon,lat
+isub=2;  %subsample to speed up test
+ivec=4; % additional subsampling of vectors
+disp(['Opening ' url '...'])
+nc=ncgeodataset(url);
+disp(['Reading data...'])
+[lon,lat]=nj_lonlat(nc,uvar);
+lon=lon(1:isub:end);
+lat=lat(1:isub:end);
+[lon2d,lat2d]=meshgrid(lon(1:ivec:end),lat(1:ivec:end));
+jd=nj_time(nc,uvar);
+ind=date_index(jd,start,stop);
+for i=1:length(ind)
+  udata=nc{'water_u'}(ind(i),ksurface,1:isub:end,1:isub:end);
+  vdata=nc{'water_v'}(ind(i),ksurface,1:isub:end,1:isub:end);
+  w=double(squeeze(complex(udata,vdata)));
+  pcolor(lon,lat,abs(w));shading flat;colorbar;dasp(35);
+  title(sprintf('NCOM Fukushima forecast surface currents (m/s): %s',...
+    datestr(jd(ind(i)))));
+  caxis([0 2]);set(gca,'tickdir','out');grid;
+  arrows(lon2d,lat2d,w(1:ivec:end,1:ivec:end),0.08,'black');
+  shg
 end
