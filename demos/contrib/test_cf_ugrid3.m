@@ -3,12 +3,13 @@
 % next up: FVCOM and ELCIRC
 
 titl{1}='ADCIRC';
-uris{1}='http://testbedapps.sura.org/threddsdev/dodsC/inundation/ADCIRC/ike/3Dvrwww'
+uris{1}='http://testbedapps.sura.org/threddsdev/dodsC/inundation/ADCIRC/ike/3Dvrwww';
 vars{1}='zeta';
 times{1}=[2008 9 13 06 0 0];
 
 titl{2}='SELFE';
-uris{2}='http://testbedapps.sura.org/threddsdev/dodsC/inundation/selfe/ike/3Dvrwww';
+uris{2}='http://testbedapps.sura.org/threddsdev/dodsC/inundation/selfe/ike/2Dvrwww';
+%uris{2}='http://testbedapps.sura.org/threddsdev/dodsC/inundation/selfe/ike/3Dvrwww';
 vars{2}='elev';
 times{2}=[2008 9 13 06 0 0];
 
@@ -20,6 +21,7 @@ cax=[0 5];
 % There is nothing model specific in the loop below!
 for i=1:length(uris)
     tic
+    disp(['Reading data from ' url '...'])
     %initialize dataset object
     nc=ncgeodataset(uris{i});
     %get geovariable object
