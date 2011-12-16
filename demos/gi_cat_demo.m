@@ -9,8 +9,8 @@ start=[1990 1 1 0 0 0]; %start
 stop =[2000 1 1 0 0 0];  %stop
 
 % OpenSearch query
-q.endpoint = open_url;
-q.bbox=sprintf('%d,%d,%d,%d',bbox([1 3 2 4]));
+q.endpoint = open_url 
+q.bbox = sprintf('%d,%d,%d,%d',bbox([1 3 2 4]));
 q.time_start=datestr(start,'yyyy-mm-ddTHH:MM:SSZ')% convert to ISO
 q.time_end=datestr(stop,'yyyy-mm-ddTHH:MM:SSZ')% convert to ISO
 q.string_text=var;
