@@ -125,6 +125,7 @@ classdef ncgeodataset < cfdataset
                         v = ncvariable(obj, variableName);
                     end
                 else
+                   
                     v = ncgeovariable(obj, variableName, axes);
                 end
                 
