@@ -393,7 +393,7 @@ classdef ncdataset < handle
 			osw = java.io.OutputStreamWriter(baos);
 			obj.netcdf.writeNcML(osw, '');
 			ba = baos.toByteArray();
-			n = java.lang.String(ba, 0, length(ba), 'UTF8');
+			n = char(java.lang.String(ba, 0, length(ba), 'UTF8'));
 			osw.close();
 			baos.close();
 		end
