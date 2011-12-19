@@ -386,8 +386,17 @@ classdef ncdataset < handle
             end
         end
         
-        % TODO Add ncml method that returns a string of NcML for this
-        % netcdf dataset
+        
+		function n = ncml(obj)
+			% NCDATASET.NCML Dumps out an NCML representation of the netcdf file as a string
+			baos = java.io.ByteArrayOutputStream();
+			osw = java.io.OutputStreamWriter(baos);
+			obj.netcdf.writeNcML(osw, '');
+			ba = baos.toByteArray();
+			n = java.lang.String(ba, 0, length(ba), 'UTF8');
+			osw.close();
+			baos.close();
+		end
         
     end
     methods (Access = protected)
