@@ -528,7 +528,7 @@ classdef ncgeovariable < ncvariable
                 ainfo = obj.axes_info;
                 time = value4key(ainfo, 'time');
                 z = value4key(ainfo, 'z');
-                geo = value4key(ainfo, 'lon');
+%                 geo = value4key(ainfo, 'lon');
                 order = obj.getaxesorder;
                 
                 if length(nums) < 2
@@ -564,12 +564,12 @@ classdef ncgeovariable < ncvariable
                                 [~, loclon] = ismember(order(2,:), 'lon');
                                 if loclon > 0
                                     first = [tmin_i indstart_r indstart_c];
-                                last = [tmax_i indend_r indend_c];
-                                stride = [struct.t_stride struct.h_stride(2) struct.h_stride(1)];
+                                    last = [tmax_i indend_r indend_c];
+                                    stride = [struct.t_stride struct.h_stride(2) struct.h_stride(1)];
                                 else
-                                   first = [tmin_i indstart_c indstart_r];
-                                last = [tmax_i indend_c indend_r];
-                                stride = [struct.t_stride struct.h_stride(1) struct.h_stride(2)];
+                                    first = [tmin_i indstart_c indstart_r];
+                                    last = [tmax_i indend_c indend_r];
+                                    stride = [struct.t_stride struct.h_stride(1) struct.h_stride(2)];
                                 end
                             end
                         else
