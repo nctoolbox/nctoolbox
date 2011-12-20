@@ -41,7 +41,7 @@ lon=nc{vart.getlonname}(:);
 lat=nc{vart.getlatname}(:);
 
 
-while length(varargin)>0,
+while ~isempty(varargin),
   switch lower(varargin{1}),
     case 'method',
       method=varargin{2};
@@ -63,9 +63,19 @@ if ~exist('itime','var'),
     itime=1:length(jdmat);
   end
 end
+
+ntime=length(itime);
+npoint=length(loni);
+% initialize
+u=zeros(ntime,npoint);
+lono=zeros(npoint);
+lato=zeros(npoint);
+inear=zeros(npoint);
+jnear=zeros(npoint);
+
 switch method
   case 'nearest'  % find closest point
-    for k=1:length(loni);
+    for k=1:npoint
       if exist('ele','var');  % unstructured grid
         ind=nearxy(double(lon(:)),double(lat(:)),loni(k),lati(k));
         lono(k)=lon(ind);
@@ -80,9 +90,10 @@ switch method
         else
           disp('invalid arguments');return
         end
-        inear(k)=ind;
+        dat.ii(k)=ii;
       else   % structured grid
         if isvector(lon), [lon,lat]=meshgrid(lon,lat);end;
+        ind=nearxy(double(lon(:)),double(lat(:)),loni(k),lati(k));
         [jj,ii]=ind2ij(double(lon),ind);
         lono(k)=lon(jj,ii);
         lato(k)=lat(jj,ii);
@@ -97,62 +108,62 @@ switch method
         else
           disp('invalid arguments');return
         end
-        inear(k)=ii;
-        jnear(k)=jj;
+        dat.ii(k)=ii;
+        dat.jj(k)=jj;
       end
     end
-  case 'linear'  % interpolate from surrounding 4 points
-    lono=loni;
-    lato=lati;
-    if isvector(lon), [lon,lat]=meshgrid(lon,lat);end;
-    [n,m]=size(lon);
-    [ii,jj]=meshgrid(1:m,1:n);
-    ivar=griddata(double(lon(:)),double(lat(:)),ii(:),loni(:),lati(:));
-    jvar=griddata(double(lon(:)),double(lat(:)),jj(:),loni(:),lati(:));
-    for k=1:length(loni);
-      fprintf('interpolating at point %d:lon=%f,lat=%f\n',k,loni(k),lati(k));
-      i0=floor(ivar(k));
-      ifrac=ivar(k)-i0;
-      j0=floor(jvar(k));
-      jfrac=jvar(k)-j0;
-      if ~exist('itime','var'); , % 2D (no time dimension)
-        uall=nc{var}(j0:j0+1,i0:i0+1);
-        u1=uall(1,1);
-        u2=uall(1,2);
-        u3=uall(2,1);
-        u4=uall(2,2);
-      elseif (exist('itime','var') && ~exist('layer','var'))
-        uall=squeeze(nc{var}(itime,j0:j0+1,i0:i0+1));
-        u1=uall(:,1,1);
-        u2=uall(:,1,2);
-        u3=uall(:,2,1);
-        u4=uall(:,2,2);
-      elseif (exist('itime','var') &&  exist('layer','var'))
-        uall=squeeze(nc{var}(itime,layer,j0:j0+1,i0:i0+1));
-        u1=uall(:,1,1);
-        u2=uall(:,1,2);
-        u3=uall(:,2,1);
-        u4=uall(:,2,2);
-        dat.layer=layer;
-      else               % 3D (2D with time dimension)
-        disp('invalid arguments');return
+  case 'linear'  % interpolate from surrounding points
+    if exist('ele','var');  % unstructured grid
+      error(' ''linear'' interpolation not working yet for unstructured grid. Use ''nearest'' ')
+    else % structured grid
+      lono=loni;
+      lato=lati;
+      if isvector(lon), [lon,lat]=meshgrid(lon,lat);end;
+      [n,m]=size(lon);
+      [ii,jj]=meshgrid(1:m,1:n);
+      F1=TriScatteredInterp(double(lon(:)),double(lat(:)),ii(:));
+      ivar=F1(loni(:),lati(:));
+      F2=TriScatteredInterp(double(lon(:)),double(lat(:)),jj(:));
+      jvar=F2(loni(:),lati(:));
+      for k=1:length(loni);
+        fprintf('interpolating at point %d:lon=%f,lat=%f\n',k,loni(k),lati(k));
+        i0=floor(ivar(k));
+        ifrac=ivar(k)-i0;
+        j0=floor(jvar(k));
+        jfrac=jvar(k)-j0;
+        if ~exist('itime','var'); % 2D (no time dimension)
+          uall=nc{var}(j0:j0+1,i0:i0+1);
+          u1=uall(1,1);
+          u2=uall(1,2);
+          u3=uall(2,1);
+          u4=uall(2,2);
+        elseif (exist('itime','var') && ~exist('layer','var'))
+          uall=squeeze(nc{var}(itime,j0:j0+1,i0:i0+1));
+          u1=uall(:,1,1);
+          u2=uall(:,1,2);
+          u3=uall(:,2,1);
+          u4=uall(:,2,2);
+        elseif (exist('itime','var') &&  exist('layer','var'))
+          uall=squeeze(nc{var}(itime,layer,j0:j0+1,i0:i0+1));
+          u1=uall(:,1,1);
+          u2=uall(:,1,2);
+          u3=uall(:,2,1);
+          u4=uall(:,2,2);
+          dat.layer=layer;
+        else               % 3D (2D with time dimension)
+          disp('invalid arguments');return
+        end
+        dat.ii=ivar;
+        dat.jj=jvar;
+        ua=u1+(u2-u1)*ifrac;
+        ub=u3+(u4-u3)*ifrac;
+        u(:,k)=ua+jfrac*(ub-ua);
       end
-      dat.ii=[i0 i0+1];
-      dat.jj=[j0 j0+1];
-      ua=u1+(u2-u1)*ifrac;
-      ub=u3+(u4-u3)*ifrac;
-      u(:,k)=ua+jfrac*(ub-ua);
     end
 end
+dat.vals=u;
 dat.lon=lono;
 dat.lat=lato;
 if ~isempty(jdmat)
   dat.time=jdmat(itime);
-end
-dat.vals=u;
-if exist('inear','var'),
-  dat.ii=inear;
-  if ~exist('ele','var'),
-    dat.jj=jnear;
-  end
 end
