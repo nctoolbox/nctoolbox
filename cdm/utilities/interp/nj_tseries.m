@@ -90,7 +90,7 @@ switch method
         else
           disp('invalid arguments');return
         end
-        dat.ii(k)=ii;
+        dat.ii(k)=ind;
       else   % structured grid
         if isvector(lon), [lon,lat]=meshgrid(lon,lat);end;
         ind=nearxy(double(lon(:)),double(lat(:)),loni(k),lati(k));

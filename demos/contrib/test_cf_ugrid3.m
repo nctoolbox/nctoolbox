@@ -40,17 +40,17 @@ for i=1:length(uris)
     gvar=zvar.attribute('mesh');
 
     % get data from grid variable (connectivity array)
-    grid=nc{gvar}(:);
-    [m,n]=size(grid);
+    ugrid=nc{gvar}(:);
+    [m,n]=size(ugrid);
     % check/fix orientation of connectivity array
     if m==3,
-        grid=grid.';
+        ugrid=ugrid.';
     elseif n~=3
         disp('Error:Currently handling triangles only');return
     end
     % plot the data
     figure(i)
-    trisurf(grid,lon,lat,zeta);shading interp;view(2);colorbar;...
+    trisurf(ugrid,lon,lat,zeta);shading interp;view(2);colorbar;...
     axis(ax);caxis(cax);...
     title(sprintf('%s %s (%s): %sZ',titl{i},vars{i},...
       zvar.attribute('units'),datestr(tdat.time)));...
