@@ -206,7 +206,10 @@ classdef ncgeovariable < ncvariable
                                             ig.z = array.copyToNDJavaArray();
                                         end
                                     catch me
-                                        error('There is a problem applying the vertical coordinate tranform and subsetting the resuting values.');
+                                        me.throw()
+                                        disp('Could you please add the code you are trying to run to Issue 27 at the nctoolbox issue tracking site.');
+                                        web http://code.google.com/p/nctoolbox/issues/detail?id=27
+%                                         me.error('There is a problem applying the vertical coordinate tranform and subsetting the resuting values.');
                                     end
                                     
                                 otherwise
@@ -604,6 +607,11 @@ classdef ncgeovariable < ncvariable
                         end
                     elseif ~isempty(z)
                         if isfield(struct, 'z_index');
+                            if length(struct.z_index) < 2
+                                struct.z_index(2) = struct.z_index(1);
+                            else
+                                % for some reason hg doesnt see this as a file change@?!?!
+                            end
                         else
                             struct.z_index = [1 nums(1)];
                         end
@@ -662,6 +670,11 @@ classdef ncgeovariable < ncvariable
                     
                 elseif length(nums) < 5
                     if isfield(struct, 'z_index');
+                        if length(struct.z_index) < 2
+                            struct.z_index(2) = struct.z_index(1);
+                        else
+                            % for some reason hg doesnt see this as a file change@?!?!
+                        end
                     else
                         struct.z_index = [1 nums(2)];
                     end
