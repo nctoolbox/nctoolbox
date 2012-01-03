@@ -1,104 +1,36 @@
-NCTOOLBOX - 20100305
+NCTOOLBOX - 20111221
 
-Prequisites - Matlab 2008a or more recent
+Full instructions and documentation at:
+http://code.google.com/p/nctoolbox/
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-I. Setup
+Brief summary:
+
+  I. Prequisites
+
+  1. Matlab R2008a+.  You can verify the version of Matlab by typing:
+       >> version
+  2. Java 6+.  You can verify the version of Java used by Matlab by typing: 
+       >>  version('-java'). 
+     The version returned should start with 'Java 1.6'. 
+     If it starts with 'Java 1.5' you can try updating the Matlab JVM:
+     http://www.mathworks.com/support/solutions/en/data/1-1812J/
+     or use the older nctoolbox-20091112 version of this toolbox.
+
+ II. Setup
+
   1. In Matlab, change to the nctoolbox directory. For example,
-    >> cd ~/Documents/MATLAB/nctoolbox
-  2. Run the setup_nctoolbox function
-    >> setup_nctoolbox
+       >> cd ~/Documents/MATLAB/nctoolbox
+  2. Run the setup_nctoolbox.m function
+       >> setup_nctoolbox
+  3. This sets up nctoolbox for the current Matlab session only.
+     You need to add the 'setup_nctoolbox' command to your startup.m file if you
+     want it configured every time you start Matlab. 
+      
+III. Demos
 
-NOTE: setup_nctoolbox sets up nctoolbox for the current Matlab session only.
-You need to add the 'setup_nctoolbox' command to your startup.m file if you
-want it configured every time you start Matlab. 
+  1. Demos that display basic functionality are in the 'demos' subdirectory.  These demos
+     can fail if the machines serving the remote data access URLs are unavailable.
+  2. Contributed demos that display additional or specialized functionality are in 
+     the demos/contrib directory.  Some of these depend on accessing remote sites for
+     data that can be less reliable than the data URLs in the 'demos' directory.
 
-NOTE: nctoolbox-20100223 requires that you are running Matlab with Java 6+. You can verify the version of Java the matlab is running with:
-  version('-java'). 
-  The version returned should start with 'Java 1.6'. If it starts with 'Java 1.5' you should use nctoolbox-20091112.
-    
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-II. Example Usage
-
-  1. ---- Example #1:
-  % Open a data set. This can be a path to a netcdf file locally, a URL
-  % on a web server or an OpenDAP URL.
-  ds = ncdataset('http://elvis.shore.mbari.org/thredds/dodsC/moorings/OS_M1_TS_090409')
-  % You can view the variables available to you
-  ds.variables
-  % Lets fetch time in Matlab's native format
-  t = ds.time('TIME');
-  % Now lets get the temperature data
-  temp = ds.data('TEMP');
-  plot(t, temp)
-  datetick('x', 2);
-
-  2. ---- Example #2
-  % Another example; plotting O2 from MBARI's M1 mooring
-  m2006 = ncdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200610/m1_aanderaaoxy_20070105.nc');
-  m2007 = ncdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200711/m1_aanderaaoxy_20071106.nc');
-  m2008 = ncdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/m1_aanderaaoxy_20081008.nc');
-  t = [m2006.time('esecs'); m2007.time('esecs'); m2008.time('esecs')];
-  o2 = [m2006.data('Oxygen'); m2007.data('Oxygen'); m2008.data('Oxygen')];
-  plot(t, o2)
-  datetick('x')
-  
-  For more information type 'help ncdataset' at the matlab prompt.
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-III. DEMOS
-
-Demos are in the 'demos' subdirectory. To run them, just 'cd' to the demos 
-directory and run the various demos.
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-IV. FAQ
-
-
----- Q: When attempting to open a dataset in matlab an Exception is thrown:
-
-For Example:
- import ucar.nc2.dataset.*
- nc = NetcdfDataset.openDataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/m1_metsys_20081008_original.nc')
-
-throws and Exception. 
-
-NOTE: The workaround is from http://www.mathworks.com/support/solutions/en/data/1-2Z4RS7/ 
-and applies to Matlab 2008a and older.
-
-A: To work around this issue you can remove mwucarunits.jar from your classpath
-   as long as you do not use the Model-Based Calibration Toolbox which requires 
-   mwucarunits.jar. To do this, follow these steps:
-
-1. Execute the following command at the MATLAB command prompt:
-	edit classpath.txt
-
-2. Find the following line:
-	$matlabroot/java/jarext/mwucarunits.jar
-
-and comment it out:
-	##$matlabroot/java/jarext/mwucarunits.jar
-
-3. Save the file and restart MATLAB.
-
-
----- Q: When I try to fetch data using 'ds.data(SomeVariable)', I get the following:
-        Getting ??? Java exception occurred:
-        java.lang.OutOfMemoryError: Java heap space
-
-NOTE: The workaround is from http://www.mathworks.com/support/solutions/data/1-18I2C.html
-
-1. Create a text file named java.opts in the $MATLABROOT/bin/$ARCH directory. 
-   If you do not have write-access to $MATLABROOT/bin/$ARCH, or if you want a
-   user-specific version, create the java.opts file in the MATLAB startup 
-   directory. The contents of java.opts depends on your version of the Java JVM.
-
-$MATLABROOT is the MATLAB root directory, which you find by typing at the MATLAB Command Prompt:
-matlabroot
-
-$ARCH is your system architecture, which you find by typing at the MATLAB Command Prompt:
-computer('arch')
-
-2. Add the following lines to java.opts
--Xms256m              
--Xmx512m
