@@ -206,10 +206,11 @@ classdef ncgeovariable < ncvariable
                                             ig.z = array.copyToNDJavaArray();
                                         end
                                     catch me
-                                        me.throw()
+                                        
                                         disp('Could you please add the code you are trying to run to Issue 27 at the nctoolbox issue tracking site.');
                                         web http://code.google.com/p/nctoolbox/issues/detail?id=27
 %                                         me.error('There is a problem applying the vertical coordinate tranform and subsetting the resuting values.');
+                                        me.throw()
                                     end
                                     
                                 otherwise
