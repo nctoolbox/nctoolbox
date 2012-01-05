@@ -194,7 +194,7 @@ classdef ncgeovariable < ncvariable
                                             catch me
                                                 c = 1;
                                                 for q = first(1):stride(1):last(1)
-                                                    subgrid = grid.getVerticalTransform();
+                                                    %subgrid = grid.getVerticalTransform();
                                                     array = subgrid.getCoordinateArray(q-1); % Issue 27 is failing here...
                                                     z(c, :, :, :) = array.copyToNDJavaArray();
                                                     c = c + 1;
@@ -202,7 +202,7 @@ classdef ncgeovariable < ncvariable
                                                 ig.z = z(:, first(2):stride(2):last(2),  first(3):stride(3):last(3),  first(4):stride(4):last(4));
                                             end
                                         catch me
-                                            array = subgrid.getCoordinateArray();
+                                            array = subgrid.getCoordinateArray(0);
                                             ig.z = array.copyToNDJavaArray();
                                         end
                                     catch me
