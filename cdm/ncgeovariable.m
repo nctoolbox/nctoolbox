@@ -530,21 +530,30 @@ classdef ncgeovariable < ncvariable
                                 tmax_i = max(t.index);
                         end
                     else
-                        switch length(struct.time)
-                            case 1
-                                t = obj.timewindowij(struct.time);
-                                tmin_i = t.index;
-                                tmax_i = t.index;
-                            case 2
-                                t = obj.timewindowij(struct.time(1), struct.time(2));
-                                tmin_i = min(t.index);
-                                tmax_i = max(t.index);
-                            otherwise % for anything else assume that it is a single datevec
-                                t = obj.timewindowij(struct.time);
-                                tmin_i = t.index;
-                                tmax_i = t.index;
+                        if ischar(struct.time)
+                            t = obj.timewindowij(struct.time);
+                            tmin_i = t.index;
+                            tmax_i = t.index;
+                        elseif isarray(struct.time)
+                            t = obj.timewindowij(struct.time);
+                            tmin_i = t.index;
+                            tmax_i = t.index;
+                        else
+                            switch length(struct.time)
+                                case 1
+                                    t = obj.timewindowij(struct.time);
+                                    tmin_i = t.index;
+                                    tmax_i = t.index;
+                                case 2
+                                    t = obj.timewindowij(struct.time(1), struct.time(2));
+                                    tmin_i = min(t.index);
+                                    tmax_i = max(t.index);
+                                otherwise % for anything else assume that it is a single datevec
+                                    t = obj.timewindowij(struct.time);
+                                    tmin_i = t.index;
+                                    tmax_i = t.index;
+                            end
                         end
-                        
                     end
                 elseif isfield(struct, 't_index') % check for 1 time index not the same time index twice $$$$$$$$$$$$
                     if iscell(struct.t_index)
@@ -604,9 +613,9 @@ classdef ncgeovariable < ncvariable
                     zmax = nums(order.z);
                 end
                 
-                ainfo = obj.axes_info;
-                time = value4key(ainfo, 'time');
-                z = value4key(ainfo, 'z');
+%                 ainfo = obj.axes_info;
+%                 time = value4key(ainfo, 'time');
+%                 z = value4key(ainfo, 'z');
                 %                 geo = value4key(ainfo, 'lon');
                 
                 
@@ -619,29 +628,31 @@ classdef ncgeovariable < ncvariable
                     stride = ones(length(nums));
                     last = nums;
                     
-                    if order.lon ~= order.lat
-                        % fill in here, vector lat/lon
-                    else
-                        first(order.time)   = tmin_i; 
-                        first(order.z)         = zmin;
-                        first(order.lon)     = indstart_r;
-                        first(order.lon+1) = indstart_c;
-                        
-                        last(order.time)   = tmax_i; 
-                        last(order.z)         = zmax;
-                        last(order.lon)     = indend_r;
-                        last(order.lon+1) = indend_c;
-                        
+                    if order.lon ~= order.lat      
                         stride(order.time)   = struct.t_stride; 
                         stride(order.z)         = struct.v_stride;
+                        stride(order.lon)     = struct.h_stride(2);
+                        stride(order.lat)      = struct.h_stride(1);
+                    else
+                        order.lat = order.lon + 1;
+                        stride(order.time)   = struct.t_stride;
+                        stride(order.z)         = struct.v_stride;
                         stride(order.lon)     = struct.h_stride(1);
-                        stride(order.lon+1) = struct.h_stride(2);
-                        
+                        stride(order.lat)      = struct.h_stride(2);
                     end
-%                 else
-%                     me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
-%                         ['Expected shape of data of ', obj.name, ' to be less than rank 5.']);
-%                     me.throw;
+                    first(order.time)   = tmin_i;
+                    first(order.z)         = zmin;
+                    first(order.lon)     = indstart_r;
+                    first(order.lat)      = indstart_c;
+                    last(order.time)   = tmax_i;
+                    last(order.z)         = zmax;
+                    last(order.lon)     = indend_r;
+                    last(order.lat)      = indend_c;
+                    
+                    %                 else
+                    %                     me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
+                    %                         ['Expected shape of data of ', obj.name, ' to be less than rank 5.']);
+                    %                     me.throw;
                 end
                 
                 % Get the corresponding data and interop grid...
