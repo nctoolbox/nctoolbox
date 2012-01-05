@@ -726,13 +726,16 @@ classdef ncgeovariable < ncvariable
                 end
             elseif min(g.lon) <~ 0
                 % Do nothing, we assume that input is in -180/180 conventions. And this means that the data is too.
+            elseif max(g.lon) > 180
+                g.lon = g.lon - 360;
             end
             
-            
-            %Unpack geosubset_structure
-            if isfield(struct, 'lat');
-                switch length(struct.lat)
-                    case 1
+    
+        
+        %Unpack geosubset_structure
+        if isfield(struct, 'lat');
+            switch length(struct.lat)
+                case 1
                         flag = 1;
                     case 2
                         north_max = struct.lat(2);
