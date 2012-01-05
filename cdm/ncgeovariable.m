@@ -373,11 +373,24 @@ classdef ncgeovariable < ncvariable
             ln = src.axes(match);
         end
         
-         function tn = gettimedata(src, start, last, stride)
+        function s = gettimedata(src, start, last, stride)
             % NCGEOVARIABLE.gettimedata()
-            var = src.gettimevar;
-            tn = var.data(start, last, stride);
-            tn = var.dataset.time(src.gettimename, tn);
+            %             var = src.gettimevar;
+            %             tn = var.data(start, last, stride);
+            %             tn = var.dataset.time(src.gettimename, tn);
+            
+            v = src.gettimevar;
+            sz = src.size();
+            timesize = v.size();
+            timelocation = find(sz==timesize(1));
+            
+            timestart = start(timelocation);
+            timelast = last(timelocation);
+            timestride = stride(timelocation);
+            
+            s = v.data(timestart:timestride:timelast);
+            
+            s = src.dataset.time(v.name, s);
         end
         
         function s = getlondata(src, start, last, stride)
@@ -451,7 +464,7 @@ classdef ncgeovariable < ncvariable
             first = ones(1, length(s));
             last = s;
             stride = first;
-            g = src.grid_interop(first, last, stride);
+            g.time = src.gettimedata(first, last, stride);
             
             if isfield(g, 'time') % are any of the fields recognized as time explictly
                 if nargin > 2 % If two times are input, do window
@@ -654,12 +667,12 @@ classdef ncgeovariable < ncvariable
                     end
                     first(order.time)   = tmin_i;
                     first(order.z)         = zmin;
-                    first(order.lon)     = indstart_r;
-                    first(order.lat)      = indstart_c;
+                    first(order.lon)     = indstart_c;
+                    first(order.lat)      = indstart_r;
                     last(order.time)   = tmax_i;
                     last(order.z)         = zmax;
-                    last(order.lon)     = indend_r;
-                    last(order.lat)      = indend_c;
+                    last(order.lon)     = indend_c;
+                    last(order.lat)      = indend_r;
                     
                     %                 else
                     %                     me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
