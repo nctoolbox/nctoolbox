@@ -386,9 +386,15 @@ classdef ncgeovariable < ncvariable
             sz = src.size();
             lonsize = v.size();
             lonlocation = find(sz==lonsize(1));
-            lonstart = start(lonlocation:lonlocation+1);
-            lonlast = last(lonlocation:lonlocation+1);
-            lonstride = stride(lonlocation:lonlocation+1);
+             if length(lonsize) == 1
+                lonstart = start(lonlocation);
+                lonlast = last(lonlocation);
+                lonstride = stride(lonlocation);
+            else
+                lonstart = start(lonlocation:lonlocation+1);
+                lonlast = last(lonlocation:lonlocation+1);
+                lonstride = stride(lonlocation:lonlocation+1);
+            end
             switch length(lonsize)
                   case 1
                     s = v.data(lonstart:lonstride:lonlast);
@@ -408,9 +414,15 @@ classdef ncgeovariable < ncvariable
             sz = src.size();
             latsize = v.size();
             latlocation = find(sz==latsize(1));
-            latstart = start(latlocation:latlocation+1);
-            latlast = last(latlocation:latlocation+1);
-            latstride = stride(latlocation:latlocation+1);
+            if length(latsize) == 1
+                latstart = start(latlocation);
+                latlast = last(latlocation);
+                latstride = stride(latlocation);
+            else
+                latstart = start(latlocation:latlocation+1);
+                latlast = last(latlocation:latlocation+1);
+                latstride = stride(latlocation:latlocation+1);
+            end
             switch length(latsize)
                   case 1
                     s = v.data(latstart:latstride:latlast);
@@ -602,30 +614,30 @@ classdef ncgeovariable < ncvariable
                 if isfield(struct, 'z_index')
                     switch length(struct.z_index)
                         case 1
-                           zmin = struct.z_index;
-                           zmax = struct.z_index;
+                            zmin = struct.z_index;
+                            zmax = struct.z_index;
                         case 2
                             zmin = struct.z_index(1);
                             zmax = struct.z_index(2);
                     end
                 else
-                    zmin = 1;
-                    zmax = nums(order.z);
+                    if isfield(order, 'z')
+                        zmin = 1;
+                        zmax = nums(order.z);
+                    else
+                        order.z = [];
+                        zmin = [];
+                        zmax = [];
+                    end
                 end
-                
-%                 ainfo = obj.axes_info;
-%                 time = value4key(ainfo, 'time');
-%                 z = value4key(ainfo, 'z');
-                %                 geo = value4key(ainfo, 'lon');
-                
-                
+
                 if length(nums) < 2
                     me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
                         ['Expected data of ', obj.name, ' to be at least rank 2.']);
                     me.throw;
                 else
-                    first = ones(length(nums));
-                    stride = ones(length(nums));
+                    first = ones([1, length(nums)]);
+                    stride = ones([1, length(nums)]);
                     last = nums;
                     
                     if order.lon ~= order.lat      
@@ -679,21 +691,15 @@ classdef ncgeovariable < ncvariable
             %            >> [firstlon, lastlon, firstlat, lastlat] = geoij(geovar, subsetstruct) % if lat/lon are vector
             %
             %
-%             s = obj.size;
-%             first = ones(1, length(s));
-           
-            
-%             last = s;
-%             stride = first;
-%             g = obj.grid_interop(first, last, stride); % this is doing the whole thing
+            %             s = obj.size;
+            %             first = ones(1, length(s));
+            %             last = s;
+            %             stride = first;
+            %             g = obj.grid_interop(first, last, stride); % this is doing the whole thing
             %           h = 0;
             flag = 0;
             
             warning off
-%             lonvar = obj.getlonvar();
-%             latvar = obj.getlatvar();
-%             lonsize = lonvar.size();
-%             latsize = latvar.size();
             switch  length(obj.size)
                 case 1
                     g.lon = obj.getlondata(1, obj.size, 1);
@@ -822,9 +828,6 @@ classdef ncgeovariable < ncvariable
                         indend_r = indexes(1);
                     end
             end
-            
-            
-            
         end % end geoij
         
         function order = getaxesorder(obj)
