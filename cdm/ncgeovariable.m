@@ -246,9 +246,22 @@ classdef ncgeovariable < ncvariable
                             
                         case 'Lon'
                             tmp = g.(tempname);
-%                             ind = find(tmp > 180); % convert 0-360 convention to -180-180
-%                             tmp(ind) = tmp(ind)-360;
-                            ig.lon = tmp;    
+                            if max(max(tmp)) > 360
+                                if min(min(tmp)) > 0
+                                    tmp(tmp>360) = tmp(tmp>360)-360;
+                                    tmp(tmp>360) = tmp(tmp>360)-360;
+                                    tmp(tmp>360) = tmp(tmp>360)-360;
+                                    tmp(tmp>180) = tmp(tmp>180)-360;
+                                else
+                                    error('NCGEOVARIABLE:GEOIJ',...
+                                        'Longitude contains values that follow both -180/180 and 0/360+ conventions; can not subset.');
+                                end
+                            elseif min(tmp) <~ 0
+                                % Do nothing, we assume that input is in -180/180 conventions. And this means that the data is too.
+                            elseif max(tmp) > 180
+                                tmp = tmp - 360;
+                            end
+                            ig.lon = tmp;
                         case 'Lat'
                             ig.lat = g.(tempname);
                             
@@ -728,9 +741,11 @@ classdef ncgeovariable < ncvariable
             warning on
             
             if max(g.lon) > 360
-                if min(g.lon) <~ 0
-                    ind = find(g.lon < 0); % convert 0-360 convention to -180/180
-                    g.lon(ind) = g.lon(ind)+360;
+                if min(g.lon) > 0
+                    g.lon(g.lon>360) = g.lon(g.lon>360)-360;
+                    g.lon(g.lon>360) = g.lon(g.lon>360)-360;
+                    g.lon(g.lon>360) = g.lon(g.lon>360)-360;
+                    g.lon(g.lon>180) = g.lon(g.lon>180)-360;
                 else
                     error('NCGEOVARIABLE:GEOIJ',...
                         'Longitude contains values that follow both -180/180 and 0/360+ conventions; can not subset.');
@@ -740,9 +755,7 @@ classdef ncgeovariable < ncvariable
             elseif max(g.lon) > 180
                 g.lon = g.lon - 360;
             end
-            
-    
-        
+
         %Unpack geosubset_structure
         if isfield(struct, 'lat');
             switch length(struct.lat)
