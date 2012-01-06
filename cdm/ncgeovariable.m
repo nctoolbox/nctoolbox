@@ -694,6 +694,12 @@ classdef ncgeovariable < ncvariable
                 % Get the corresponding data and interop grid...
                 d.data = obj.data(first, last, stride);
                 d.grid = obj.grid_interop(first, last, stride);
+                d.start = first;
+                d.stop = last;
+                d.stride = stride;
+                for i = 1:length(first)
+                    d.indices{i} = first(i):stride(i):last(i);
+                end
                 %           else
                 %             ugrid = ncugrid(obj); % Starting to add place holders for ugrid subsetting functionality
                 %             d = ugrid.unstructuredLatLonSubset(struct);
