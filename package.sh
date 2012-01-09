@@ -16,5 +16,17 @@ rm -rf $(find $TARGET -name .svn)
 rm -rf $(find $TARGET -name .hg)
 rm -rf $(find $TARGET -name *~)
 rm -rf $(find $TARGET -name *DS_Store)
-ditto -c -k --keepParent --noextattr --norsrc $TARGET nctoolbox-$(date "+%Y%m%d").zip
+
+if [[ $OSTYPE == darwin* ]]; then
+  ditto -c -k --keepParent --noextattr --norsrc $TARGET nctoolbox-$(date "+%Y%m%d").zip
+elif [[ $OSTYPE == linux-gnu ]]; then
+	myhome=${pwd}
+	cd target
+	ncname=nctoolbox-$(date "+%Y%m%d").zip
+	zip -r $ncname nctoolbox
+	mv $ncname ../$ncname
+	cd $myhome
+fi
+
 rm -rf target
+
