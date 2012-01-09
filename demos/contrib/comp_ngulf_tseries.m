@@ -6,13 +6,13 @@ figure(1)
 i=1;
 titl{i}='NGOFS'; %FVCOM
 grid_type{i}='unstructured_grid';
-uris{i}='http://geoport-dev.whoi.edu/thredds/dodsC/ngofs/forecast';
+uris{i}='http://geoport.whoi.edu/thredds/dodsC/ngofs/forecast';
 vars{i}='zeta';
 times{i}=[2012 1 6 12 0 0];
 
 % i=i+1;
 % titl{i}='SELFE';
-% uris{i}='http://testbedapps.sura.org/threddsdev/dodsC/inundation/selfe/ike/3Dvrwww';
+% uris{i}='http://testbedapps.sura.org/thredds/dodsC/inundation/selfe/ike/3Dvrwww';
 % vars{i}='elev';
 % times{i}=[2008 9 13 06 0 0];
 % grid_type{1}='unstructured_grid';
