@@ -57,20 +57,26 @@ classdef ncgeovariable < ncvariable
             switch length(src.size)
                 case 1
                     a = fieldnames( src.grid_interop(1,1,1));
+                    b = fieldnames( src.grid(1,1,1));
                 case 2
                     a = fieldnames( src.grid_interop([1,1],[1,1],[1,1]));
+                    b = fieldnames( src.grid([1,1],[1,1],[1,1]));
                 case 3
                     a = fieldnames( src.grid_interop([1,1,1], [1,1,1], [1,1,1]));
+                    b = fieldnames( src.grid([1,1,1], [1,1,1], [1,1,1]));
                 case 4
                     a = fieldnames( src.grid_interop([1,1,1,1], [1,1,1,1], [1,1,1,1]));
+                    b = fieldnames( src.grid([1,1,1,1], [1,1,1,1], [1,1,1,1]));
                 case 5
                     a = fieldnames( src.grid_interop([1,1,1,1,1], [1,1,1,1,1], [1,1,1,1,1]));
+                    b = fieldnames( src.grid([1,1,1,1,1], [1,1,1,1,1], [1,1,1,1,1]));
                 case 6
                     a = fieldnames( src.grid_interop([1,1,1,1,1,1], [1,1,1,1,1,1], [1,1,1,1,1,1]));
+                    b = fieldnames( src.grid([1,1,1,1,1,1], [1,1,1,1,1,1], [1,1,1,1,1,1]));
             end
             len = length(a);
             for i = 1:len
-                a{i, 2} = src.dataset.size(a{i});
+                a{i, 2} = src.dataset.size(b{i});
             end
             
         end
@@ -188,13 +194,18 @@ classdef ncgeovariable < ncvariable
                                         try
                                             try
                                                 for q = first(1):stride(1):last(1)
+%                                                     grid = griddataset.findGridByName(src.name);
+%                                                     subgrid = grid.getCoordinateSystem();
                                                     array = subgrid.getCoordinateArray(q-1);
                                                     ig.z(q, :, :, :) = array.copyToNDJavaArray();
                                                 end
                                             catch me
                                                 c = 1;
                                                 for q = first(1):stride(1):last(1)
-                                                    %subgrid = grid.getVerticalTransform();
+%                                                     grid = griddataset.findGridByName(src.name);
+%                                                     grid = grid.getCoordinateSystem();
+                                                    subgrid = grid.getVerticalTransform();
+                                                    
                                                     array = subgrid.getCoordinateArray(q-1); % Issue 27 is failing here...
                                                     z(c, :, :, :) = array.copyToNDJavaArray();
                                                     c = c + 1;
@@ -205,12 +216,11 @@ classdef ncgeovariable < ncvariable
                                             array = subgrid.getCoordinateArray(0);
                                             ig.z = array.copyToNDJavaArray();
                                         end
-                                    catch me
-                                        
+                                    catch me                                        
                                         disp('Could you please add the code you are trying to run to Issue 27 at the nctoolbox issue tracking site.');
                                         web http://code.google.com/p/nctoolbox/issues/detail?id=27
-%                                         me.error('There is a problem applying the vertical coordinate tranform and subsetting the resuting values.');
                                         me.throw()
+                                        % me.error('There is a problem applying the vertical coordinate tranform and subsetting the resuting values.');
                                     end
                                     
                                 otherwise
@@ -236,9 +246,22 @@ classdef ncgeovariable < ncvariable
                             
                         case 'Lon'
                             tmp = g.(tempname);
-%                             ind = find(tmp > 180); % convert 0-360 convention to -180-180
-%                             tmp(ind) = tmp(ind)-360;
-                            ig.lon = tmp;    
+                            if max(max(tmp)) > 360
+                                if min(min(tmp)) > 0
+                                    tmp(tmp>360) = tmp(tmp>360)-360;
+                                    tmp(tmp>360) = tmp(tmp>360)-360;
+                                    tmp(tmp>360) = tmp(tmp>360)-360;
+                                    tmp(tmp>180) = tmp(tmp>180)-360;
+                                else
+                                    error('NCGEOVARIABLE:GEOIJ',...
+                                        'Longitude contains values that follow both -180/180 and 0/360+ conventions; can not subset.');
+                                end
+                            elseif min(tmp) <~ 0
+                                % Do nothing, we assume that input is in -180/180 conventions. And this means that the data is too.
+                            elseif max(tmp) > 180
+                                tmp = tmp - 360;
+                            end
+                            ig.lon = tmp;
                         case 'Lat'
                             ig.lat = g.(tempname);
                             
@@ -326,7 +349,7 @@ classdef ncgeovariable < ncvariable
         
         function lv = getlatvar(src)
             % NCGEOVARIABLE.getlatvar()
-            tn = src.getlatename();
+            tn = src.getlatname();
             lv = src.dataset.geovariable(tn);
         end
         
@@ -363,23 +386,80 @@ classdef ncgeovariable < ncvariable
             ln = src.axes(match);
         end
         
-         function tn = gettimedata(src, start, last, stride)
+        function s = gettimedata(src, start, last, stride)
             % NCGEOVARIABLE.gettimedata()
-            var = src.gettimevar;
-            tn = var.data(start, last, stride);
-            tn = var.dataset.time(src.gettimename, tn);
+            %             var = src.gettimevar;
+            %             tn = var.data(start, last, stride);
+            %             tn = var.dataset.time(src.gettimename, tn);
+            
+            v = src.gettimevar;
+            sz = src.size();
+            timesize = v.size();
+            timelocation = find(sz==timesize(1));
+            
+            timestart = start(timelocation);
+            timelast = last(timelocation);
+            timestride = stride(timelocation);
+            
+            s = v.data(timestart:timestride:timelast);
+            
+            s = src.dataset.time(v.name, s);
         end
         
-        function ln = getlondata(src, start, last, stride)
+        function s = getlondata(src, start, last, stride)
             % NCGEOVARIABLE.getlondata()
-            var = src.getlonvar;
-            ln = var.data(start, last, stride);
+            v = src.getlonvar;
+            sz = src.size();
+            lonsize = v.size();
+            lonlocation = find(sz==lonsize(1));
+             if length(lonsize) == 1
+                lonstart = start(lonlocation);
+                lonlast = last(lonlocation);
+                lonstride = stride(lonlocation);
+            else
+                lonstart = start(lonlocation:lonlocation+1);
+                lonlast = last(lonlocation:lonlocation+1);
+                lonstride = stride(lonlocation:lonlocation+1);
+            end
+            switch length(lonsize)
+                  case 1
+                    s = v.data(lonstart:lonstride:lonlast);
+                  case 2
+                    s = v.data(lonstart(1):lonstride(1):lonlast(1),lonstart(2):lonstride(2):lonlast(2));
+                  case 3
+                    s = v.data(lonstart(1):lonstride(1):lonlast(1), lonstart(2):lonstride(2):lonlast(2), lonstart(3):lonstride(3):lonlast(3));
+                  case 4
+                    s = v.data(lonstart(1):lonstride(1):lonlast(1), lonstart(2):lonstride(2):lonlast(2), lonstart(3):lonstride(3):lonlast(3),...
+                      lonstart(4):lonstride(4):lonlast(4));
+            end
         end
         
-        function ln = getlatdata(src, start, last, stride)
+        function s = getlatdata(src, start, last, stride)
             % NCGEOVARIABLE.gelatdata()
-            var = src.getlatvar;
-            ln = var.data(start, last, stride);
+            v = src.getlatvar;
+            sz = src.size();
+            latsize = v.size();
+            latlocation = find(sz==latsize(1));
+            if length(latsize) == 1
+                latstart = start(latlocation);
+                latlast = last(latlocation);
+                latstride = stride(latlocation);
+            else
+                latstart = start(latlocation:latlocation+1);
+                latlast = last(latlocation:latlocation+1);
+                latstride = stride(latlocation:latlocation+1);
+            end
+            switch length(latsize)
+                  case 1
+                    s = v.data(latstart:latstride:latlast);
+                  case 2
+                    s = v.data(latstart(1):latstride(1):latlast(1),latstart(2):latstride(2):latlast(2));
+                  case 3
+                    s = v.data(latstart(1):latstride(1):latlast(1), latstart(2):latstride(2):latlast(2), latstart(3):latstride(3):latlast(3));
+                  case 4
+                    s = v.data(latstart(1):latstride(1):latlast(1), latstart(2):latstride(2):latlast(2), latstart(3):latstride(3):latlast(3),...
+                      latstart(4):latstride(4):latlast(4));
+            end
         end
         
         
@@ -397,7 +477,7 @@ classdef ncgeovariable < ncvariable
             first = ones(1, length(s));
             last = s;
             stride = first;
-            g = src.grid_interop(first, last, stride);
+            g.time = src.gettimedata(first, last, stride);
             
             if isfield(g, 'time') % are any of the fields recognized as time explictly
                 if nargin > 2 % If two times are input, do window
@@ -488,362 +568,138 @@ classdef ncgeovariable < ncvariable
                                 tmax_i = max(t.index);
                         end
                     else
-                        switch length(struct.time)
-                            case 1
-                                t = obj.timewindowij(struct.time);
-                                tmin_i = t.index;
-                                tmax_i = t.index;
-                            case 2
-                                t = obj.timewindowij(struct.time(1), struct.time(2));
-                                tmin_i = min(t.index);
-                                tmax_i = max(t.index);
-                            otherwise % for anything else assume that it is a single datevec
-                                t = obj.timewindowij(struct.time);
-                                tmin_i = t.index;
-                                tmax_i = t.index;
+                        if ischar(struct.time)
+                            t = obj.timewindowij(struct.time);
+                            tmin_i = t.index;
+                            tmax_i = t.index;
+                        elseif isarray(struct.time)
+                            t = obj.timewindowij(struct.time);
+                            tmin_i = t.index;
+                            tmax_i = t.index;
+                        else
+                            switch length(struct.time)
+                                case 1
+                                    t = obj.timewindowij(struct.time);
+                                    tmin_i = t.index;
+                                    tmax_i = t.index;
+                                case 2
+                                    t = obj.timewindowij(struct.time(1), struct.time(2));
+                                    tmin_i = min(t.index);
+                                    tmax_i = max(t.index);
+                                otherwise % for anything else assume that it is a single datevec
+                                    t = obj.timewindowij(struct.time);
+                                    tmin_i = t.index;
+                                    tmax_i = t.index;
+                            end
                         end
-                        
                     end
-                elseif isfield(struct, 't_index')
+                elseif isfield(struct, 't_index') % check for 1 time index not the same time index twice $$$$$$$$$$$$
                     if iscell(struct.t_index)
-                        if numel(struct.t_index{1}) > 1 % check to see if someone used str or datevec by accident
-                            me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
-                                'Expected min time to be an index/integer.');
-                            me.throw;
-                        else
-                            tmin_i = struct.t_index{1};
-                        end
-                        if numel(struct.t_index{2}) > 1 % check to see if someone used str or datevec by accident
-                            me = MException(['NCTOOLBOX:' mfilename ':geosubset'], ...
-                                'Expected max time to be an index/integer.');
-                            me.throw;
-                        else
-                            tmax_i = struct.t_index{2};
+                        switch length(t_index)
+                            case 1
+                                if numel(struct.t_index{1}) > 1 % check to see if someone used str or datevec by accident
+                                    me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
+                                        'Expected min time to be an index/integer.');
+                                    me.throw;
+                                else
+                                    tmin_i = struct.t_index{1};
+                                end
+                            case 2
+                                if numel(struct.t_index{1}) > 1 % check to see if someone used str or datevec by accident
+                                    me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
+                                        'Expected min time to be an index/integer.');
+                                    me.throw;
+                                else
+                                    tmin_i = struct.t_index{1};
+                                end
+                                if numel(struct.t_index{2}) > 1 % check to see if someone used str or datevec by accident
+                                    me = MException(['NCTOOLBOX:' mfilename ':geosubset'], ...
+                                        'Expected max time to be an index/integer.');
+                                    me.throw;
+                                else
+                                    tmax_i = struct.t_index{2};
+                                end
                         end
                     else
-                        tmin_i = struct.t_index(1);
-                        tmax_i = struct.t_index(2);
+                        switch length(struct.t_index)
+                            case 1
+                                tmin_i = struct.t_index(1);
+                                tmax_i = struct.t_index(1);
+                            case 2
+                                tmin_i = struct.t_index(1);
+                                tmax_i = struct.t_index(2);
+                        end
                     end
                 else
                     tmin_i = 1;
                     tmax_i = nums(1);
                 end
                 
-                ainfo = obj.axes_info;
-                time = value4key(ainfo, 'time');
-                z = value4key(ainfo, 'z');
-                %                 geo = value4key(ainfo, 'lon');
                 order = obj.getaxesorder;
                 
+                if isfield(struct, 'z_index')
+                    switch length(struct.z_index)
+                        case 1
+                            zmin = struct.z_index;
+                            zmax = struct.z_index;
+                        case 2
+                            zmin = struct.z_index(1);
+                            zmax = struct.z_index(2);
+                    end
+                else
+                    if isfield(order, 'z')
+                        zmin = 1;
+                        zmax = nums(order.z);
+                    else
+                        order.z = [];
+                        zmin = [];
+                        zmax = [];
+                    end
+                end
+
                 if length(nums) < 2
                     me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
                         ['Expected data of ', obj.name, ' to be at least rank 2.']);
                     me.throw;
-                elseif length(nums) < 3
-                    if ~isempty(time)
-                        first = [tmin_i indstart_r];
-                        last = [tmax_i indend_r];
-                        stride = [struct.t_stride struct.h_stride(2)];
-                    elseif ~isempty(z)
-                        error('Error, Error, Error');
-                    else
-                        if strcmp(order{1,1}, 'lat')
-                            first = [indstart_r indstart_c];
-                            last = [indend_r indend_c];
-                            stride = [struct.h_stride(2) struct.h_stride(1)];
-                        elseif strcmp(order{1,1}, 'lon')
-                            first = [indstart_c indstart_r];
-                            last = [indend_c indend_r];
-                            stride = [struct.h_stride(1) struct.h_stride(2)];
-                        end
-                    end
-                elseif length(nums) < 4
-                    if ~isempty(time)
-                        if strcmp(order{1,1}, 'time')
-                            if value4key(ainfo, 'lat') == value4key(ainfo, 'lon')
-                                first = [tmin_i indstart_r indstart_c];
-                                last = [tmax_i indend_r indend_c];
-                                stride = [struct.t_stride struct.h_stride(2) struct.h_stride(1)];
-                            else
-                                loclat = 0;
-                                for i = 1:length(order(2,:))
-                                    if strcmp(order{2,i},  'lat')
-                                        loclat = i;
-                                    end
-                                end
-                                %                                 [~, loclat] = ismember(order(2,:), {'lat'});
-                                if loclat > 0
-                                    first = [tmin_i indstart_r indstart_c];
-                                    last = [tmax_i indend_r indend_c];
-                                    stride = [struct.t_stride struct.h_stride(2) struct.h_stride(1)];
-                                else
-                                    first = [tmin_i indstart_c indstart_r];
-                                    last = [tmax_i indend_c indend_r];
-                                    stride = [struct.t_stride struct.h_stride(1) struct.h_stride(2)];
-                                end
-                            end
-                        else
-                            if value4key(ainfo, 'lat') == value4key(ainfo, 'lon')
-                                first = [indstart_r indstart_c tmin_i ];
-                                last = [ indend_r indend_c tmax_i];
-                                stride = [ struct.h_stride(2) struct.h_stride(1) struct.t_stride];
-                            else
-                                %                                 [~, locat] = ismember(order(2,:), 'lat');
-                                loclat = 0;
-                                for i = 1:length(order(2,:))
-                                    if strcmp(order{2,i},  'lat')
-                                        loclat = i;
-                                    end
-                                end
-                                if loclat > 0
-                                    first = [indstart_r indstart_c tmin_i ];
-                                    last = [ indend_r indend_c tmax_i];
-                                    stride = [ struct.h_stride(2) struct.h_stride(1) struct.t_stride];
-                                else
-                                    first = [indstart_c indstart_r tmin_i ];
-                                    last = [ indend_c indend_r tmax_i];
-                                    stride = [ struct.h_stride(1) struct.h_stride(2) struct.t_stride];
-                                end
-                            end
-                        end
-                    elseif ~isempty(z)
-                        if isfield(struct, 'z_index');
-                            if length(struct.z_index) < 2
-                                struct.z_index(2) = struct.z_index(1);
-                            else
-                                % for some reason hg doesnt see this as a file change@?!?!
-                            end
-                        else
-                            struct.z_index = [1 nums(1)];
-                        end
-                        if strcmp(order{1,1}, 'z')
-                            if value4key(ainfo, 'lat') == value4key(ainfo, 'lon')
-                                first = [struct.z_index(1) indstart_r indstart_c];
-                                last = [struct.z_index(2) indend_r indend_c];
-                                stride = [struct.v_stride struct.h_stride(2) struct.h_stride(1)];
-                            else
-                                %                                 [~, loclat] = ismember(order(2,:), 'lat');
-                                loclat = 0;
-                                for i = 1:length(order(2,:))
-                                    if strcmp(order{2,i},  'lat')
-                                        loclat = i;
-                                    end
-                                end
-                                if loclat > 0
-                                    first = [struct.z_index(1) indstart_r indstart_c];
-                                    last = [struct.z_index(2) indend_r indend_c];
-                                    stride = [struct.v_stride struct.h_stride(2) struct.h_stride(1)];
-                                else
-                                    first = [struct.z_index(1) indstart_c indstart_r];
-                                    last = [struct.z_index(2) indend_c indend_r];
-                                    stride = [struct.v_stride struct.h_stride(1) struct.h_stride(2)];
-                                end
-                            end
-                        else
-                            if value4key(ainfo, 'lat') == value4key(ainfo, 'lon')
-                                first = [ indstart_r indstart_c struct.z_index(1)];
-                                last = [ indend_r indend_c struct.z_index(2)];
-                                stride = [ struct.h_stride(2) struct.h_stride(1) struct.v_stride];
-                            else
-                                %                                 [~, loclat] = ismember(order(2,:), 'lat');
-                                loclat = 0;
-                                for i = 1:length(order(2,:))
-                                    if strcmp(order{2,i},  'lat')
-                                        loclat = i;
-                                    end
-                                end
-                                if loclat > 0
-                                    first = [ indstart_r indstart_c struct.z_index(1)];
-                                    last = [ indend_r indend_c struct.z_index(2)];
-                                    stride = [ struct.h_stride(2) struct.h_stride(1) struct.v_stride];
-                                else
-                                    first = [ indstart_c indstart_r struct.z_index(1)];
-                                    last = [ indend_c indend_r struct.z_index(2)];
-                                    stride = [ struct.h_stride(1) struct.h_stride(2) struct.v_stride];
-                                end
-                            end
-                        end
-                    else
-                        me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
-                            'Expected either a coordinate variable acknowleged as time or as z.');
-                        me.throw;
-                    end
-                    
-                elseif length(nums) < 5
-                    if isfield(struct, 'z_index');
-                        if length(struct.z_index) < 2
-                            struct.z_index(2) = struct.z_index(1);
-                        else
-                            % for some reason hg doesnt see this as a file change@?!?!
-                        end
-                    else
-                        struct.z_index = [1 nums(2)];
-                    end
-                    [~, loctime] = ismember(order(1,:), 'time');
-                    [~, locz] = ismember(order(1,:), 'z');
-                    if loctime > 0
-                        [~, locz2] = ismember(order(2,:), 'z');
-                        [~, locz3] = ismember(order(3,:), 'z');
-                        [~, locz4] = ismember(order(4,:), 'z');
-                        if locz2  > 0
-                            if value4key(ainfo, 'lat') == value4key(ainfo, 'lon')
-                                first = [tmin_i struct.z_index(1) indstart_r indstart_c];
-                                last = [tmax_i struct.z_index(2) indend_r indend_c];
-                                stride = [struct.t_stride struct.v_stride struct.h_stride(2) struct.h_stride(1)];
-                            else
-                                %                                 [~, loclat] = ismember(order(2,:), 'lat');
-                                loclat = 0;
-                                for i = 1:length(order(2,:))
-                                    if strcmp(order{2,i},  'lat')
-                                        loclat = i;
-                                    end
-                                end
-                                if loclat > 0
-                                    first = [tmin_i struct.z_index(1) indstart_r indstart_c];
-                                    last = [tmax_i struct.z_index(2) indend_r indend_c];
-                                    stride = [struct.t_stride struct.v_stride struct.h_stride(2) struct.h_stride(1)];
-                                else
-                                    first = [tmin_i struct.z_index(1) indstart_c indstart_r];
-                                    last = [tmax_i struct.z_index(2) indend_c indend_r];
-                                    stride = [struct.t_stride struct.v_stride struct.h_stride(1) struct.h_stride(2)];
-                                end
-                            end
-                        elseif locz3 > 0
-                            if value4key(ainfo, 'lat') == value4key(ainfo, 'lon')
-                                first = [tmin_i indstart_r struct.z_index(1) indstart_c];
-                                last = [tmax_i indend_r struct.z_index(2) indend_c];
-                                stride = [struct.t_stride struct.h_stride(2) struct.v_stride struct.h_stride(1)];
-                            else
-                                %                                 [~, loclat] = ismember(order(2,:), 'lat');
-                                loclat = 0;
-                                for i = 1:length(order(2,:))
-                                    if strcmp(order{2,i},  'lat')
-                                        loclat = i;
-                                    end
-                                end
-                                if loclat > 0
-                                    first = [tmin_i indstart_r struct.z_index(1) indstart_c];
-                                    last = [tmax_i indend_r struct.z_index(2) indend_c];
-                                    stride = [struct.t_stride struct.h_stride(2) struct.v_stride struct.h_stride(1)];
-                                else
-                                    first = [tmin_i indstart_c struct.z_index(1) indstart_r];
-                                    last = [tmax_i indend_c struct.z_index(2) indend_r];
-                                    stride = [struct.t_stride struct.h_stride(1) struct.v_stride struct.h_stride(2)];
-                                end
-                            end
-                        elseif locz4 > 0
-                            if value4key(ainfo, 'lat') == value4key(ainfo, 'lon')
-                                first = [tmin_i indstart_r indstart_c struct.z_index(1)];
-                                last = [tmax_i indend_r indend_c struct.z_index(2)];
-                                stride = [struct.t_stride struct.h_stride(2) struct.h_stride(1) struct.v_stride];
-                            else
-                                %                                 [~, loclat] = ismember(order(2,:), 'lat');
-                                loclat = 0;
-                                for i = 1:length(order(2,:))
-                                    if strcmp(order{2,i},  'lat')
-                                        loclat = i;
-                                    end
-                                end
-                                if loclat > 0
-                                    first = [tmin_i indstart_r indstart_c struct.z_index(1)];
-                                    last = [tmax_i indend_r indend_c struct.z_index(2)];
-                                    stride = [struct.t_stride struct.h_stride(2) struct.h_stride(1) struct.v_stride];
-                                else
-                                    first = [tmin_i indstart_c indstart_r struct.z_index(1)];
-                                    last = [tmax_i indend_c indend_r struct.z_index(2)];
-                                    stride = [struct.t_stride struct.h_stride(1) struct.h_stride(2) struct.v_stride];
-                                end
-                            end
-                        else
-                            error('Dimension order not supported');
-                        end
-                    elseif locz > 0
-                        [~, loctime2] = ismember(order(2,:), 'time');
-                        [~, loctime3] = ismember(order(3,:), 'time');
-                        [~, loctime4] = ismember(order(4,:), 'time');
-                        if loctime2  > 0
-                            if value4key(ainfo, 'lat') == value4key(ainfo, 'lon')
-                                first = [struct.z_index(1) tmin_i indstart_r indstart_c];
-                                last = [struct.z_index(2) tmax_i indend_r indend_c];
-                                stride = [struct.v_stride struct.t_stride struct.h_stride(2) struct.h_stride(1)];
-                            else
-                                %                                 [~, loclat] = ismember(order(2,:), 'lat');
-                                loclat = 0;
-                                for i = 1:length(order(2,:))
-                                    if strcmp(order{2,i},  'lat')
-                                        loclat = i;
-                                    end
-                                end
-                                if loclat > 0
-                                    first = [struct.z_index(1) tmin_i indstart_r indstart_c];
-                                    last = [struct.z_index(2) tmax_i indend_r indend_c];
-                                    stride = [struct.v_stride struct.t_stride struct.h_stride(2) struct.h_stride(1)];
-                                else
-                                    first = [struct.z_index(1) tmin_i indstart_c indstart_c];
-                                    last = [struct.z_index(2) tmax_i indend_c indend_c];
-                                    stride = [struct.v_stride struct.t_stride struct.h_stride(1) struct.h_stride(2)];
-                                end
-                            end
-                        elseif loctime3 > 0
-                            if value4key(ainfo, 'lat') == value4key(ainfo, 'lon')
-                                first = [struct.z_index(1) indstart_r tmin_i indstart_c];
-                                last = [struct.z_index(2) indend_r tmax_i indend_c];
-                                stride = [struct.v_stride struct.h_stride(2) struct.t_stride struct.h_stride(1)];
-                            else
-                                %                                 [~, loclat] = ismember(order(2,:), 'lat');
-                                loclat = 0;
-                                for i = 1:length(order(2,:))
-                                    if strcmp(order{2,i},  'lat')
-                                        loclat = i;
-                                    end
-                                end
-                                if loclat > 0
-                                    first = [struct.z_index(1) indstart_r tmin_i indstart_c ];
-                                    last = [struct.z_index(2) indend_r tmax_i indend_c ];
-                                    stride = [struct.v_stride struct.h_stride(2) struct.t_stride struct.h_stride(1)];
-                                else
-                                    first = [struct.z_index(1) indstart_c tmin_i indstart_r ];
-                                    last = [struct.z_index(2) indend_c tmax_i indend_r ];
-                                    stride = [struct.v_stride struct.h_stride(1) struct.t_stride struct.h_stride(2)];
-                                end
-                            end
-                        elseif loctime4 > 0
-                            if value4key(ainfo, 'lat') == value4key(ainfo, 'lon')
-                                first = [struct.z_index(1) indstart_r indstart_c tmin_i];
-                                last = [struct.z_index(2) indend_r indend_c tmax_i];
-                                stride = [struct.v_stride struct.h_stride(2) struct.h_stride(1) struct.t_stride];
-                            else
-                                %                                 [~, loclat] = ismember(order(2,:), 'lat');
-                                loclat = 0;
-                                for i = 1:length(order(2,:))
-                                    if strcmp(order{2,i},  'lat')
-                                        loclat = i;
-                                    end
-                                end
-                                if loclat > 0
-                                    first = [struct.z_index(1) indstart_r indstart_c tmin_i];
-                                    last = [struct.z_index(2) indend_r indend_c tmax_i];
-                                    stride = [struct.v_stride struct.h_stride(2) struct.h_stride(1) struct.t_stride];
-                                else
-                                    first = [struct.z_index(1) indstart_c indstart_r tmin_i];
-                                    last = [struct.z_index(2) indend_c indend_r tmax_i];
-                                    stride = [struct.v_stride struct.h_stride(1) struct.h_stride(2) struct.t_stride];
-                                end
-                            end
-                        else
-                            error('Dimension order not supported');
-                        end
-                    end
                 else
-                    me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
-                        ['Expected shape of data of ', obj.name, ' to be less than rank 5.']);
-                    me.throw;
+                    first = ones([1, length(nums)]);
+                    stride = ones([1, length(nums)]);
+                    last = nums;
                     
+                    if order.lon ~= order.lat      
+                        % pass
+                    else
+                        order.lat = order.lon;
+                        order.lon = order.lat+1;  
+                    end
+                    stride(order.time)   = struct.t_stride; 
+                    stride(order.z)         = struct.v_stride;
+                    stride(order.lon)     = struct.h_stride(2);
+                    stride(order.lat)      = struct.h_stride(1);
+                    first(order.time)   = tmin_i;
+                    first(order.z)         = zmin;
+                    first(order.lon)     = indstart_c;
+                    first(order.lat)      = indstart_r;
+                    last(order.time)   = tmax_i;
+                    last(order.z)         = zmax;
+                    last(order.lon)     = indend_c;
+                    last(order.lat)      = indend_r;
+                    
+                    %                 else
+                    %                     me = MException(['NCTOOLBOX:ncgeovariable:geosubset'], ...
+                    %                         ['Expected shape of data of ', obj.name, ' to be less than rank 5.']);
+                    %                     me.throw;
                 end
                 
                 % Get the corresponding data and interop grid...
                 d.data = obj.data(first, last, stride);
                 d.grid = obj.grid_interop(first, last, stride);
+                d.start = first;
+                d.stop = last;
+                d.stride = stride;
+                for i = 1:length(first)
+                    d.indices{i} = first(i):stride(i):last(i);
+                end
                 %           else
                 %             ugrid = ncugrid(obj); % Starting to add place holders for ugrid subsetting functionality
                 %             d = ugrid.unstructuredLatLonSubset(struct);
@@ -865,31 +721,51 @@ classdef ncgeovariable < ncvariable
             %            >> [firstlon, lastlon, firstlat, lastlat] = geoij(geovar, subsetstruct) % if lat/lon are vector
             %
             %
-            s = obj.size;
-            first = ones(1, length(s));
-            last = s;
-            stride = first;
-            g = obj.grid_interop(first, last, stride);
+            %             s = obj.size;
+            %             first = ones(1, length(s));
+            %             last = s;
+            %             stride = first;
+            %             g = obj.grid_interop(first, last, stride); % this is doing the whole thing
             %           h = 0;
             flag = 0;
             
+            warning off
+            switch  length(obj.size)
+                case 1
+                    g.lon = obj.getlondata(1, obj.size, 1);
+                    g.lat = obj.getlatdata(1, obj.size, 1);
+                case 2
+                    g.lon = obj.getlondata([1, 1], obj.size, [1, 1]);
+                    g.lat = obj.getlatdata([1, 1], obj.size, [1, 1]);
+                case 3
+                    g.lon = obj.getlondata([1, 1, 1], obj.size, [1, 1, 1]);
+                    g.lat = obj.getlatdata([1, 1, 1], obj.size, [1, 1, 1]);
+                case 4
+                    g.lon = obj.getlondata([1, 1, 1, 1], obj.size, [1, 1, 1, 1]);
+                    g.lat = obj.getlatdata([1, 1, 1, 1], obj.size, [1, 1, 1, 1]);
+            end
+            warning on
+            
             if max(g.lon) > 360
-                if min(g.lon) <~ 0
-                    ind = find(g.lon < 0); % convert 0-360 convention to -180/180
-                    g.lon(ind) = g.lon(ind)+360;
+                if min(g.lon) > 0
+                    g.lon(g.lon>360) = g.lon(g.lon>360)-360;
+                    g.lon(g.lon>360) = g.lon(g.lon>360)-360;
+                    g.lon(g.lon>360) = g.lon(g.lon>360)-360;
+                    g.lon(g.lon>180) = g.lon(g.lon>180)-360;
                 else
                     error('NCGEOVARIABLE:GEOIJ',...
                         'Longitude contains values that follow both -180/180 and 0/360+ conventions; can not subset.');
                 end
             elseif min(g.lon) <~ 0
                 % Do nothing, we assume that input is in -180/180 conventions. And this means that the data is too.
+            elseif max(g.lon) > 180
+                g.lon = g.lon - 360;
             end
-            
-            
-            %Unpack geosubset_structure
-            if isfield(struct, 'lat');
-                switch length(struct.lat)
-                    case 1
+
+        %Unpack geosubset_structure
+        if isfield(struct, 'lat');
+            switch length(struct.lat)
+                case 1
                         flag = 1;
                     case 2
                         north_max = struct.lat(2);
@@ -985,24 +861,16 @@ classdef ncgeovariable < ncvariable
                         indend_r = indexes(1);
                     end
             end
-            
-            
-            
         end % end geoij
         
         function order = getaxesorder(obj)
             %             permute_nums = fliplr(obj.axes_info);
             ainfo = obj.axes_info;
             siz = obj.size;
-            for i = 1:length(siz)
-                for j = 1:length(ainfo(:, 2))
-                    for k = 1:length(ainfo{j, 2})
-                        if siz(i) == ainfo{j, 2}(k)
-                            order{i, j} = ainfo{j, 1};
-                        end
-                    end
-                end
+            for i = 1:length(ainfo(:, 1))
+                order.(ainfo{i,1}) = find(siz==ainfo{i, 2}(1));
             end
+            
         end
         
         function sref = subsref(obj,s)

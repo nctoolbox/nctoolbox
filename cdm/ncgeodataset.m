@@ -189,16 +189,39 @@ classdef ncgeodataset < cfdataset
             tn = var.gettimedata(start, last, stride);
         end
         
-        function ln = getlondata(obj, start, last, stride)
+        function s = getlondata(obj, variableName, start, last, stride)
             % NCGEOVARIABLE.getlondata()
-            var = obj.getlonvar(variableName);
-            ln = var.getlondata(start, last, stride);
+            var = obj.geovariable(variableName);
+            sz = var.size();
+            switch length(sz)
+                  case 1
+                    s = var.getlondata(start:stride:last);
+                  case 2
+                    s = var.getlondata(start(1):stride(1):last(1),start(2):stride(2):last(2));
+                  case 3
+                    s = var.getlondata(start(1):stride(1):last(1),start(2):stride(2):last(2),start(3):stride(3):last(3));
+                  case 4
+                    s = var.getlondata(start(1):stride(1):last(1),start(2):stride(2):last(2),start(3):stride(3):last(3),...
+                      start(4):stride(4):last(4));
+            end
+           
         end
         
-        function ln = getlatdata(obj, start, last, stride)
+        function ln = getlatdata(obj, variableName, start, last, stride)
             % NCGEOVARIABLE.gelatdata()
-            var = obj.getlatvar(variableName);
-            ln = var.getlatdata(start, last, stride);
+            var = obj.geovariable(variableName);
+            sz = var.size();
+            switch length(sz)
+                  case 1
+                    s = var.getlatdata(start:stride:last);
+                  case 2
+                    s = var.getlatdata(start(1):stride(1):last(1),start(2):stride(2):last(2));
+                  case 3
+                    s = var.getlatdata(start(1):stride(1):last(1),start(2):stride(2):last(2),start(3):stride(3):last(3));
+                  case 4
+                    s = var.getlatdata(start(1):stride(1):last(1),start(2):stride(2):last(2),start(3):stride(3):last(3),...
+                      start(4):stride(4):last(4));
+            end
         end
         
         

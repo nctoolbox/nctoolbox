@@ -1,5 +1,5 @@
 function [p1,p2]=iso_plot(data,g,iso_value,vax);
-%ISO_PLOT - Plots an isosurface from data and grid structure 
+%ISO_PLOT - Plots an isosurface from 3D data and grid structure 
 % Usage:[p1,p2] =iso_plot(data,g,iso_value,vax);
 % Inputs:  data = 3D data array 
 %             g = structure of geo coordinates for data (g.lon,g.lat,g.z) 
@@ -13,6 +13,8 @@ function [p1,p2]=iso_plot(data,g,iso_value,vax);
 % [p1,p2]=iso_plot(t,g,14,300); % plot 14 degree isosurface with vert exag = 300
 %
 % NCTOOLBOX (http://code.google.com/p/nctoolbox)
+g.z=squeeze(g.z);
+data=squeeze(data);
 h=squeeze(min(g.z)); % find deepest z values at each grid point
 [nz,ny,nx]=size(data);
 if (min(size(g.lon))==1),
@@ -35,7 +37,7 @@ lat3d=permute(repmat(g.lat,[1 1 nz]),[3 1 2]);
 data(data==0)=nan;
 p2 = patch(isosurface(lon3d,lat3d,g.z,data,iso_value));
 set(p2, 'FaceColor', [0 1 1], 'EdgeColor', 'none');
-daspect([1 cos(gmean(g.lat(:)*pi/180)) fac]);
+daspect([1 cos(mean(g.lat(isfinite(g.lat))*pi/180)) fac]);
 % set the view
 view(0,45);
 
