@@ -572,7 +572,7 @@ classdef ncgeovariable < ncvariable
                             t = obj.timewindowij(struct.time);
                             tmin_i = t.index;
                             tmax_i = t.index;
-                        elseif isarray(struct.time)
+                        elseif length(struct.time) == 6
                             t = obj.timewindowij(struct.time);
                             tmin_i = t.index;
                             tmax_i = t.index;
