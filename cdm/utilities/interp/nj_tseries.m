@@ -80,6 +80,8 @@ switch method
         ind=nearxy(double(lon(:)),double(lat(:)),loni(k),lati(k));
         lono(k)=lon(ind);
         lato(k)=lat(ind);
+        fprintf('extracting point %d:lon=%f,lat=%f\n',k,lono(k),lato(k));
+
         if ~exist('itime','var');
           u(:,k)=nc{var}(ind);  % no time variable, e.g. bathymetry
         elseif (exist('itime','var') && ~exist('layer','var'))
