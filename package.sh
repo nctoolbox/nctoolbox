@@ -6,6 +6,10 @@
 # Brian Schlining - 20090701
 
 TARGET=target/nctoolbox
+if [ -d $TARGET ]; then
+	rm -rf target
+fi
+
 mkdir -p $TARGET
 cp -R cdm $TARGET/cdm
 cp -R demos $TARGET/demos
