@@ -6,6 +6,10 @@
 # Brian Schlining - 20090701
 
 TARGET=target/nctoolbox
+if [ -d $TARGET ]; then
+	rm -rf target
+fi
+
 mkdir -p $TARGET
 cp -R cdm $TARGET/cdm
 cp -R demos $TARGET/demos
@@ -19,7 +23,7 @@ rm -rf $(find $TARGET -name *DS_Store)
 
 if [[ $OSTYPE == darwin* ]]; then
   ditto -c -k --keepParent --noextattr --norsrc $TARGET nctoolbox-$(date "+%Y%m%d").zip
-elif [[ $OSTYPE == linux-gnu ]]; then
+elif [[ $OSTYPE == linux-gnu || $OSTYPE == cygwin ]]; then
 	myhome=${pwd}
 	cd target
 	ncname=nctoolbox-$(date "+%Y%m%d").zip
