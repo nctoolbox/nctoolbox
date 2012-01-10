@@ -11,7 +11,7 @@ if (nargin > 4),
   index=find(distance<=dist);     %finds points closer than dist
   [row col] = find(distance<=dist);
   
-else,
+else
   index=find(distance==min(min(distance)));  % finds closest point
    [row col]=find(distance==min(min(distance)));
   index=index(1);
