@@ -7,7 +7,7 @@ import org.apache.commons.httpclient.auth.CredentialsProvider;
 public class BasicCredentialsProvider implements CredentialsProvider {
 
     /* 
-	 * Yeah, only username/password authentication for now.
+	 * Only username/password authentication for now.
 	 */
     private UsernamePasswordCredentials credentials;
 
@@ -15,13 +15,12 @@ public class BasicCredentialsProvider implements CredentialsProvider {
         credentials = new UsernamePasswordCredentials(userName,password);
     }
 
-	/*
-	 * All we need do to implement the interface is implement
-	 * the getCredentials method.
-	 */
+    /*
+     * Sole methed to be implemented. Way to easy.
+     */
     public Credentials getCredentials (AuthScheme scheme, String host, int port, boolean proxy) 
-    		throws CredentialsNotAvailableException {
-		return(credentials);
+            throws CredentialsNotAvailableException {
+        return(credentials);
 	}
 
 }
