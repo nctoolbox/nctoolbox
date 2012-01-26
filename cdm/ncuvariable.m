@@ -29,7 +29,7 @@ classdef ncuvariable < handle
             
             obj.name = variableName;
             
-            coordinates = src.attribute('coordinates', variableName);
+            coordinates = src.attribute(variableName, 'coordinates');
             coordinate_vars = regexp(coordinates, ' ', 'split')';
             obj.axes = coordinate_vars;
             
@@ -37,7 +37,7 @@ classdef ncuvariable < handle
             
         end % constructor end
         
-        function s = subset(obj, struct)
+        function s = geosubset(obj, struct)
             % NCUVARIABLE.SUBSET - Function to subset an unstructured model grid by lat/lon
             % bounding box using subsetting methods in the ugrid-java.
             %
@@ -48,7 +48,7 @@ classdef ncuvariable < handle
             %              subsetstructure.lat = [minlat maxlat];
             %              subsetstructure.lon = [minlon maxlon];
             %
-            s = obj.dataset.unstructuredLatLonSubset(obj.name, struct);
+            s = obj.dataset.variableSubset(obj.name, struct);
         end % subset end
         
         function atts = attributes(obj)
