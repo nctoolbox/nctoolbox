@@ -261,9 +261,9 @@ classdef ncgeovariable < ncvariable
                             elseif max(tmp) > 180
                                 tmp = tmp - 360;
                             end
-                            ig.lon = tmp;
+                            ig.lon = double(tmp);
                         case 'Lat'
-                            ig.lat = g.(tempname);
+                            ig.lat = double(g.(tempname));
                             
                         case 'GeoY'
                             ig.y = g.(tempname);
@@ -745,6 +745,9 @@ classdef ncgeovariable < ncvariable
                     g.lat = obj.getlatdata([1, 1, 1, 1], obj.size, [1, 1, 1, 1]);
             end
             warning on
+            
+            g.lon = double(g.lon);
+            g.lat = double(g.lat);
             
             if max(g.lon) > 360
                 if min(g.lon) > 0
