@@ -17,8 +17,10 @@ units = value4key(attr, 'units'); % Retrieve the units value
 name = value4key(attr, 'long_name'); % Retrieve the long_name value
 
 %% ---- Plot the data
-plot(t, o2)
-datetick('x')
-ylabel([name ' [' units ']'])
-grid
+figure;
+plot(t, o2);...
+datetick('x');...
+ylabel([name ' [' units ']']);...
+grid;...
+shg
 echo('off')

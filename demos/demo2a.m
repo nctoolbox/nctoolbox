@@ -5,12 +5,13 @@ echo('on')
 % An example of subsetting data using ncdataset
 
 %% ---- Open the dataset
-ds = ncgeodataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/OS_M1_20081008_TS.nc')
+ds = ncgeodataset('http://geoport.whoi.edu/thredds/dodsC/examples/OS_M1_20081008_TS.nc')
 
 % You can view the variables available to you
 ds.variables
 
 %% Plot all the data
+figure;
 plot(ds.time('TIME'), ds{'TEMP'}(1:max(ds.size('TEMP')), 1, 1, 1))
 hold('on')
 
@@ -29,12 +30,13 @@ ds.size('TEMP')
 temp = ds{'TEMP'}(startIdx:stride:endIdx, 1, 1, 1);
 
 
-%% ---- Plot it
-plot(t, temp, 'r.')
-datetick('x', 2);
-grid
-legend('All Data', 'Decimated Data')
-title('Surface Temperature at M1 Mooring in Monterey Bay')
-ylabel('Temperature [^oC]')
+%% ---- Add Subsetted Data to Plot 
+plot(t, temp, 'r.');...
+datetick('x', 2);grid;...
+legend('All Data', 'Decimated Data');...
+title('Surface Temperature at M1 Mooring in Monterey Bay');...
+ylabel('Temperature [^oC]');
+hold('off');
+shg
 
-echo('off') % ENDING DEMO2 ------------------------------------------------
+echo('off') % ENDING DEMO2A ------------------------------------------------
