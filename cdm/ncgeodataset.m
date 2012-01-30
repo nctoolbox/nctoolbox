@@ -28,6 +28,94 @@ classdef ncgeodataset < cfdataset
         end
         
         %%
+        function ax = axes(obj, variableName)
+            % ---- Attempt to fetch the variables representing the axes
+            % for the variable of interest. We'll try the CF
+            % conventions first and if that's not available we'll try
+            % COARDS.
+            
+            att = obj.attributes(variableName);
+            coordinates = value4key(att, 'coordinates');
+            
+            if ~isempty(coordinates)
+                % ---- Look for CF 'coordinates' attribute
+                
+                % Parse the string into white space delimited parts
+                jls = java.lang.String(coordinates);
+                p = jls.split(' ');                   % java.lang.String[]
+                axesVariableNames = cell(size(p));    % cell version of p
+                for i = 1:length(p)
+                    axesVariableNames{i} = char(p(i));
+                end
+                
+            else
+                % ---- Look for COARDS conventions. If any coordinate
+                % dimensions are missing we don't bother looking any
+                % up.
+                axesVariableNames = obj.axes(variableName);
+                if ~isempty(axesVariableNames)
+                    for i = 1:length(axesVariableNames)
+                        if isempty(axesVariableNames{i})
+                            axesVariableNames = {};
+                            break;
+                        end
+                    end
+                end
+                
+            end
+            
+            % Testing combining the axes from both the variable axes and dataset axes
+            % maybe temporary stop gap...?
+            for i = 1:length(axesVariableNames)
+                axesVariables{i,1} = axesVariableNames{i};
+            end
+            
+            if ~exist('axes', 'var')
+                %                 try
+                ncd = ncdataset(obj);
+                dsaxes = ncd.axes(variableName);
+                alreadythere = 0;
+                for i = 1:length(dsaxes)
+                    if ~isempty(dsaxes{i})
+                        for j = 1:length(axesVariables)
+                            if strcmp(axesVariables{j}, dsaxes{i})
+                                alreadythere = 1;
+                            end
+                        end
+                        if ~alreadythere
+                            axesVariables{length(axesVariables)+1,1} = dsaxes{i};
+                        end
+                    end
+                end
+                
+                
+                %                     v = ncgeovariable(obj, variableName, axesVariables);
+                ax = axesVariables;
+                
+                
+                %                     if ~isempty(v)
+                %                         for i = 1:length(obj.variables)
+                %                             if strcmp(obj.ncvariables{i, 1}, variableName)
+                %                                 obj.ncvariables{i, 2} = v;
+                %                                 break;
+                %                             end
+                %                         end
+                %                     end
+                %                 catch
+                %                     warning('NCGEODATASET:GEOVARIABLE', 'The netcdf-java cdm contains no coordinate information associated with the variable. Returning ncvariable instead of ncgeovariable object. (Methods that rely on coordinate information like ''grid'' or ''geosubset'' are not available.');
+                % %                     v = ncvariable(obj, variableName);
+                %                 end
+            else
+                
+                %                 v = ncgeovariable(obj, variableName, axes);
+            end
+        end
+        
+        function dim = dimensions(obj, variableName)
+            v = obj.netcdf.getVariable(variableName);
+            dim = v.getDimensions;
+        end
+        
         function v = geovariable(obj, variableName, axes)
             % NCGEODATASET.VARIABLE Returns an ncgeovariable object that provides
             % advanced access to the data contained within that variable based on geo-
@@ -125,7 +213,7 @@ classdef ncgeodataset < cfdataset
                         v = ncvariable(obj, variableName);
                     end
                 else
-                   
+                    
                     v = ncgeovariable(obj, variableName, axes);
                 end
                 
@@ -194,17 +282,17 @@ classdef ncgeodataset < cfdataset
             var = obj.geovariable(variableName);
             sz = var.size();
             switch length(sz)
-                  case 1
+                case 1
                     s = var.getlondata(start:stride:last);
-                  case 2
+                case 2
                     s = var.getlondata(start(1):stride(1):last(1),start(2):stride(2):last(2));
-                  case 3
+                case 3
                     s = var.getlondata(start(1):stride(1):last(1),start(2):stride(2):last(2),start(3):stride(3):last(3));
-                  case 4
+                case 4
                     s = var.getlondata(start(1):stride(1):last(1),start(2):stride(2):last(2),start(3):stride(3):last(3),...
-                      start(4):stride(4):last(4));
+                        start(4):stride(4):last(4));
             end
-           
+            
         end
         
         function ln = getlatdata(obj, variableName, start, last, stride)
@@ -212,15 +300,15 @@ classdef ncgeodataset < cfdataset
             var = obj.geovariable(variableName);
             sz = var.size();
             switch length(sz)
-                  case 1
+                case 1
                     s = var.getlatdata(start:stride:last);
-                  case 2
+                case 2
                     s = var.getlatdata(start(1):stride(1):last(1),start(2):stride(2):last(2));
-                  case 3
+                case 3
                     s = var.getlatdata(start(1):stride(1):last(1),start(2):stride(2):last(2),start(3):stride(3):last(3));
-                  case 4
+                case 4
                     s = var.getlatdata(start(1):stride(1):last(1),start(2):stride(2):last(2),start(3):stride(3):last(3),...
-                      start(4):stride(4):last(4));
+                        start(4):stride(4):last(4));
             end
         end
         
