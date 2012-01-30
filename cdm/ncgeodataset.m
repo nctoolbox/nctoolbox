@@ -113,7 +113,7 @@ classdef ncgeodataset < cfdataset
         
         function dim = dimensions(obj, variableName)
             v = obj.netcdf.getVariable(variableName);
-            dim = v.getDimensions;
+            dim = char(v.getDimensions.toString);
         end
         
         function v = geovariable(obj, variableName, axes)
