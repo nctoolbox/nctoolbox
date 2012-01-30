@@ -194,34 +194,6 @@ classdef ncdataset < handle
             end
         end
         
-        function dnames = dimensions(obj, variable)
-           % NCDATASET.DIMENSIONS Returns the dimensions of the variable.
-           %
-           % Use as:
-           %    ds = ncdataset('http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc');
-           %    dims = ds.dimensions('u');
-           %
-           % Inputs:
-           %    variableName = the name of the variables whose dimensions
-           %    you want to retrieve.
-           %
-           % Return:
-           %    An (n, 1) cell array containing the names (in order) of the
-           %    dimensions that are defined for the variable. Note that
-           %    there may not nescessesarily be a corresponding variable
-           %    for every dimensions name. If you only want to return
-           %    dimensions that have a corresponding coordinate axis use
-           %    AXES instead of DIMENSION.
-           v = obj.findvariable(variable);
-           dims = v.getDimensions();
-           dnames = cell(dims.size(), 1);
-           for i = 1:dims.size();
-               dnames{i} = char(dims.get(i - 1).getName());
-           end
-           
-           
-        end
-        
         %%
         function a = attributes(obj, variable)
             % NCDATASET.ATTRIBUTES returns the attributes of the variable as an
@@ -350,6 +322,12 @@ classdef ncdataset < handle
         end % function metadata end
         
         %%
+        function dim = dimensions(obj, variableName)
+            v = obj.netcdf.findVariable(variableName);
+            dim = char(v.getDimensions.toString);
+        end
+        
+        %%
         function save(obj, filename)
             % NCDATASET.SAVE Save the data to a local netcdf file
             %
@@ -450,8 +428,6 @@ classdef ncdataset < handle
                 try
                     d = array.copyToNDJavaArray(); % this fails if the variable has no java shape/no dimension was assigned
                 catch me1
-                    warning('NCTOOLBOX:ncdataset:readdata', ['An error occurred while reading "' variable ...
-                        '" in ' obj.location '. Cause: \n' getReport(me1)]);
                     try
                         % TODO (Alex added this code) Where is a file where
                         % this code section gets called?
@@ -459,7 +435,7 @@ classdef ncdataset < handle
                         d = d.toCharArray';  % must transpose
                         d = str2double(d);   % matlab string to matlab numeric
                     catch me2
-                        ex = MException('NCTOOLBOX:ncdataset:data', ['Failed to open "' variable '" in ' obj.location]);
+                        ex = MException('NCTOOLBOX:ncdataset:data', ['Failed to open "' variable '" in ' url]);
                         ex = ex.addCause(me2);
                         ex.throw;
                     end
