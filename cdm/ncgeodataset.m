@@ -52,7 +52,8 @@ classdef ncgeodataset < cfdataset
                 % ---- Look for COARDS conventions. If any coordinate
                 % dimensions are missing we don't bother looking any
                 % up.
-                axesVariableNames = obj.axes(variableName);
+                ncd = ncdataset(obj);
+                axesVariableNames = ncd.axes(variableName);
                 if ~isempty(axesVariableNames)
                     for i = 1:length(axesVariableNames)
                         if isempty(axesVariableNames{i})
@@ -157,7 +158,8 @@ classdef ncgeodataset < cfdataset
                     % ---- Look for COARDS conventions. If any coordinate
                     % dimensions are missing we don't bother looking any
                     % up.
-                    axesVariableNames = obj.axes(variableName);
+                    ncd = ncdataset(obj);
+                    axesVariableNames = ncd.axes(variableName);
                     if ~isempty(axesVariableNames)
                         for i = 1:length(axesVariableNames)
                             if isempty(axesVariableNames{i})
@@ -177,7 +179,8 @@ classdef ncgeodataset < cfdataset
                 
                 if ~exist('axes', 'var')
                     try
-                        dsaxes = obj.axes(variableName);
+                        ncd = ncdataset(obj);
+                        dsaxes = ncd.axes(variableName);
                         alreadythere = 0;
                         for i = 1:length(dsaxes)
                             if ~isempty(dsaxes{i})
