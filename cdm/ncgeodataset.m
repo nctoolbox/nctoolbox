@@ -111,6 +111,11 @@ classdef ncgeodataset < cfdataset
             end
         end
         
+        function dim = dimensions(obj, variableName)
+            v = obj.netcdf.getVariable(variableName);
+            dim = v.getDimensions;
+        end
+        
         function v = geovariable(obj, variableName, axes)
             % NCGEODATASET.VARIABLE Returns an ncgeovariable object that provides
             % advanced access to the data contained within that variable based on geo-
