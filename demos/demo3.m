@@ -23,9 +23,11 @@ units = values{ismember(keys, 'units')};  % Retrieve the units value
 name = values{ismember(keys, 'long_name')};  % Retrieve the long_name value
 
 %% ---- Plot the data
-plot(t, o2)
-datetick('x')
-ylabel([name ' [' units ']'])
-title('Dissolved Oxygen at M1 Mooring in Monterey Bay')
+figure;
+plot(t, o2);...
+datetick('x');...
+ylabel([name ' [' units ']']);...
+title('Dissolved Oxygen at M1 Mooring in Monterey Bay');...
 grid
+shg
 echo('off') % Ending DEMO3 ------------------------------------------------

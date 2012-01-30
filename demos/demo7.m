@@ -8,7 +8,7 @@ echo('on')
 % Demonstration of using cfdataset to subset a variable and it's coordinate axes
 
 % Open the remote dataset
-ds = cfdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/OS_M1_20081008_TS.nc');
+ds = cfdataset('http://geoport.whoi.edu/thredds/dodsC/examples/OS_M1_20081008_TS.nc');
 
 % Grab the variable of interest. No data is being read yet.
 v = ds.variable('TEMP');
@@ -27,6 +27,7 @@ v.axes
 t                 
 
 % Make a pretty plot
+figure;
 plot(ds.time('TIME', t.TIME), t.TEMP) 
 cs = cellstr(num2str(t.DEPTH));
 for i = 1:length(cs); cs{i} = [cs{i} ' m'];end
@@ -37,5 +38,6 @@ units = value4key(at, 'units');
 ylabel(char(units));
 xlabel('date');
 datetick('x');
-grid('on')
+grid('on');
+shg
 echo('off') % Ending DEMO7 ------------------------------------------------

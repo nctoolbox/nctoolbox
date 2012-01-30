@@ -2,7 +2,7 @@
 echo('on')
 % Starting DEMO4 ----------------------------------------------------------
 % Example of data access using the NetCDF-Java API
-ds = ncdataset('http://elvis.shore.mbari.org/thredds/dodsC/all/OS_M1_R/OS_MBARI-M1_20091020_R_TS.nc');
+ds = ncdataset('http://geoport.whoi.edu/thredds/dodsC/examples/OS_MBARI-M1_20091020_R_TS.nc');
 nc = ds.netcdf;
 
 %% ---- Query NetCDF using Java API

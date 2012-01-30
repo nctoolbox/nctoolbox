@@ -18,6 +18,7 @@ g = v.grid(end, end, 1:end, 1:end);
 
 % Make a pretty plot. Note the call to 'squeeze'. This removes
 % singleton dimensions.
+figure;
 surf(g.lon_rho, g.lat_rho, double(squeeze(t)))
 shading('interp');
 view(2)
@@ -40,5 +41,6 @@ ztime = ds.time('time1', g.time1);
 title([zname ' [' zunits '] on ' datestr(ztime)]);
 
 colorbar
+shg
 
 echo('off') % Ending DEMO8 ------------------------------------------------

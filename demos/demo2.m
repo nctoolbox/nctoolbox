@@ -1,16 +1,16 @@
 % DEMO2 - Subsetting data
-
 echo('on')
 % STARTING DEMO2 ----------------------------------------------------------
 % An example of subsetting data using ncdataset
 
 %% ---- Open the dataset
-ds = ncdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/OS_M1_20081008_TS.nc')
+ds = ncdataset('http://geoport.whoi.edu/thredds/dodsC/examples/OS_M1_20081008_TS.nc');
 
 % You can view the variables available to you
 ds.variables
 
 %% Plot all the data
+figure;
 plot(ds.time('TIME'), ds.data('TEMP', [1 1 1 1], [max(ds.size('TEMP')) 1 1 1], [1 1 1 1]))
 hold('on')
 
@@ -27,12 +27,13 @@ ds.size('TEMP')
 % Use variable, start, end, stride to subset
 temp = ds.data('TEMP', [startIdx 1 1 1], [endIdx 1 1 1], [stride 1 1 1]);
 
-%% ---- Plot it
-plot(t, temp, 'r.')
-datetick('x', 2);
-grid
-legend('All Data', 'Decimated Data')
-title('Surface Temperature at M1 Mooring in Monterey Bay')
-ylabel('Temperature [^oC]')
+%% ---- Add Subsetted Data to Plot 
+plot(t, temp, 'r.');...
+datetick('x', 2);grid;...
+legend('All Data', 'Decimated Data');...
+title('Surface Temperature at M1 Mooring in Monterey Bay');...
+ylabel('Temperature [^oC]');
+hold('off');
+shg
 
 echo('off') % ENDING DEMO2 ------------------------------------------------

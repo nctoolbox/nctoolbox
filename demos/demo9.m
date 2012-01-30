@@ -16,6 +16,7 @@ t = ds.struct('temp', [sz(1) sz(2) 1 1], [sz(1) sz(2) sz(3) sz(4)]);
 
 % Make a pretty plot. Note the call to 'squeeze'. This removes
 % singleton dimensions.
+figure;
 surf(t.lon_rho, t.lat_rho, double(squeeze(t.temp)))
 shading('interp');
 view(2)
@@ -38,5 +39,5 @@ ztime = ds.time('time1', t.time1);
 title([zname ' [' zunits '] on ' datestr(ztime(1))]);
 
 colorbar
-
+shg
 echo('off') % Ending DEMO9 -----------------------------------------------
