@@ -194,6 +194,34 @@ classdef ncdataset < handle
             end
         end
         
+        function dnames = dimensions(obj, variable)
+           % NCDATASET.DIMENSIONS Returns the dimensions of the variable.
+           %
+           % Use as:
+           %    ds = ncdataset('http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc');
+           %    dims = ds.dimensions('u');
+           %
+           % Inputs:
+           %    variableName = the name of the variables whose dimensions
+           %    you want to retrieve.
+           %
+           % Return:
+           %    An (n, 1) cell array containing the names (in order) of the
+           %    dimensions that are defined for the variable. Note that
+           %    there may not nescessesarily be a corresponding variable
+           %    for every dimensions name. If you only want to return
+           %    dimensions that have a corresponding coordinate axis use
+           %    AXES instead of DIMENSION.
+           v = obj.findvariable(variable);
+           dims = v.getDimensions();
+           dnames = cell(dims.size(), 1);
+           for i = 1:dims.size();
+               dnames{i} = char(dims.get(i - 1).getName());
+           end
+           
+           
+        end
+        
         %%
         function a = attributes(obj, variable)
             % NCDATASET.ATTRIBUTES returns the attributes of the variable as an
