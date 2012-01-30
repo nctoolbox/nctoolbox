@@ -322,6 +322,12 @@ classdef ncdataset < handle
         end % function metadata end
         
         %%
+        function dim = dimensions(obj, variableName)
+            v = obj.netcdf.findVariable(variableName);
+            dim = char(v.getDimensions.toString);
+        end
+        
+        %%
         function save(obj, filename)
             % NCDATASET.SAVE Save the data to a local netcdf file
             %
