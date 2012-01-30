@@ -111,7 +111,6 @@ classdef ncgeodataset < cfdataset
                 %                 v = ncgeovariable(obj, variableName, axes);
             end
         end
-       
         
         function v = geovariable(obj, variableName, axes)
             % NCGEODATASET.VARIABLE Returns an ncgeovariable object that provides
