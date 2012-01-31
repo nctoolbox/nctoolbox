@@ -1,16 +1,21 @@
-% TEST_CF_UGRID2
-% Read/plot CF-UGRID Convention data from ADCIRC, SELFE, FVCOM and ELCIRC
-
+% TEST_CF_UGRID3
+% Compare water levels from 3 different unstructured grid
+% models that use UGRID conventions (http://bit.ly/cf_ugrid), allowing 
+% comparison with no model specific code
 titl{1}='ADCIRC';
-uris{1}='http://testbedapps.sura.org/threddsdev/dodsC/inundation/ADCIRC/ike/3Dvrwww'
+uris{1}='http://testbedapps.sura.org/thredds/dodsC/inundation/ADCIRC/ike/3Dvrwoww'
 vars{1}='zeta';
 times{1}=[2008 9 13 06 0 0];
 
 titl{2}='SELFE';
-uris{2}='http://testbedapps.sura.org/threddsdev/dodsC/inundation/selfe/ike/2Dvrwww';
+uris{2}='http://testbedapps.sura.org/thredds/dodsC/inundation/selfe/ike/3Dvrwoww';
 vars{2}='elev';
 times{2}=[2008 9 13 06 0 0];
 
+titl{3}='FVCOM';
+uris{3}='http://testbedapps.sura.org/thredds/dodsC/inundation/FVCOM/ike/3Dvrwoww';
+vars{3}='zeta';
+times{3}=[2008 9 13 06 0 0];
 % bounding box for figures
 ax=[-95.4519  -87.3856   28.0   31.0]
 % color range for figures
@@ -19,13 +24,13 @@ cax=[0 5];
 % There is nothing model specific in the loop below!
 for i=1:length(uris)
   tic
-  %initialize dataset object
+  % Initialize dataset object
   nc=ncgeodataset(uris{i});
   %get geovariable object
   zvar=nc.geovariable(vars{i});
   % Find the coordinate variables
-  lon=nc{zvar.getlonname}(:);
-  lat=nc{zvar.getlatname}(:);
+  lon=zvar.getlondata(:);
+  lat=zvar.getlatdata(:);
   tdat=zvar.timewindowij(times{i});
   itime=tdat.index;
   % read data at specified time step for all nodes

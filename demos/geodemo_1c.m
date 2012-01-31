@@ -1,6 +1,6 @@
 % NCGEODATASET GEODEMO_1C
 % Method C: Read surface salinity with curly brace syntax: s = nc{'salt'}(1,end,:,:); 
-% Most compact method, but with functionality limited to reading data,
+% Most compact general method, but with functionality limited to reading data,
 % obtaining an interoperabily grid structure, and acquiring attributes. 
 
 % OPeNDAP Data URL for a CF-Compliant curvilinear ROMS model dataset
@@ -26,6 +26,14 @@ nc = ncgeodataset(url)
 % name, and then use regular matlab matrix indexing. If no indices are
 % included, a geovariable object is returned. (:) can be used for the
 % entire variable.)
+
+% let take a look at the dimension names first, which will inform how
+% we need to specify the indices
+
+ nc.dimensions('salt')
+ 
+% We see that we have time, z, y, x dimensions, in that order
+
 
  salinity = nc{'salt'}(1, end, :, :);
  size(salinity)
@@ -53,6 +61,7 @@ nc = ncgeodataset(url)
 % arrays that these lat/lon coordinates are in). When this is the case, see
 % Matlab's meshgrid function to create 2-d plaid grids from the vectors.
 
+ figure
  pcolor(salinity_coords.lon, salinity_coords.lat, salinity)
  shading flat; colorbar; caxis([35 39]);
 

@@ -29,9 +29,14 @@ nc = ncgeodataset(url)
  salt = nc.geovariable('salt')
 
 % Now we can use Matlab style array indexing to subset the salt variable by
-% its indices. Here we will assume that the arrangement of the dimensions
-% follows the order of time, vertical level, horizontal coordinates. A
-% subset of (1, end, :, :) means that we are grabbing the first time step,
+% its indices.  We can take a look at the dimension names using the "dimensions" 
+% method:
+
+  nc.dimensions('salt')
+  
+% We see the arrangement of the dimensions follows the order of time, 
+% vertical level, y, and x. 
+% A subset of (1, end, :, :) means that we are grabbing the first time step,
 % the last vertical level, and the entire spatial domain of the dataset.
 
 % Note that the values that the toolbox returns are typically the same type

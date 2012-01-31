@@ -30,6 +30,13 @@ nc = ncgeodataset(url)
 % indices for each dimension, end indices for each dimension, and an
 % optional stride vector for each dimension.
 
+% let take a look at the dimension names first, which will inform how
+% we need to specify the indices
+
+ nc.dimensions('salt')
+ 
+% We see that we have time, z, y, x dimensions, in that order
+
  nz=sz(2);
  salinity = nc.data('salt', [1 nz 1 1], [1 nz 60 160], [1 1 1 1]);
  size(salinity)
