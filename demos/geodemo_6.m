@@ -38,7 +38,7 @@ figure;
 pcolorjw(g.lon(1:58, 1:70), g.lat(1:58, 1:70), ...
     Uobj.magnitude(itime, klev, 1:58, 1:70));
 colorbar; 
-arrows(g.lon(1:58,1:70), g.lat(1:58,1:70),...
-    Uobj.vectors(itime, klev, 1:58,1:70), 0.08, 'black');
+arrows(g.lon(1:2:58,1:2:70), g.lat(1:2:58,1:2:70),...
+    Uobj.vectors(itime, klev, 1:2:58,1:2:70), 0.08, 'black');
 title(datestr(g.time));
 dasp(44);

@@ -21,12 +21,12 @@ classdef complex_ongrid < handle
             obj.rhovar = rhovar;
         end % end constructor
         
-        function mag = magnitude(obj, first, last)
-            vec = obj.vectors(first, last);
+        function mag = magnitude(obj, first, last, stride)
+            vec = obj.vectors(first, last, stride);
             mag = abs(vec);
         end % end mag
         
-        function vec = vectors(obj, first, last)
+        function vec = vectors(obj, first, last, stride)
             % get lon,lat size from hvar
             if nargin < 2
                 hsize = obj.rhovar.size;
@@ -50,6 +50,7 @@ classdef complex_ongrid < handle
             
             u = double(squeeze(obj.uvar.data(first(1), first(2), ujj, uii))); % get u
             v = double(squeeze(obj.vvar.data(first(1), first(2), vjj, vii))); % get v
+            
             g = obj.rhovar.grid_interop(jj, ii); % get lon,lat from rho-point variable (like 'h' in ROMS)
             
             U = ones(size(g.lon)) * nan; % template for U at rho points
@@ -60,11 +61,15 @@ classdef complex_ongrid < handle
                 U = U .* exp(sqrt(-1) * ang); % rotate
             end
             
-            vec = U; % output
+            if nargin < 4
+                stride = ones(length(first));
+            end
+            
+            vec = U(1:stride(end-1):end, 1:stride(end):end); % output
             
         end % end vec
         
-        function g = grid(obj, first, last)
+        function g = grid(obj, first, last, stride)
             if nargin < 2
                 hsize = obj.rhovar.size;
                 horder = obj.rhovar.getaxesorder;
@@ -77,8 +82,11 @@ classdef complex_ongrid < handle
                     error('order.lat != order.lon');
                 end
             else
-                jj = first(end-1):last(end-1);
-                ii = first(end):last(end);
+                if nargin < 4
+                    stride = ones(length(first));
+                end
+                jj = first(end-1):stride(end-1):last(end-1);
+                ii = first(end):stride(end-1):last(end);
             end
             g = obj.rhovar.grid_interop(jj, ii); % get lon,lat from rho-point variable (like 'h' in ROMS)
             
@@ -86,7 +94,7 @@ classdef complex_ongrid < handle
             tim = obj.uvar.timewindowij( double(first(1)) );
             g.time = tim.time;
             g.klevel = first(2);
-            g.itime = first(2);
+            g.itime = first(1);
             
         end % end grid
         
@@ -114,7 +122,7 @@ classdef complex_ongrid < handle
                                         sref = obj;
                                     case 2
                                         [first last stride] = indexing(s(2).subs, double(nums));
-                                        sref = obj.grid(first, last);
+                                        sref = obj.grid(first, last, stride);
                                 end
                                 
                             else
@@ -130,7 +138,7 @@ classdef complex_ongrid < handle
                                         sref = obj;
                                     case 2
                                         [first last stride] = indexing(s(2).subs, double(nums));
-                                        sref = obj.vectors(first, last);
+                                        sref = obj.vectors(first, last, stride);
                                 end
                                 
                             else
@@ -145,7 +153,7 @@ classdef complex_ongrid < handle
                                         sref = obj;
                                     case 2
                                         [first last stride] = indexing(s(2).subs, double(nums));
-                                        sref = obj.magnitude(first, last);
+                                        sref = obj.magnitude(first, last, stride);
                                 end
                                 
                             else
