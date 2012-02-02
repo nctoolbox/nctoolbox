@@ -462,6 +462,17 @@ classdef ncgeovariable < ncvariable
             end
         end
         
+        function vec = getvectors(src, u, v, alpha)
+            if nargin < 4
+                vec = complex_ongrid(src, u, v);
+            elseif nargin == 4
+                vec = complex_ongrid(src, u, v, alpha);
+            else
+                error(['NCTOOLBOX:ncgeovariable:getvectors'], ...
+                        'Incorrect number of arguments for getvectrs()');
+            end
+        end
+        
         
         
         %% These functions would rather output multiple outputs instead of struct, must reconcile

@@ -20,7 +20,7 @@ klev = -1; % last (top) layer
 
 %Whole domain:
 % [ U, g ] = cgrid_uv2rho(nc, uname, vname, hname, aname, itime, klev);
-Uobj = complex_ongrid(hvar, uvar, vvar, avar);
+Uobj = hvar.getvectors(uvar, vvar, avar);
 g = Uobj.grid(itime, klev, :, :);
 
 % Initialize Plot / Plot Vectors
