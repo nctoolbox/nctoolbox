@@ -91,7 +91,11 @@ classdef ncgeodataset < cfdataset
                 
                 
                 %                     v = ncgeovariable(obj, variableName, axesVariables);
-                ax = axesVariables;
+                if ~exist('axesVariables', 'var')
+                    ax = {};
+                else
+                    ax = axesVariables;
+                end
                 
                 
                 %                     if ~isempty(v)

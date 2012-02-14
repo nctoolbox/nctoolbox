@@ -7,14 +7,14 @@
 comp_titl='Comparison of 2D No-Wave runs for Hurricane Rita';
 
 titl{1}='ADCIRC';
-uris{1}='http://testbedapps.sura.org/threddsdev/dodsC/inundation/ADCIRC/ike/3Dvrwww'
+uris{1}='http://testbedapps.sura.org/thredds/dodsC/inundation/ADCIRC/ike/3Dvrwww'
 %uris{1}='http://testbedapps.sura.org/threddsdev/dodsC/inundation/ADCIRC/rita/2Dvrwoww'
 uname{1}='u-vel';
 vname{1}='v-vel';
 tname{1}='time';
 
 titl{2}='FVCOM';
-uris{2}='http://testbedapps.sura.org/threddsdev/dodsC/inundation/FVCOM/ike/3Dvrwww';
+uris{2}='http://testbedapps.sura.org/thredds/dodsC/inundation/FVCOM/ike/3Dvrwww';
 %uris{2}='http://testbedapps.sura.org/threddsdev/dodsC/inundation/FVCOM/rita/2Dvrwoww';
 uname{2}='ua';
 vname{2}='va';
