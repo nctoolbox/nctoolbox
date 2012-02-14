@@ -35,27 +35,27 @@ function [km nmi mi] = haversine(loc1, loc2)
 % May 27, 2010
 % Copyright (c) 2010, Josiah Renfree
 % All rights reserved.
-% 
-% Redistribution and use in source and binary forms, with or without 
-% modification, are permitted provided that the following conditions are 
+%
+% Redistribution and use in source and binary forms, with or without
+% modification, are permitted provided that the following conditions are
 % met:
-% 
-%     * Redistributions of source code must retain the above copyright 
+%
+%     * Redistributions of source code must retain the above copyright
 %       notice, this list of conditions and the following disclaimer.
-%     * Redistributions in binary form must reproduce the above copyright 
-%       notice, this list of conditions and the following disclaimer in 
+%     * Redistributions in binary form must reproduce the above copyright
+%       notice, this list of conditions and the following disclaimer in
 %       the documentation and/or other materials provided with the distribution
-%       
-% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-% AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
-% IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
-% ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
-% LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
-% CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
-% SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
-% INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
-% CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-% ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+%
+% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+% AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+% IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+% ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+% LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+% CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+% SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+% INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+% CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+% ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 % POSSIBILITY OF SUCH DAMAGE.
 
 
@@ -65,14 +65,14 @@ function [km nmi mi] = haversine(loc1, loc2)
 if ~isequal(nargin, 2)
     error('User must supply two location inputs')
     
-% If two inputs are given, handle data
+    % If two inputs are given, handle data
 else
     
     locs = {loc1 loc2};     % Combine inputs to make checking easier
     
     % Cycle through to check both inputs
     for i = 1:length(locs)
-                
+        
         % Check inputs and convert to decimal if needed
         if ischar(locs{i})
             
@@ -93,14 +93,14 @@ else
             % Make sure hemisphere was given
             if isempty(temp{4})
                 error('No hemisphere given')
-
-            % If latitude is south, make decimal negative
+                
+                % If latitude is south, make decimal negative
             elseif strcmpi(temp{4}, 'S')
                 locs{i}(1) = -locs{i}(1);
             end
             
             clear temp
-
+            
             % Obtain degrees, minutes, seconds, and hemisphere
             temp = regexp(lon, '(\d+)\D+(\d+)\D+(\d+)(\w?)', 'tokens');
             temp = temp{1};
@@ -113,7 +113,7 @@ else
             if isempty(temp{4})
                 error('No hemisphere given')
                 
-            % If longitude is west, make decimal negative
+                % If longitude is west, make decimal negative
             elseif strcmpi(temp{4}, 'W')
                 locs{i}(2) = -locs{i}(2);
             end
@@ -147,3 +147,9 @@ km = R * c;                                 % distance in km
 
 nmi = km * 0.539956803;                     % nautical miles
 mi = km * 0.621371192;                      % miles
+
+    function rads = deg2rad(degs)
+        rads = ( pi / 180 ) * degs;
+    end
+
+end

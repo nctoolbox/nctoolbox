@@ -4,8 +4,7 @@ function [index, distance, twoout]=near_lonlat(x,y,x0,y0,dist);
 %                                           the distance
 %        [index,distance]=near_lonlat(lon,lat,lon0,lat0,dist) finds all points closer than
 %                                           the value of dist.
-
-% distance=sqrt((x-x0).^2+(y-y0).^2);
+% Alexander Crosby 2011
 distance = zeros(size(x));
 for i = 1:length(x(:,1))
     for j = 1:length(x(1,:))
