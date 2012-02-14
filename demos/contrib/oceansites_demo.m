@@ -1,4 +1,4 @@
-% Plot all time series variables that have a certain
+% OCEANSITES_DEMO Plot all time series variables that have a certain
 % 'standard_name' in a specified bounding box and time period
 
 % WHOI GI-CAT catalog server, which harvests data from multiple
@@ -6,8 +6,8 @@
 open_url='http://geoport.whoi.edu/gi-cat/services/opensearch';
 
 % can search for any text, not just variable 'standard_names':
-var='relative_humidity'; %free text search string
-%var='sea_water_temperature';
+%var='relative_humidity'; %free text search string
+var='sea_water_temperature';
 %var='sea_water_salinity';  
 
 % time_var='time'; %time coordinate variable
@@ -19,7 +19,7 @@ stop =[2000 1 1 0 0 0]; % specified stop
 
 % or like this....
 start=now_utc-28;  % last 28 days
-stop=now;          % now
+stop=now_utc;          % now
 
 % opensearch query
 q.endpoint=open_url;
@@ -31,7 +31,7 @@ q.string_text=var
 disp(['Querying ' q.endpoint ' via OpenSearch']);
 [links,params]=opensearch(q);  
 dap=links2dap(links); % find only the OPeNDAP links
-
+char(dap)
 disp('Accessing data via OPeNDAP');
 for i=1:length(dap);
     figure(i);
@@ -43,12 +43,11 @@ for i=1:length(dap);
         if strcmp(std_name,var),
             jd= vart.timewindowij(start, stop);
             t=vart.data(jd.index);  %extact these indices from dataset
-            plot(jd.time,t);
+            plot(jd.time,t);datetick;grid;...
             ylabel(sprintf('%s [%s]',var,vart.attribute('units')),...
-                'interpreter','none');
-            datetick
-            grid;
-            title(nc.attribute('title'))
+                'interpreter','none');...
+            title(nc.attribute('title'));...
+            drawnow
         end
     end
 end
