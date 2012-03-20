@@ -1,4 +1,4 @@
-% NCGEODATASET GEODEMO_1B
+%% NCGEODATASET GEODEMO_1B
 % Method B: Read surface salinity with corner/edge/stride syntax.
 % If you are more used to working with NetCDF in Fortran than in 
 % Matlab, this may be the syntax for you.
@@ -7,20 +7,23 @@
 url ='http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc';
 nc = ncgeodataset(url)
 
+%% Take a look at the variables available within the dataset
 % To access the properties we can use typical dot notation like with
 % ordinary Matlab structures. Here we want to get a list of the variables
 % in the dataset we are looking at.
 
  nc.variables
 
+%% Determine the shape of the selected variable
 % The size method is a method of ncgeodataset that returns the length of
 % each of the dimensions of a given variable in the dataset. This is a lot
 % like Matlab's internal size command, but in this case we haven't even
 % loaded any data into memory yet. All this information comes from the
 % netcdf-java cdm.
 
- sz=nc.size('salt')
+ sz = nc.size('salt')
 
+%% Use START, STOP, STRIDE array style indexing with NCTOOLBOX
 % This syntax uses more of a C or Java syntax for subsetting arrays (but
 % maintains Matlab's start at 1 indices).
 
@@ -43,6 +46,7 @@ nc = ncgeodataset(url)
 
  salinity = squeeze(double(salinity));
 
+%% START, STOP, STRIDE array style indexing to return coordinate axes
 % In order to access the coordinate information for the salt variable call
 % the grid method on the ncgeodataset object with the same arguments as
 % data.
@@ -55,6 +59,8 @@ nc = ncgeodataset(url)
 
  salinity_coords = nc.grid('salt', [1 nz 1 1], [1 nz 60 160], [1 1 1 1])
 
+
+%% Use the |time| method to convert model time to MATLAB's datenum
 % Lets grab the date for the subset we requested so that we can add it to
 % the figure title, since it wasn't included in the grid command results.
 % We can use the time method on the ncgeodataset object to do the
@@ -68,6 +74,7 @@ nc = ncgeodataset(url)
 
  time = datestr(time)
 
+%% Plot with MATLAB's pcolor command
 % Plotting using pcolor is as simple as the code below. Sometimes
 % coordinates are stored in the netcdf datasets as vectors (vs. the 2-d
 % arrays that these lat/lon coordinates are in). When this is the case, see

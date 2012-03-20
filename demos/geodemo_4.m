@@ -1,14 +1,14 @@
-% GEODEMO_4
-% compare horizontal slices from two different CF compliant structured
+%% GEODEMO_4
+% Compare horizontal slices from two different CF compliant structured
 % grid models (CH3D and ROMS) at a particular time step and depth
 clear
 
-% CH3D
+%% CH3D
 url{1}='http://testbedapps.sura.org/thredds/dodsC/estuarine_hypoxia/ch3d/agg.nc';
 var{1}='salinity';
 titl{1}='CH3D';
 
-% ROMS
+%% ROMS
 url{2}='http://testbedapps.sura.org/thredds/dodsC/estuarine_hypoxia/chesroms_1tdo/agg.nc';
 var{2}='salt';
 titl{2}='CHESROMS';
@@ -20,7 +20,9 @@ cax=[0 33];  %color range
 lat_mid=38; % for scaling plots
 
 
-% no model dependent code below here
+%% Perform analysis without using dataset dependant code
+% Access datasets, get 3d field at given time data, interpolate data to a constant z, plot results at z depth
+
 figure;
 for i=1:length(url);
   nc{i}=ncgeodataset(url{i});

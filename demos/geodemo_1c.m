@@ -1,4 +1,4 @@
-% NCGEODATASET GEODEMO_1C
+%% NCGEODATASET GEODEMO_1C
 % Method C: Read surface salinity with curly brace syntax: s = nc{'salt'}(1,end,:,:); 
 % Most compact general method, but with functionality limited to reading data,
 % obtaining an interoperabily grid structure, and acquiring attributes. 
@@ -7,12 +7,14 @@
 url ='http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc';
 nc = ncgeodataset(url)
 
+%% Take a look at the variables available within the dataset
 % To access the properties we can use typical dot notation like with
 % ordinary Matlab structures. Here we want to get a list of the variables
 % in the dataset we are looking at.
 
  nc.variables
 
+%% Determine the shape of the selected variable
 % The size method is a method of ncgeodataset that returns the length of
 % each of the dimensions of a given variable in the dataset. This is a lot
 % like Matlab's internal size command, but in this case we haven't even
@@ -21,6 +23,7 @@ nc = ncgeodataset(url)
 
  nc.size('salt')
 
+%% Use legacy syntax for data access in NCTOOLBOX
 % The curly brace syntax below should be familiar njTBX or Chuck Denham's
 % NetCDF users.  Put curly braces around a string containing the variable
 % name, and then use regular matlab matrix indexing. If no indices are
@@ -33,13 +36,12 @@ nc = ncgeodataset(url)
  nc.dimensions('salt')
  
 % We see that we have time, z, y, x dimensions, in that order
-
-
  salinity = nc{'salt'}(1, end, :, :);
  size(salinity)
 
- salinity = squeeze(double(salinity));
+ salinity = squeeze(double(salinity)); % This may be done already by using {}
 
+%% Use legacy syntax for coordinate axes in NCTOOLBOX
 % The grid method in this syntax is the exact same command as the
 % grid_interop method in the approach from Method 1. As in accessing the
 % variable values, use the same arguments to access the coordinate values
@@ -54,8 +56,9 @@ nc = ncgeodataset(url)
 %     Boundary fitted vertical sigma coordinate schemes are converted to
 %     the actual vertical depth/elevation values for each grid element.
 
- salinity_coords = nc{'salt'}(1, end, :, :).grid;
+ salinity_coords = nc{'salt'}(1, end, :, :).grid
 
+%% Plot using MATLAB's pcolor command
 % Plotting using pcolor is as simple as the code below. Sometimes
 % coordinates are stored in the netcdf datasets as vectors (vs. the 2-d
 % arrays that these lat/lon coordinates are in). When this is the case, see

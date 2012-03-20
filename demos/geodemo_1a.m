@@ -1,4 +1,4 @@
-% NCGEODATASET GEODEMO_1A
+%% NCGEODATASET GEODEMO_1A
 % Method A: Read surface salinity using geovariable syntax. 
 % Takes some extra steps since you create the geovariable object before 
 % extracting data from it, but you then have all the geovariable 
@@ -8,12 +8,14 @@
 url ='http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc';
 nc = ncgeodataset(url)
 
+%% Take a look at the variables available within the dataset
 % To access the properties we can use typical dot notation like with
 % ordinary Matlab structures. Here we want to get a list of the variables
 % in the dataset we are looking at.
 
  nc.variables
 
+%% Determine the shape of the selected variable
 % The size method is a method of ncgeodataset that returns the length of
 % each of the dimensions of a given variable in the dataset. This is a lot
 % like Matlab's internal size command, but in this case we haven't even
@@ -22,6 +24,7 @@ nc = ncgeodataset(url)
 
  nc.size('salt')
 
+%% Create |geovariable| object to access data in MATLAB style indexing
 % In this example we create a geovariable object from the salt variable in
 % this dataset. This is done by calling geovariable with the name of the
 % netcdf variable we are interested in as an argument.
@@ -51,6 +54,7 @@ nc = ncgeodataset(url)
 % commands like plotting using the function squeeze.
  salinity= squeeze(double(salinity));
 
+%% Use |geovariable| object to access coordinate data using MATLAB style indexes
 % In order to plot the salt values for the first time step/first level in
 % the dataset as a Matlab pcolor plot, we need the spatial coordinates
 % associated with the salt values. We could grab the lat and lon
@@ -66,6 +70,7 @@ nc = ncgeodataset(url)
 
  salinity_coords = salt.grid(1, end, :, :)
 
+%% Use |grid_interop| method to return coordinate axes with standard, interoperable names
 % A higher level option is to use the grid_interop method, which returns
 % the dimensions of our geovariable using the standardized names of lat,
 % lon, time, and z instead of the original netcdf names of the coordinate
@@ -84,7 +89,7 @@ nc = ncgeodataset(url)
 
  salinity_coords = salt.grid_interop(1, end, :, :)
 
-% plot using pcolor
+%% Plot using MATLAB's pcolor
 pcolor(salinity_coords.lon, salinity_coords.lat, salinity)
 shading flat; colorbar; caxis([35 39]);
 
