@@ -13,7 +13,7 @@ ilevel=-1; % nj_tslice uses "-1" instead of "end" to indicate last level
 % arrays that these lat/lon coordinates are in). When this is the case, see
 % Matlab's meshgrid function to create 2-d plaid grids from the vectors.
 
- pcolor(grd.lon, grd.lat, salinity)
+ pcolor(grd.lon, grd.lat, double(salinity))
  shading flat; colorbar; caxis([35 39]);
 
 % Now let's add a title to the figure that includes the dataset's global

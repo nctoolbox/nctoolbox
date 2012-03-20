@@ -110,7 +110,8 @@ classdef cfdataset < ncdataset
                     % ---- Look for COARDS conventions. If any coordinate
                     % dimensions are missing we don't bother looking any
                     % up.
-                    axesVariableNames = obj.axes(variableName);
+                    nc = ncdataset(obj);
+                    axesVariableNames = nc.axes(variableName);
                     if ~isempty(axesVariableNames)
                         for i = 1:length(axesVariableNames)
                             if isempty(axesVariableNames{i})
@@ -119,7 +120,6 @@ classdef cfdataset < ncdataset
                             end
                         end
                     end
-                    
                 end
                 
                 
