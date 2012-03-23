@@ -683,16 +683,22 @@ classdef ncgeovariable < ncvariable
                         order.lat = order.lon;
                         order.lon = order.lat+1;  
                     end
-                    stride(order.time)   = struct.t_stride; 
-                    stride(order.z)         = struct.v_stride;
+                    try
+                        stride(order.time) = struct.t_stride;
+                        first(order.time)   = tmin_i;
+                        last(order.time)   = tmax_i;
+                    end
+                    try
+                        stride(order.z) = struct.v_stride;
+                        first(order.z) = zmin;
+                        last(order.z)         = zmax;
+                    end
                     stride(order.lon)     = struct.h_stride(2);
                     stride(order.lat)      = struct.h_stride(1);
-                    first(order.time)   = tmin_i;
-                    first(order.z)         = zmin;
+                    
                     first(order.lon)     = indstart_c;
                     first(order.lat)      = indstart_r;
-                    last(order.time)   = tmax_i;
-                    last(order.z)         = zmax;
+                    
                     last(order.lon)     = indend_c;
                     last(order.lat)      = indend_r;
                     
