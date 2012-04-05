@@ -1,5 +1,4 @@
-% FUKUSHIIMA get surface currents from Fukushima ocean forecast via OPeNDAP
-
+% FUKUSHIMA get surface currents from Fukushima ocean forecast via OPeNDAP
 % NCTOOLBOX:  http://code.google.com/p/nctoolbox/
 url='http://edac-dap3.northerngulfinstitute.org/thredds/dodsC/ncom_fukushima_agg/Fukushima_best.ncd';
 uvar='water_u';
