@@ -219,7 +219,6 @@ classdef ncdataset < handle
                dnames{i} = char(dims.get(i - 1).getName());
            end
            
-           
         end
         
         %%
