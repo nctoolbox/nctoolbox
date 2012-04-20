@@ -1,7 +1,7 @@
 function [data,grd]=nj_tslice(ncRef,var,iTime,level)
 % NJ_TSLICE - Get data and coordinates from CF-compliant dataset at specific time and level
 % Usage:
-%   [data,grd]=nj_tslice(ncRef,var,[iTime],[level]);
+%   [data,grd_temp]=nj_tslice(ncRef,var,[iTime],[level]);
 % Inputs: 
 %   ncRef = OpenDAP Data URL, Local file, or existing 'ncgeodataset' object
 %   var - variable to slice
@@ -10,12 +10,12 @@ function [data,grd]=nj_tslice(ncRef,var,iTime,level)
 %           inf or -1 for last level.
 % Outputs:
 %   data = data  - matlab array
-%   grd  = structure containing lon,lat,z,time (Matlab datenum)
+%   grd_temp  = structure containing lon,lat,z,time (Matlab datenum)
 % Example:
 %   uri ='http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc';% NetCDF/OpenDAP/NcML file
-%   [data,grd]=nj_tslice(uri,'temp',2, 14); % get level 14 at time step 2
-%   [data,grd]=nj_tslice(uri,'temp',2); % get 3D data at time step 2
-%   [data,grd]=nj_tslice(uri,'h'); % Retrieve 2D non time dependent array
+%   [data,grd_temp]=nj_tslice(uri,'temp',2, 14); % get level 14 at time step 2
+%   [data,grd_temp]=nj_tslice(uri,'temp',2); % get 3D data at time step 2
+%   [data,grd_temp]=nj_tslice(uri,'h'); % Retrieve 2D non time dependent array
 %
 % NCTOOLBOX (http://code.google.com/p/nctoolbox)
 
@@ -32,8 +32,8 @@ try
     case 2  % return 2D or 3D data (z,lat,lon) for all times (could be huge)
       data = squeeze(gvar.data(:,:,:,:));
       if nargout==2,
-        grd = gvar.grid_interop(:,:,:,:);
-        grd.z = squeeze(grd.z);
+        grd_temp = gvar.grid_interop(:,:,:,:);
+        grd_temp.z = squeeze(grd_temp.z);
       end
     case 3  % return 2D or 3D data at a specific time 
       a=size(gvar);
@@ -42,8 +42,8 @@ try
       end
       data = squeeze(gvar.data(iTime,:,:,:));
       if nargout==2,
-        grd = gvar.grid_interop(iTime,:,:,:);
-        grd.z = squeeze(grd.z);
+        grd_temp = gvar.grid_interop(iTime,:,:,:);
+        grd_temp.z = squeeze(grd_temp.z);
       end
     case 4 % return a single 2D at a specific time and layer  
       a=size(gvar);
@@ -55,10 +55,22 @@ try
       end
       data = squeeze(gvar.data(iTime,level,:,:));
       if nargout==2,
-        grd = gvar.grid_interop(iTime,level,:,:);
-        grd.z = squeeze(grd.z);
+        grd_temp = gvar.grid_interop(iTime,level,:,:);
+        grd_temp.z = squeeze(grd_temp.z);
       end     
-  end 
+  end
+  try
+      grd.lat = grd_temp.lat;
+  end
+  try
+      grd.lon = grd_temp.lon;
+  end
+  try
+      grd.z = grd_temp.z;
+  end
+  try
+      grd.time = grd_temp.time;
+  end
 catch ME
   ME.message
 end
