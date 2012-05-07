@@ -347,7 +347,8 @@ classdef ncdataset < handle
                 try 
                     m.(v{i}) = obj.attributes(v{i});
                 catch me
-                    warning('NCTOOLBOX:ncdataset:metadata', me.message)
+                    warning('NCTOOLBOX:ncdataset:metadata', [me.message ...
+                        '\n This variable''s metadata will be skipped'])
                 end
             end
         end % function metadata end
