@@ -344,7 +344,11 @@ classdef ncdataset < handle
             v = obj.variables;
             m.global_attributes = obj.attributes;
             for i=1:length(v);
-                m.(v{i}) = obj.attributes(v{i});
+                try 
+                    m.(v{i}) = obj.attributes(v{i});
+                catch me
+                    warning('NCTOOLBOX:ncdataset:metadata', me.message)
+                end
             end
         end % function metadata end
         
