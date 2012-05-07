@@ -776,7 +776,7 @@ classdef ncgeovariable < ncvariable
                     error('NCGEOVARIABLE:GEOIJ',...
                         'Longitude contains values that follow both -180/180 and 0/360+ conventions; can not subset.');
                 end
-            elseif min(g.lon) <~ 0
+            elseif min(g.lon) < 0
                 % Do nothing, we assume that input is in -180/180 conventions. And this means that the data is too.
             elseif max(g.lon) > 180
                 g.lon = g.lon - 360;
