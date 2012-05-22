@@ -364,6 +364,7 @@ classdef ncgeodataset < cfdataset
                             g = substruct('.',s(1).subs,'()',s(2).subs);
                             % g.type = '()';
                             % g.subs = s(i).subs;
+                            
                             B = builtin('subsref',obj,g);
                         end
                     elseif length(s)==3
