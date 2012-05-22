@@ -463,6 +463,16 @@ classdef ncgeovariable < ncvariable
         end
         
         function vec = getvectors(src, u, v, alpha)
+            % NCGEOVARIABLE.getvectors - Function to average and rotate
+            % u and v ROMS vectors on to a common grid (grid is based on
+            % the coordinates of the geovariable that "getvectors" is called
+            % from.)
+            % Use: 
+            %     >> uvar = nc.geovariable('u');
+            %     >> vvar = nc.geovariable('v');
+            %     >> hvar = nc.geovariable('depth');
+            %     >> avar = nc.geovariable('angle');
+            %     >> U = hvar.getvectors(uvar, vvar, avar); % complex matrix is returned
             if nargin < 4
                 vec = complex_ongrid(src, u, v);
             elseif nargin == 4
