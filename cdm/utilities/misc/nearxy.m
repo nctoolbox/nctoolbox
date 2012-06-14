@@ -4,7 +4,7 @@ function [index, distance, twoout] = nearxy(x,y,x0,y0,dist)
 %                                           the distance
 %        [index,distance]=nearxy(x,y,x0,y0,dist) finds all points closer than
 %                                           the value of dist.
-% rsignell@crusty.er.usgs.gov
+% rsignell@usgs.gov
 %
 distance=sqrt((x-x0).^2+(y-y0).^2);
 if nargin > 4

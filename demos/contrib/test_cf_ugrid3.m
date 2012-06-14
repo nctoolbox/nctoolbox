@@ -3,7 +3,8 @@
 % models that use UGRID conventions (http://bit.ly/cf_ugrid), allowing 
 % comparison with no model specific code
 titl{1}='ADCIRC';
-uris{1}='http://testbedapps.sura.org/thredds/dodsC/inundation/ADCIRC/ike/3Dvrwoww'
+%uris{1}='http://testbedapps.sura.org/thredds/dodsC/inundation/ADCIRC/ike/3Dvrwoww'
+uris{1}='http://testbedapps-dev.sura.org/thredds/dodsC/in/und/adcirc/ike/ultralite/lr/vardrag/nowave/3d'
 vars{1}='zeta';
 times{1}=[2008 9 13 06 0 0];
 

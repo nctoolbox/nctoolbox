@@ -3,6 +3,8 @@ function [index,distance]=near(x,x0,n);
 %function [index,distance]=near(x,x0,[n]);
 %     x is an array, x0 is a point, n is the number of closest points to get
 %     (in order of increasing distance).  Distance is the abs(x-x0)
+% rsignell@usgs.gov
+
 if nargin==2
      n=1;
 end
