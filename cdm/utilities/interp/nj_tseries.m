@@ -37,9 +37,8 @@ else
   nc = ncgeodataset(ncRef);
 end
 vart=nc.geovariable(var);
-lon=nc{vart.getlonname}(:);
-lat=nc{vart.getlatname}(:);
-
+lon=nc.data(zvar.getlonname);
+lat=nc.data(zvar.getlatname);
 
 while ~isempty(varargin),
   switch lower(varargin{1}),

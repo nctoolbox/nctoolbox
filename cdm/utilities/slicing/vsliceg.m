@@ -76,37 +76,37 @@ x = repmat ( x', num_levels, 1 );
 transect_dist = x(1,:);
 
 
-% Interpolate the data using GRIDDATA_LITE
+% changes John Wilkin 2012-06-14 begin ...
+% Remove griddata_lite and replace with TriScatteredInterp
+% Need to make sure all inputs are in column vecotr format, and are double
+% (not single)
 
-% This method relies upon a global variable called TRI.  We need
-% to clear it each time this is called.
-clear global TRI;
-global TRI; %#ok<NUSED>
+% TriScatteredInterp computes the triangulation. The interpolant data 
+% can be replaced on subsequent evaluations of the function F without 
+% redoing the triangulation. See the help on TriScatterdInterp
 
-
-% Compute the triangulation exactly once, the first time thru.
-%
-% 3D field.  Have to interpolate depths as well.
-clear global TRI;
-global TRI; %#ok<REDEF>
 vdata = zeros(num_levels,numel(transect_dist));
-vdata(1,:) = griddata_lite ( njGrid.lon, njGrid.lat, squeeze(njData(1,:,:)), slice_x, slice_y );
+Fdata = double(squeeze(njData(1,:,:)));
+F = TriScatteredInterp(njGrid.lon(:), njGrid.lat(:), Fdata(:));
+vdata(1,:) = F(slice_x,slice_y);
 for zi = 2:num_levels
-    vdata(zi,:) = griddata_lite ( njGrid.lon, njGrid.lat, squeeze(njData(zi,:,:)), slice_x, slice_y );
+    Fdata = double(squeeze(njData(zi,:,:)));
+    F.V = Fdata(:);
+    vdata(zi,:) = F(slice_x,slice_y);
 end
 
-
-
-% Grid the proper depths.
-% This seems to assume that grid points don't vary with depth.
-clear global TRI;
-global TRI;
-vz(1,:) = griddata_lite ( njGrid.lon, njGrid.lat, squeeze(njGrid.z(1,:,:)), slice_x, slice_y );
+Fdata = double(squeeze(njGrid.z(1,:,:)));
+F = TriScatteredInterp(njGrid.lon(:), njGrid.lat(:), Fdata(:));
+vz(1,:) = F(slice_x,slice_y);
 for zi = 2:num_levels
-    vz(zi,:) = griddata_lite ( njGrid.lon, njGrid.lat, squeeze(njGrid.z(zi,:,:)), slice_x, slice_y );
+    Fdata = double(squeeze(njGrid.z(zi,:,:))); 
+    F.V = Fdata(:);
+    vz(zi,:) = F(slice_x,slice_y);
 end
 
 vz = flipud(vz);
+% changes John Wilkin 2012-06-14 ... done
+
 
 % i dont know how important this is, but commenting it out fixes a
 % problem...
