@@ -1,4 +1,4 @@
-function [index, distance, twoout]=near_lonlat2(x,y,x0,y0,dist);
+function [index, distance, twoout]=near_lonlat(x,y,x0,y0,dist);
 % NEAR_LONLAT finds the indices of (lon,lat) that are closest to the point (lon0,lat0).
 %        [index,distance]=near_lonlat(lon,lat,lon0,lat0) finds the closest point and
 %                                     the distance(km)
