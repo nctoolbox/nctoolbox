@@ -145,7 +145,14 @@ classdef ncgeovariable < ncvariable
             for i = 1:length(names); % loop through fields returned by grid
                 tempname = names{i};
                 javaaxisvar  =   src.dataset.netcdf.findVariable(tempname);
-                type = char(javaaxisvar.getAxisType());
+                try 
+                    % Expecting a uvar.nc2.dataset.CoordinateAxis here
+                    type = char(javaaxisvar.getAxisType());
+                catch me
+                    % If it's not a CoordinateAxis set type to an empty
+                    % string
+                    type = '';
+                end
                 if isempty(type)
                     ig.(tempname) = g.(tempname);
                 else
