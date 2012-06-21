@@ -132,13 +132,15 @@ classdef ncgeovariable < ncvariable
         
         end % end timeextent
         
-        function ig = grid_interop(src, first, last, stride)
+        function ig = grid_interop(src, first, last, stride, ignore)
             % NCGEOVARIABLE.GRID_INTEROP - Method to get the coordinate variables and their data as a
             % a structure with standardized field names for lat, lon, time, and z. Other coordiante variables
             % that are not recognized by netcdf-java as the previous four types have field names directly
             % taken from their variable names.
             % Useage: >> gridstruct = geovar.grid_interop(1,:,:,1:2:50);
-            
+            if nargin < 5
+                ignore = {};
+            end
             g = src.grid(first, last, stride);
             names = fieldnames(g);
             
@@ -158,122 +160,130 @@ classdef ncgeovariable < ncvariable
                 else
                     switch type
                         case 'Height'
-                            pos_z = char(javaaxisvar.getPositive());
-                            if strcmpi(pos_z, 'POSITIVE_DOWN')
-                                tmp = g.(tempname);
-                                ig.z = tmp.*-1; %adjust for positive direction
-                            elseif strcmpi(pos_z, 'down')
-                                tmp = g.(tempname);
-                                ig.z = tmp.*-1; %adjust for positive direction
-                            else
-                                ig.z = g.(tempname);
+                            if ~ismember('z', ignore)
+                                pos_z = char(javaaxisvar.getPositive());
+                                if strcmpi(pos_z, 'POSITIVE_DOWN')
+                                    tmp = g.(tempname);
+                                    ig.z = tmp.*-1; %adjust for positive direction
+                                elseif strcmpi(pos_z, 'down')
+                                    tmp = g.(tempname);
+                                    ig.z = tmp.*-1; %adjust for positive direction
+                                else
+                                    ig.z = g.(tempname);
+                                end
                             end
-                            
                         case 'GeoZ'
-                            pos_z = char(javaaxisvar.getPositive());
-                            z_sn = src.dataset.attribute(tempname, 'standard_name');
-                            k = strfind(z_sn, 'ocean_s');
-                            switch isempty(k)
-                                case 0
-                                    %                       n = max(size(src.size));
-                                    %                       trange = java.util.ArrayList(n);
-                                    %                       zrange = trange;
-                                    %                       xrange = trange;
-                                    %                       yrange = trange;
-                                    trange = ucar.ma2.Range(first(1) - 1, last(1) - 1, stride(1));
-                                    zrange = ucar.ma2.Range(first(2) - 1, last(2) - 1, stride(2));
-                                    xrange = ucar.ma2.Range(first(4) - 1, last(4) - 1, stride(4));
-                                    yrange = ucar.ma2.Range(first(3) - 1, last(3) - 1, stride(3));
-                                    %                       coordinates.GridCoordSys.getVerticalTransform.getCoordinateArray
-                                    %                          temp = src.variable.getCoordinateSystems();
-                                    griddataset = ucar.nc2.dt.grid.GridDataset.open(src.dataset.location);
-                                    grid = griddataset.findGridByName(src.name);
-                                    grid = grid.getCoordinateSystem();
-                                    subgrid = grid.getVerticalTransform();
-                                    subgrid = subgrid.subset(trange, zrange, yrange, xrange); %tempfortesting arc 10/18
-                                    %
-                                    % It looks like this dataset (http://geoport.whoi.edu/thredds/dodsC/usgs/vault0/models/examples/bora_feb.nc)
-                                    % works when the vertical transform isnt subset. NJTBX uses the same methodology but subsets the resulting
-                                    % z coordinate field in matlab after calling the getCoordinateArray method, not before in the java.
-                                    % Should I implement a try and then default to subsetting afterwards on catch? Or should I just always do it
-                                    % after? I am choosing the former. Anyone have any thoughts on the matter? -acrosby
-                                    try
+                            if ~ismember('z', ignore)
+                                pos_z = char(javaaxisvar.getPositive());
+                                z_sn = src.dataset.attribute(tempname, 'standard_name');
+                                k = strfind(z_sn, 'ocean_s');
+                                switch isempty(k)
+                                    case 0
+                                        %                       n = max(size(src.size));
+                                        %                       trange = java.util.ArrayList(n);
+                                        %                       zrange = trange;
+                                        %                       xrange = trange;
+                                        %                       yrange = trange;
+                                        trange = ucar.ma2.Range(first(1) - 1, last(1) - 1, stride(1));
+                                        zrange = ucar.ma2.Range(first(2) - 1, last(2) - 1, stride(2));
+                                        xrange = ucar.ma2.Range(first(4) - 1, last(4) - 1, stride(4));
+                                        yrange = ucar.ma2.Range(first(3) - 1, last(3) - 1, stride(3));
+                                        %                       coordinates.GridCoordSys.getVerticalTransform.getCoordinateArray
+                                        %                          temp = src.variable.getCoordinateSystems();
+                                        griddataset = ucar.nc2.dt.grid.GridDataset.open(src.dataset.location);
+                                        grid = griddataset.findGridByName(src.name);
+                                        grid = grid.getCoordinateSystem();
+                                        subgrid = grid.getVerticalTransform();
+                                        subgrid = subgrid.subset(trange, zrange, yrange, xrange); %tempfortesting arc 10/18
+                                        %
+                                        % It looks like this dataset (http://geoport.whoi.edu/thredds/dodsC/usgs/vault0/models/examples/bora_feb.nc)
+                                        % works when the vertical transform isnt subset. NJTBX uses the same methodology but subsets the resulting
+                                        % z coordinate field in matlab after calling the getCoordinateArray method, not before in the java.
+                                        % Should I implement a try and then default to subsetting afterwards on catch? Or should I just always do it
+                                        % after? I am choosing the former. Anyone have any thoughts on the matter? -acrosby
                                         try
                                             try
-                                                for q = first(1):stride(1):last(1)
-%                                                     grid = griddataset.findGridByName(src.name);
-%                                                     subgrid = grid.getCoordinateSystem();
-                                                    array = subgrid.getCoordinateArray(q-1);
-                                                    ig.z(q, :, :, :) = array.copyToNDJavaArray();
+                                                try
+                                                    for q = first(1):stride(1):last(1)
+                                                        %                                                     grid = griddataset.findGridByName(src.name);
+                                                        %                                                     subgrid = grid.getCoordinateSystem();
+                                                        array = subgrid.getCoordinateArray(q-1);
+                                                        ig.z(q, :, :, :) = array.copyToNDJavaArray();
+                                                    end
+                                                catch me
+                                                    c = 1;
+                                                    for q = first(1):stride(1):last(1)
+                                                        %                                                     grid = griddataset.findGridByName(src.name);
+                                                        %                                                     grid = grid.getCoordinateSystem();
+                                                        subgrid = grid.getVerticalTransform();
+                                                        
+                                                        array = subgrid.getCoordinateArray(q-1); % Issue 27 is failing here...
+                                                        z(c, :, :, :) = array.copyToNDJavaArray();
+                                                        c = c + 1;
+                                                    end
+                                                    ig.z = z(:, first(2):stride(2):last(2),  first(3):stride(3):last(3),  first(4):stride(4):last(4));
                                                 end
                                             catch me
-                                                c = 1;
-                                                for q = first(1):stride(1):last(1)
-%                                                     grid = griddataset.findGridByName(src.name);
-%                                                     grid = grid.getCoordinateSystem();
-                                                    subgrid = grid.getVerticalTransform();
-                                                    
-                                                    array = subgrid.getCoordinateArray(q-1); % Issue 27 is failing here...
-                                                    z(c, :, :, :) = array.copyToNDJavaArray();
-                                                    c = c + 1;
-                                                end
-                                                ig.z = z(:, first(2):stride(2):last(2),  first(3):stride(3):last(3),  first(4):stride(4):last(4));
+                                                array = subgrid.getCoordinateArray(0);
+                                                ig.z = array.copyToNDJavaArray();
                                             end
                                         catch me
-                                            array = subgrid.getCoordinateArray(0);
-                                            ig.z = array.copyToNDJavaArray();
+                                            disp('Could you please add the code you are trying to run to Issue 27 at the nctoolbox issue tracking site.');
+                                            web http://code.google.com/p/nctoolbox/issues/detail?id=27
+                                            me.throw()
+                                            % me.error('There is a problem applying the vertical coordinate tranform and subsetting the resuting values.');
                                         end
-                                    catch me                                        
-                                        disp('Could you please add the code you are trying to run to Issue 27 at the nctoolbox issue tracking site.');
-                                        web http://code.google.com/p/nctoolbox/issues/detail?id=27
-                                        me.throw()
-                                        % me.error('There is a problem applying the vertical coordinate tranform and subsetting the resuting values.');
-                                    end
-                                    
-                                otherwise
-                                    
-                                    if strcmp(pos_z, 'POSITIVE_DOWN')
-                                        tmp = g.(tempname);
-                                        ig.z = tmp.*-1; %adjust for positive direction
-                                    else
-                                        ig.z = g.(tempname);
-                                    end
+                                        
+                                    otherwise
+                                        
+                                        if strcmp(pos_z, 'POSITIVE_DOWN')
+                                            tmp = g.(tempname);
+                                            ig.z = tmp.*-1; %adjust for positive direction
+                                        else
+                                            ig.z = g.(tempname);
+                                        end
+                                end
+                                
                             end
-                            
-                            
                         case 'Time'
-                            tmp = g.(tempname);
-                            t_converted = src.dataset.time(tempname, tmp);
-                            ig.time = t_converted;
-                            
+                            if ~ismember('time', ignore)
+                                tmp = g.(tempname);
+                                t_converted = src.dataset.time(tempname, tmp);
+                                ig.time = t_converted;
+                            end
                             %                     case 'RunTime'
                             %                       tmp = obj.dataset.data(name, vFirst, vLast, vStride);
                             %                       t_converted = obj.dataset.time(name, tmp);
                             %                       data.(type) = t_converted;
                             
                         case 'Lon'
-                            tmp = g.(tempname);
-                            if max(max(tmp)) > 360
-                                if min(min(tmp)) > 0
-                                    tmp(tmp>360) = tmp(tmp>360)-360;
-                                    tmp(tmp>360) = tmp(tmp>360)-360;
-                                    tmp(tmp>360) = tmp(tmp>360)-360;
-                                    tmp(tmp>180) = tmp(tmp>180)-360;
-                                else
-                                    error('NCGEOVARIABLE:GEOIJ',...
-                                        'Longitude contains values that follow both -180/180 and 0/360+ conventions; can not subset.');
+                            if ~ismember('lon', ignore)
+                                tmp = g.(tempname);
+                                if max(max(tmp)) > 360
+                                    if min(min(tmp)) > 0
+                                        tmp(tmp>360) = tmp(tmp>360)-360;
+                                        tmp(tmp>360) = tmp(tmp>360)-360;
+                                        tmp(tmp>360) = tmp(tmp>360)-360;
+                                        tmp(tmp>180) = tmp(tmp>180)-360;
+                                    else
+                                        error('NCGEOVARIABLE:GEOIJ',...
+                                            'Longitude contains values that follow both -180/180 and 0/360+ conventions; can not subset.');
+                                    end
+                                elseif min(tmp) <~ 0
+                                    % Do nothing, we assume that input is in -180/180 conventions. And this means that the data is too.
+                                elseif max(tmp) > 180
+                                    tmp = tmp - 360;
                                 end
-                            elseif min(tmp) <~ 0
-                                % Do nothing, we assume that input is in -180/180 conventions. And this means that the data is too.
-                            elseif max(tmp) > 180
-                                tmp = tmp - 360;
+                                ig.lon = double(tmp);
                             end
-                            ig.lon = double(tmp);
+                            
                         case 'Lat'
-                            ig.lat = double(g.(tempname));
+                            if ~ismember('lat', ignore)
+                                ig.lat = double(g.(tempname));
+                            end
                             
                         case 'GeoY'
-                            ig.y = g.(tempname);
+                            %ig.y = g.(tempname);
                             if exist('griddataset', 'var')
                                 grid = griddataset.findGridByName(src.name);
                                 grid = grid.getCoordinateSystem();
@@ -292,9 +302,12 @@ classdef ncgeovariable < ncvariable
                                 tempXY = [x; y];
                                 projection = grid.getProjection();
                                 tempLatLon = projection.projToLatLon(tempXY);
-                                ig.lat = reshape(tempLatLon(1,:), s); 
-                                ig.lon = reshape(tempLatLon(2,:), s); 
-                                
+                                if ~ismember('lat', ignore)
+                                    ig.lat = reshape(tempLatLon(1,:), s);
+                                end
+                                if ~ismember('lon', ignore)
+                                    ig.lon = reshape(tempLatLon(2,:), s);
+                                end
                             catch me
                             end
 
@@ -318,8 +331,9 @@ classdef ncgeovariable < ncvariable
 
                 
                         otherwise
-                            ig.(tempname) = g.(tempname);
-                            
+                            if ~ismember(tempname, ignore)
+                                ig.(tempname) = g.(tempname);
+                            end
                     end % end switch on type
                 end % end is type empty or not if statement
             end % end loop through field names
@@ -543,7 +557,7 @@ classdef ncgeovariable < ncvariable
             end
         end % end timewindowij
         
-        function d = geosubset(obj, struct)
+        function d = geosubset(obj, struct, varargin)
             % NCGEOVARIABLE.GEOSUBSET -
             % Create subset structure:
             % s.time=[now-3 now]; % Can be omitted or s.t_index=[i1 i2]; can be used for subsetting time using indices
@@ -729,7 +743,7 @@ classdef ncgeovariable < ncvariable
                 
                 % Get the corresponding data and interop grid...
                 d.data = obj.data(first, last, stride);
-                d.grid = obj.grid_interop(first, last, stride);
+                d.grid = obj.grid_interop(first, last, stride, varargin);
                 d.start = first;
                 d.stop = last;
                 d.stride = stride;
