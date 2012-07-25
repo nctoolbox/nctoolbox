@@ -442,18 +442,18 @@ classdef ncgeovariable < ncvariable
                 lonlast = last(lonlocation:lonlocation+1);
                 lonstride = stride(lonlocation:lonlocation+1);
             end
-%             switch length(lonsize)
-%                   case 1
-%                     s = v.data(lonstart:lonstride:lonlast);
-%                   case 2
-%                     s = v.data(lonstart(1):lonstride(1):lonlast(1),lonstart(2):lonstride(2):lonlast(2));
-%                   case 3
-%                     s = v.data(lonstart(1):lonstride(1):lonlast(1), lonstart(2):lonstride(2):lonlast(2), lonstart(3):lonstride(3):lonlast(3));
-%                   case 4
-%                     s = v.data(lonstart(1):lonstride(1):lonlast(1), lonstart(2):lonstride(2):lonlast(2), lonstart(3):lonstride(3):lonlast(3),...
-%                       lonstart(4):lonstride(4):lonlast(4));
-%             end
-              s = v.data(lonstart, lonlast, lonstride);
+            switch length(lonsize)
+                  case 1
+                    s = v.data(lonstart:lonstride:lonlast);
+                  case 2
+                    s = v.data(lonstart(1):lonstride(1):lonlast(1),lonstart(2):lonstride(2):lonlast(2));
+                  case 3
+                    s = v.data(lonstart(1):lonstride(1):lonlast(1), lonstart(2):lonstride(2):lonlast(2), lonstart(3):lonstride(3):lonlast(3));
+                  case 4
+                    s = v.data(lonstart(1):lonstride(1):lonlast(1), lonstart(2):lonstride(2):lonlast(2), lonstart(3):lonstride(3):lonlast(3),...
+                      lonstart(4):lonstride(4):lonlast(4));
+            end
+              %s = v.data(lonstart, lonlast, lonstride);
         end
         
         function s = getlatdata(src, start, last, stride)
@@ -471,18 +471,18 @@ classdef ncgeovariable < ncvariable
                 latlast = last(latlocation:latlocation+1);
                 latstride = stride(latlocation:latlocation+1);
             end
-%             switch length(latsize)
-%                   case 1
-%                     s = v.data(latstart:latstride:latlast);
-%                   case 2
-%                     s = v.data(latstart(1):latstride(1):latlast(1),latstart(2):latstride(2):latlast(2));
-%                   case 3
-%                     s = v.data(latstart(1):latstride(1):latlast(1), latstart(2):latstride(2):latlast(2), latstart(3):latstride(3):latlast(3));
-%                   case 4
-%                     s = v.data(latstart(1):latstride(1):latlast(1), latstart(2):latstride(2):latlast(2), latstart(3):latstride(3):latlast(3),...
-%                       latstart(4):latstride(4):latlast(4));
-%             end
-              s = v.data(latstart, latlast, latstride);
+            switch length(latsize)
+                  case 1
+                    s = v.data(latstart:latstride:latlast);
+                  case 2
+                    s = v.data(latstart(1):latstride(1):latlast(1),latstart(2):latstride(2):latlast(2));
+                  case 3
+                    s = v.data(latstart(1):latstride(1):latlast(1), latstart(2):latstride(2):latlast(2), latstart(3):latstride(3):latlast(3));
+                  case 4
+                    s = v.data(latstart(1):latstride(1):latlast(1), latstart(2):latstride(2):latlast(2), latstart(3):latstride(3):latlast(3),...
+                      latstart(4):latstride(4):latlast(4));
+            end
+%               s = v.data(latstart, latlast, latstride);
         end
         
         function vec = getvectors(src, u, v, alpha)
