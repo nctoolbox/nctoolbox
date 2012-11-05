@@ -268,10 +268,20 @@ classdef ncgeodataset < cfdataset
             tv = var.getlatname();
         end
         
+        function tv = getyname(obj, variableName)
+            var = obj.geovariable(variableName);
+            tv = var.getyname();
+        end
+        
         function tv = getlonname(obj, variableName)
             % NCGEODATASET.gettimename
             var = obj.geovariable(variableName);
             tv = var.getlonname();
+        end
+        
+        function tv = getxname(obj, variableName)
+            var = obj.geovariable(variableName);
+            tv = var.getxname();
         end
         
         function tn = gettimedata(obj, variableName, start, last, stride)

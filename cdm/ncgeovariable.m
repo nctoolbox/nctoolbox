@@ -310,8 +310,8 @@ classdef ncgeovariable < ncvariable
                                 end
                             catch me
                             end
-
-%                         case 'GeoX'
+                    
+                         case 'GeoX'
 %                             ig.x = g.(tempname);
 %                             if exist('griddataset', 'var')
 %                                 grid = griddataset.findGridByName(src.name);
@@ -327,7 +327,7 @@ classdef ncgeovariable < ncvariable
 %                                 projection = grid.getProjection();
 %                                 ig.lon = projection.projToLatLon();
 %                             catch me
-%                             end
+                             
 
                 
                         otherwise
@@ -362,15 +362,25 @@ classdef ncgeovariable < ncvariable
             tv = src.dataset.geovariable(tn);
         end
         
-        function lv = getlonvar(src)
+        function [lv, type] = getlonvar(src)
             % NCGEOVARIABLE.getlonvar()
             tn = src.getlonname();
+            type = 'Lon';
+            if isempty(tn)
+                tn = src.getxname();
+                type = 'GeoX';
+            end
             lv = src.dataset.geovariable(tn);
         end
         
-        function lv = getlatvar(src)
+        function [lv, type] = getlatvar(src)
             % NCGEOVARIABLE.getlatvar()
+            type = 'Lat';
             tn = src.getlatname();
+            if isempty(tn)
+                tn = src.getyname();
+                type = 'GeoY';
+            end
             lv = src.dataset.geovariable(tn);
         end
         
@@ -392,7 +402,7 @@ classdef ncgeovariable < ncvariable
                 javaaxisvar  =   src.dataset.netcdf.findVariable(tempname);
                 type{i} = char(javaaxisvar.getAxisType());
             end
-            match = strcmp('Lon', type) | strcmp('GeoX', type);
+            match = strcmp('Lon', type);
             ln = src.axes(match);
         end
         
@@ -403,7 +413,29 @@ classdef ncgeovariable < ncvariable
                 javaaxisvar  =   src.dataset.netcdf.findVariable(tempname);
                 type{i} = char(javaaxisvar.getAxisType());
             end
-            match = strcmp('Lat', type) | strcmp('GeoY', type);
+            match = strcmp('Lat', type);
+            ln = src.axes(match);
+        end
+        
+        function ln = getxname(src)
+            % NCGEOVARIABLE.getlonname()
+            for i = 1:length(src.axes)
+                tempname = src.axes{i};
+                javaaxisvar  =   src.dataset.netcdf.findVariable(tempname);
+                type{i} = char(javaaxisvar.getAxisType());
+            end
+            match = strcmp('GeoX', type);
+            ln = src.axes(match);
+        end
+        
+        function ln = getyname(src)
+            % NCGEOVARIABLE.gelatname()
+            for i = 1:length(src.axes)
+                tempname = src.axes{i};
+                javaaxisvar  =   src.dataset.netcdf.findVariable(tempname);
+                type{i} = char(javaaxisvar.getAxisType());
+            end
+            match = strcmp('GeoY', type);
             ln = src.axes(match);
         end
         
@@ -427,13 +459,13 @@ classdef ncgeovariable < ncvariable
             s = src.dataset.time(v.name, s);
         end
         
-        function s = getlondata(src, start, last, stride)
+        function [s, type] = getlondata(src, start, last, stride)
             % NCGEOVARIABLE.getlondata()
-            v = src.getlonvar;
+            [v, type] = src.getlonvar;
             sz = src.size();
             lonsize = v.size();
             lonlocation = find(sz==lonsize(1));
-             if length(lonsize) == 1
+            if length(lonsize) == 1
                 lonstart = start(lonlocation);
                 lonlast = last(lonlocation);
                 lonstride = stride(lonlocation);
@@ -453,12 +485,12 @@ classdef ncgeovariable < ncvariable
                     s = v.data(lonstart(1):lonstride(1):lonlast(1), lonstart(2):lonstride(2):lonlast(2), lonstart(3):lonstride(3):lonlast(3),...
                       lonstart(4):lonstride(4):lonlast(4));
             end
-              %s = v.data(lonstart, lonlast, lonstride);
+%               s = v.data(lonstart, lonlast, lonstride);
         end
         
-        function s = getlatdata(src, start, last, stride)
+        function [s, type] = getlatdata(src, start, last, stride)
             % NCGEOVARIABLE.gelatdata()
-            v = src.getlatvar;
+            [v, type] = src.getlatvar;
             sz = src.size();
             latsize = v.size();
             latlocation = find(sz==latsize(1));
@@ -482,7 +514,7 @@ classdef ncgeovariable < ncvariable
                     s = v.data(latstart(1):latstride(1):latlast(1), latstart(2):latstride(2):latlast(2), latstart(3):latstride(3):latlast(3),...
                       latstart(4):latstride(4):latlast(4));
             end
-%               s = v.data(latstart, latlast, latstride);
+%                s = v.data(latstart, latlast, latstride);
         end
         
         function vec = getvectors(src, u, v, alpha)
@@ -782,19 +814,37 @@ classdef ncgeovariable < ncvariable
             warning off
             switch  length(obj.size)
                 case 1
-                    g.lon = obj.getlondata(1, obj.size, 1);
-                    g.lat = obj.getlatdata(1, obj.size, 1);
+                    [g.lon, typex] = obj.getlondata(1, obj.size, 1);
+                    [g.lat, typey] = obj.getlatdata(1, obj.size, 1);
                 case 2
-                    g.lon = obj.getlondata([1, 1], obj.size, [1, 1]);
-                    g.lat = obj.getlatdata([1, 1], obj.size, [1, 1]);
+                    [g.lon, typex] = obj.getlondata([1, 1], obj.size, [1, 1]);
+                    [g.lat, typey] = obj.getlatdata([1, 1], obj.size, [1, 1]);
                 case 3
-                    g.lon = obj.getlondata([1, 1, 1], obj.size, [1, 1, 1]);
-                    g.lat = obj.getlatdata([1, 1, 1], obj.size, [1, 1, 1]);
+                    [g.lon, typex] = obj.getlondata([1, 1, 1], obj.size, [1, 1, 1]);
+                    [g.lat, typey] = obj.getlatdata([1, 1, 1], obj.size, [1, 1, 1]);
                 case 4
-                    g.lon = obj.getlondata([1, 1, 1, 1], obj.size, [1, 1, 1, 1]);
-                    g.lat = obj.getlatdata([1, 1, 1, 1], obj.size, [1, 1, 1, 1]);
+                    [g.lon, typex] = obj.getlondata([1, 1, 1, 1], obj.size, [1, 1, 1, 1]);
+                    [g.lat, typey] = obj.getlatdata([1, 1, 1, 1], obj.size, [1, 1, 1, 1]);
             end
             warning on
+            if strcmp(typex, 'GeoX')
+                griddataset = ucar.nc2.dt.grid.GridDataset.open(obj.dataset.location);
+                grid = griddataset.findGridByName(obj.name);
+                grid = grid.getCoordinateSystem();
+                
+                %ig.y = grid.getYHorizAxis;
+                %ig.x = grid.getXHorizAxis;
+                [x, y] = meshgrid(g.lon,g.lat);
+                s = size(x);
+                x = reshape(x, [1 numel(x)]);
+                y = reshape(y, [1 numel(y)]);
+                tempXY = [x; y];
+                projection = grid.getProjection();
+                tempLatLon = projection.projToLatLon(tempXY);
+
+                g.lat = reshape(tempLatLon(1,:), s);
+                g.lon = reshape(tempLatLon(2,:), s);
+            end
             
             g.lon = double(g.lon);
             g.lat = double(g.lat);
@@ -826,8 +876,8 @@ classdef ncgeovariable < ncvariable
                 end
                 
             else
-                north_max = max(g.lat);
-                north_min = min(g.lat);
+                north_max = max(max(g.lat));
+                north_min = min(min(g.lat));
             end
             
             if isfield(struct,'lon');
@@ -840,8 +890,8 @@ classdef ncgeovariable < ncvariable
                 end
                 
             else
-                east_max = max(g.lon);
-                east_min = min(g.lon);
+                east_max = max(max(g.lon));
+                east_min = max(min(g.lon));
             end
             
             switch flag
