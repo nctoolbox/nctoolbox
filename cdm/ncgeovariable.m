@@ -392,7 +392,7 @@ classdef ncgeovariable < ncvariable
                 javaaxisvar  =   src.dataset.netcdf.findVariable(tempname);
                 type{i} = char(javaaxisvar.getAxisType());
             end
-            match = strcmp('Lon', type);
+            match = strcmp('Lon', type) | strcmp('GeoX', type);
             ln = src.axes(match);
         end
         
@@ -403,7 +403,7 @@ classdef ncgeovariable < ncvariable
                 javaaxisvar  =   src.dataset.netcdf.findVariable(tempname);
                 type{i} = char(javaaxisvar.getAxisType());
             end
-            match = strcmp('Lat', type);
+            match = strcmp('Lat', type) | strcmp('GeoY', type);
             ln = src.axes(match);
         end
         
