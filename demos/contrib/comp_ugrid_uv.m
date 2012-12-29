@@ -4,10 +4,10 @@
 % comparison with no model specific code.  This code makes a movie
 % if there is more than one time step specified
 
-comp_titl='Comparison of 2D No-Wave runs for Hurricane Rita';
+comp_titl='Comparison of 2D No-Wave runs for Hurricane Ike';
 
 titl{1}='ADCIRC';
-uris{1}='http://testbedapps.sura.org/thredds/dodsC/inundation/ADCIRC/ike/3Dvrwww'
+uris{1}='http://testbedapps.sura.org/thredds/dodsC/in/und/adcirc/ike/ultralite/lr/vardrag/nowave/3d'
 %uris{1}='http://testbedapps.sura.org/threddsdev/dodsC/inundation/ADCIRC/rita/2Dvrwoww'
 uname{1}='u-vel';
 vname{1}='v-vel';

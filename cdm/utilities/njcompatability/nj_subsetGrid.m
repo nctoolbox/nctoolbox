@@ -66,7 +66,7 @@ switch nargin
             structure.lat=lonLatRange(2);
             structure.lon=lonLatRange(1);
         end
-        structure.time = [datenum(dn1) datenum(dn1)];
+        structure.time = [datenum(dn1)];
         subs = geoGridVar.geosubset(structure);
         data = squeeze(subs.data);
         grd_temp = subs.grid;
