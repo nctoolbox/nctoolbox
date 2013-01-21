@@ -94,11 +94,22 @@ params = {
 'outputFormat';'application/atom+xml';
 'enableCrawling'; 'false';
 };
+
 [results] = urlread(q.endpoint,'get', params);
+
 % find all URL links
-[~,~,~,~,links]=regexp(results,'<gmd:URL>(.*?)</gmd:URL>','match');
+[~,~,~,~,links1]=regexp(results,'<gmd:URL>(.*?)</gmd:URL>','match'); % early versions of nciso/gicat
+[~,~,~,~,links2]=regexp(results,'<dm:srvOp xmlns:dm="http://floraresearch.eu/sdi/services/7.0/dataModel/schema" name="(.*?)</dm:srvOp>','match'); % modern versions of nciso/gicat
+for ind = 1:length(links2)
+   link = links2(ind);
+   st = regexp(link{1}, 'http');
+   links2{ind}{1}(1:st{1}-1) = [];
+end
+
 % find all box values (bounding box)
 [~,~,~,~,box]=regexp(results,'<box xmlns="http://www.georss.org/georss">(.*?)</box>','match');  
+
+% Optionally return the request URL used for the search
 requesturl = [q.endpoint, '?&', params{1},'=',params{2},'&',...
     params{3},'=',params{4},'&',...    
     params{5},'=',params{6},'&',...
@@ -110,7 +121,14 @@ requesturl = [q.endpoint, '?&', params{1},'=',params{2},'&',...
     params{17},'=',params{18},'&',...
     params{19},'=',params{20}];
 
+if ~isempty(links2)
+    links = links2;
+else
+    links = links1;
 end
+
+end
+
 
 
 
