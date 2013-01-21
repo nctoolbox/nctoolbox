@@ -22,5 +22,5 @@ ilevel=-1; % nj_tslice uses "-1" instead of "end" to indicate last level
 
 % Now let's add a title to the figure that includes the dataset's global
 % attribute title and the date of the data that we subset.
-
- title({nc.attribute('title'); datestr(grd.time)})
+nc = ncdataset(url);
+title({nc.attribute('title'); datestr(grd.time)})
