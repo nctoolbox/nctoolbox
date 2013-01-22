@@ -1,105 +1,103 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
+    <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>nctoolbox by nctoolbox</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="javascripts/scale.fix.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+
+    <title>nctoolbox by nctoolbox</title>
   </head>
+
   <body>
-    <div class="wrapper">
-      <header>
-        <h1 class="header">nctoolbox</h1>
-        <p class="header"></p>
+    <header>
+      <div class="inner">
+        <h1>nctoolbox</h1>
+        <h2></h2>
+        <a href="https://github.com/nctoolbox/nctoolbox" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
 
-        <ul>
-          <li class="download"><a class="buttons" href="https://github.com/nctoolbox/nctoolbox/zipball/master">Download ZIP</a></li>
-          <li class="download"><a class="buttons" href="https://github.com/nctoolbox/nctoolbox/tarball/master">Download TAR</a></li>
-          <li><a class="buttons github" href="https://github.com/nctoolbox/nctoolbox">View On GitHub</a></li>
-        </ul>
-
-        <p class="header">This project is maintained by <a class="header name" href="https://github.com/nctoolbox">nctoolbox</a></p>
-
-
-      </header>
-      <section>
-        <p>NCTOOLBOX - 20120109</p>
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>NCTOOLBOX</h1>
 
 <p>Full instructions and documentation at:
 <a href="http://code.google.com/p/nctoolbox/">http://code.google.com/p/nctoolbox/</a></p>
 
-<p>Brief summary:</p>
+<p>We are in the progress of moving the project hosting here to github.com.</p>
 
-<p>I. Prequisites</p>
+<h2>Brief summary:</h2>
 
-<ol>
-<li>Matlab R2008a+.  You can verify the version of Matlab by typing:
-   &gt;&gt; version</li>
-<li>
+<h3>Prequisites</h3>
+
+<p>Matlab R2008a+.  You can verify the version of Matlab by typing:</p>
+
+<pre><code>version
+</code></pre>
+
 <p>Java 6+.  You can verify the version of Java used by Matlab by typing: </p>
 
-<blockquote>
-<blockquote>
-<p>version('-java'). 
- The version returned should start with 'Java 1.6'. 
- If it starts with 'Java 1.5' you can try updating the Matlab JVM:
- <a href="http://www.mathworks.com/support/solutions/en/data/1-1812J/">http://www.mathworks.com/support/solutions/en/data/1-1812J/</a>
- or use the older nctoolbox-20091112 version of this toolbox.</p>
-</blockquote>
-</blockquote>
+<pre><code>version('-java'). 
+</code></pre>
 
-<p>II. Setup</p>
-</li>
-<li>
+<p>The version returned should start with 'Java 1.6'. If it starts with 'Java 1.5' you can try updating the Matlab JVM: <a href="http://www.mathworks.com/support/solutions/en/data/1-1812J/">http://www.mathworks.com/support/solutions/en/data/1-1812J/</a> or use the older nctoolbox-20091112 version of this toolbox.</p>
+
+<h3>Setup</h3>
+
 <p>In Matlab, change to the nctoolbox directory. For example,</p>
 
-<blockquote>
-<blockquote>
-<p>cd ~/Documents/MATLAB/nctoolbox</p>
-</blockquote>
-</blockquote>
-</li>
-<li>
+<pre><code>cd ~/Documents/MATLAB/nctoolbox
+</code></pre>
+
 <p>Run the setup_nctoolbox.m function</p>
 
-<blockquote>
-<blockquote>
-<p>setup_nctoolbox</p>
-</blockquote>
-</blockquote>
-</li>
-<li>
-<p>This sets up nctoolbox for the current Matlab session only.
- You will need to add the follwing lines to your startup.m file if you would like 
- nctoolbox automatically when you start Matlab:</p>
+<pre><code>setup_nctoolbox
+</code></pre>
+
+<p>This sets up nctoolbox for the current Matlab session only. You will need to add the follwing lines to your startup.m file if you would like nctoolbox automatically when you start Matlab:</p>
 
 <pre><code>% Edit "/Path/to/nctoolbox" to correct nctoolbox directory
 addpath("/Path/To/nctoolbox")
 setup_nctoolbox
 </code></pre>
-</li>
-</ol><p>III. Demos</p>
 
-<ol>
+<h3>Demos</h3>
+
+<ul>
 <li>Demos that display basic functionality are in the 'demos' subdirectory.  These demos
  can fail if the machines serving the remote data access URLs are unavailable.</li>
 <li>Contributed demos that display additional or specialized functionality are in 
  the demos/contrib directory.  Some of these depend on accessing remote sites for
  data that can be less reliable than the data URLs in the 'demos' directory.</li>
-</ol>
-      </section>
-      <footer>
-        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
-      </footer>
+</ul>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/nctoolbox/nctoolbox/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/nctoolbox/nctoolbox/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/nctoolbox/nctoolbox"></a> is maintained by <a href="https://github.com/nctoolbox">nctoolbox</a>.</p>
+
+          <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-		
+
+  
   </body>
 </html>
