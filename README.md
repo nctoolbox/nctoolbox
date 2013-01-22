@@ -7,14 +7,14 @@ We are in the progress of moving the project hosting here to github.com.
 
 Brief summary:
 
-    *Prequisites
+ *Prequisites
 
-        *Matlab R2008a+.  You can verify the version of Matlab by typing:
+  *Matlab R2008a+.  You can verify the version of Matlab by typing:
     version
-        *Java 6+.  You can verify the version of Java used by Matlab by typing: 
+  *Java 6+.  You can verify the version of Java used by Matlab by typing: 
     version('-java'). 
 
-        *The version returned should start with 'Java 1.6'. If it starts with 'Java 1.5' you can try updating the Matlab JVM: http://www.mathworks.com/support/solutions/en/data/1-1812J/ or use the older nctoolbox-20091112 version of this toolbox.
+  *The version returned should start with 'Java 1.6'. If it starts with 'Java 1.5' you can try updating the Matlab JVM: http://www.mathworks.com/support/solutions/en/data/1-1812J/ or use the older nctoolbox-20091112 version of this toolbox.
 
  II. Setup
 
