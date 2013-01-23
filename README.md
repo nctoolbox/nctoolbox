@@ -8,6 +8,8 @@ We are in the progress of moving the project hosting here to github.com.
 
 ##Brief summary:
 
+nctoolbox is a [Matlab](http://www.mathworks.com/) toolbox that provides read-only access to [common data model](http://www.unidata.ucar.edu/software/netcdf-java/CDM/index.html) datasets. Under the hood, nctoolbox uses [NetCDF-Java](http://www.unidata.ucar.edu/software/netcdf-java/) as the data access layer. This allows nctoolbox to access [NetCDF](http://www.unidata.ucar.edu/software/netcdf/), [OPeNDAP](http://opendap.org/), [HDF5](http://www.hdfgroup.org/HDF5/), GRIB, GRIB2, HDF4 and many (15+) other file formats and services using the same API. It works with Matlab 2008a and later.
+
 ###Prequisites
 
 Matlab R2008a+.  You can verify the version of Matlab by typing:
