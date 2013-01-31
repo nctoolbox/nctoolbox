@@ -6,7 +6,7 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  color:#222;
+  color:#000000;
   margin:0 0 20px;
 }
 
@@ -23,11 +23,11 @@ h1 {
 }
 
 h2 {
-  color:#393939;
+  color:#000000;
 }
 
 h3, h4, h5, h6 {
-  color:#494949;
+  color:#000000;
 }
 
 a {
@@ -56,8 +56,8 @@ blockquote {
 }
 
 code, pre {
-  font-family:Terminal;
-  color:#333;
+  font-family:"Courier New","Terminal","monospace";
+  color:#000000;
   font-size:12px;
 }
 
