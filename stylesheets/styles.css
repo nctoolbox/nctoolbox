@@ -1,5 +1,3 @@
-@import url(https://fonts.googleapis.com/css?family=Lato:300italic,700italic,300,700);
-
 body {
   padding:50px;
   font:14px "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -58,7 +56,7 @@ blockquote {
 }
 
 code, pre {
-  font-family:Lucida Console, Terminal;
+  font-family:Terminal;
   color:#333;
   font-size:12px;
 }
