@@ -1,36 +1,33 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
   <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="NCTOOLBOX : A Matlab toolbox for working with common data model datasets" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>NCTOOLBOX by nctoolbox</title>
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>NCTOOLBOX</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
   </head>
-
   <body>
+    <div class="wrapper">
+      <header>
+        <h1>NCTOOLBOX</h1>
+        <p>A Matlab toolbox for working with common data model datasets</p>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/nctoolbox/nctoolbox">View on GitHub</a>
+        <p class="view"><a href="https://github.com/nctoolbox/nctoolbox">View the Project on GitHub <small>nctoolbox/nctoolbox</small></a></p>
 
-          <h1 id="project_title">NCTOOLBOX</h1>
-          <h2 id="project_tagline">A Matlab toolbox for working with common data model datasets</h2>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/nctoolbox/nctoolbox/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/nctoolbox/nctoolbox/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
+        <ul>
+          <li><a href="https://github.com/nctoolbox/nctoolbox/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/nctoolbox/nctoolbox/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/nctoolbox/nctoolbox">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
         <h2>Get Started</h2>
 
 <p>Download the latest release:
@@ -45,7 +42,34 @@
 
 <p>nctoolbox is a <a href="http://www.mathworks.com/">Matlab</a> toolbox that provides read-only access to <a href="http://www.unidata.ucar.edu/software/netcdf-java/CDM/index.html">common data model</a> datasets. Under the hood, nctoolbox uses <a href="http://www.unidata.ucar.edu/software/netcdf-java/">NetCDF-Java</a> as the data access layer. This allows nctoolbox to access <a href="http://www.unidata.ucar.edu/software/netcdf/">NetCDF</a>, <a href="http://opendap.org/">OPeNDAP</a>, <a href="http://www.hdfgroup.org/HDF5/">HDF5</a>, GRIB, GRIB2, HDF4 and many (15+) other file formats and services using the same API. It works with Matlab 2008a and later.</p>
 
-<h3>Prequisites</h3>
+<h2>Why Use nctoolbox?</h2>
+
+<p>Two words: it's simple</p>
+
+<h4>It's simple to install</h4>
+
+<p>Download it and run the setup_nctoolbox. Thats it.</p>
+
+<h4>It's simple to use</h4>
+
+<p>All types of datasets (NetCDF, HDF5, OpenDAP) are read exactly the same way. Want to read data from an OpenDAP URL?</p>
+
+<pre><code>ds = ncgeodataset('http://geoport.whoi.edu/thredds/dodsC/coawst_2_2/fmrc/coawst_2_2_best.ncd')
+time_run = ds.data('time_run');
+</code></pre>
+
+<p>Want to subset data, NetCDF style (i.e Start, End, Stride)?</p>
+
+<pre><code>lwrad = ds.data('lwrad', [10000 100 400], [10100 105 400]) % No Stride
+lwrad = ds.data('lwrad', [10000 100 400], [10100 105 400], [1 1 1]) % With Stride
+</code></pre>
+
+<p>Want to subset data, Matlab style?</p>
+
+<pre><code>lwrad = ds{'lwrad'}(10000:10100, 100:105, 400)
+</code></pre>
+
+<h4>Prequisites</h4>
 
 <p>Matlab R2008a+.  You can verify the version of Matlab by typing:</p>
 
@@ -59,7 +83,7 @@
 
 <p>The version returned should start with 'Java 1.6'. If it starts with 'Java 1.5' you can try updating the Matlab JVM: <a href="http://www.mathworks.com/support/solutions/en/data/1-1812J/">http://www.mathworks.com/support/solutions/en/data/1-1812J/</a> or use the older nctoolbox-20091112 version of this toolbox.</p>
 
-<h3>Setup</h3>
+<h4>Setup</h4>
 
 <p>In Matlab, change to the nctoolbox directory. For example,</p>
 
@@ -78,7 +102,7 @@ addpath("/Path/To/nctoolbox")
 setup_nctoolbox
 </code></pre>
 
-<h3>Demos</h3>
+<h4>Demos</h4>
 
 <ul>
 <li>Demos that display basic functionality are in the 'demos' subdirectory.  These demos
@@ -88,17 +112,12 @@ setup_nctoolbox
  data that can be less reliable than the data URLs in the 'demos' directory.</li>
 </ul>
       </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">NCTOOLBOX maintained by <a href="https://github.com/nctoolbox">nctoolbox</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/nctoolbox">nctoolbox</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
       </footer>
     </div>
-
+    <script src="javascripts/scale.fix.js"></script>
     
-
   </body>
 </html>
