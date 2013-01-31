@@ -1,6 +1,10 @@
 NCTOOLBOX
 =========
 
+Download the latest release:
+[You can download the latest stable release at by clicking here.](https://github.com/nctoolbox/nctoolbox/tags)
+
+
 Full instructions and documentation at:
 http://code.google.com/p/nctoolbox/
 
