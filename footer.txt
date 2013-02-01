@@ -1,0 +1,9 @@
+<footer>
+        <!--<p>This project is maintained by <a href="https://github.com/nctoolbox">nctoolbox</a></p>-->
+        <small>Hosted on GitHub Pages &mdash; Based on theme by <a href="https://github.com/orderedlist">orderedlist</a></small>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
