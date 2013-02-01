@@ -1,0 +1,153 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>geodemo_4b</title><meta name="generator" content="MATLAB 7.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-03-20"><meta name="DC.source" content="geodemo_4b.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">GEODEMO_4b</a></li><li><a href="#2">CH3D</a></li><li><a href="#3">ROMS</a></li><li><a href="#4">Create geosubset object</a></li><li><a href="#5">Perform analysis without using dataset dependant code</a></li></ul></div><h2>GEODEMO_4b<a name="1"></a></h2><p>Compare horizontal slices from two different CF compliant structured grid models (CH3D and ROMS) at a particular time step and depth, using geosubset to subset the data</p><pre class="codeinput">clear
+</pre><h2>CH3D<a name="2"></a></h2><pre class="codeinput">url{1}=<span class="string">'http://testbedapps.sura.org/thredds/dodsC/estuarine_hypoxia/ch3d/agg.nc'</span>;
+var{1}=<span class="string">'salinity'</span>;
+titl{1}=<span class="string">'CH3D'</span>;
+</pre><h2>ROMS<a name="3"></a></h2><pre class="codeinput">url{2}=<span class="string">'http://testbedapps.sura.org/thredds/dodsC/estuarine_hypoxia/chesroms_1tdo/agg.nc'</span>;
+var{2}=<span class="string">'salt'</span>;
+titl{2}=<span class="string">'CHESROMS'</span>;
+</pre><h2>Create geosubset object<a name="4"></a></h2><pre class="codeinput">dat=[2005 1 10 0 0 0];  <span class="comment">% Jan 10, 2005 00:00 UTC</span>
+depth=-5;  <span class="comment">% horizontal slice 5 m from surface</span>
+ax=[ -76.5220  -75.7105   36.8248   37.7850]; <span class="comment">%lon/lat range</span>
+cax=[0 33];  <span class="comment">%color range</span>
+lat_mid=38; <span class="comment">% for scaling plots</span>
+
+s.time=dat;
+s.lon=ax(1:2);
+s.lat=ax(3:4);
+</pre><h2>Perform analysis without using dataset dependant code<a name="5"></a></h2><p>Access datasets, subset data, interpolate data to a constant z, plot results at z depth</p><pre class="codeinput">figure;
+<span class="keyword">for</span> i=1:length(url);
+  nc{i}=ncgeodataset(url{i});
+  <span class="comment">% create a salinity geovariable object.  No data read yet.</span>
+  svar{i}=geovariable(nc{i},var{i});
+  disp([<span class="string">'reading data from '</span> titl{i} <span class="string">'...'</span>])
+  <span class="comment">% using geosubset here, which allows for subsetting and striding, reading</span>
+  <span class="comment">% multiple time steps, only certain zlevels and more.</span>
+  sub{i}=svar{i}.geosubset(s);
+  sz{i}=zsliceg(squeeze(sub{i}.data),squeeze(sub{i}.grid.z),depth);
+  a{i}=subplot(1,length(url),i);
+  pcolorjw(sub{i}.grid.lon,sub{i}.grid.lat,double(sz{i}));colorbar
+  axis(ax);
+  caxis(cax);
+  title(sprintf(<span class="string">'%s, depth=%f: %s'</span>,titl{i},depth,datestr(sub{1}.grid.time)));
+  set (a{i}, <span class="string">'DataAspectRatio'</span>, [1 cos(lat_mid*pi/180) 1000] );
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">reading data from CH3D...
+reading data from CHESROMS...
+</pre><img vspace="5" hspace="5" src="geodemo_4b_01.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.11<br></p></div><!--
+##### SOURCE BEGIN #####
+%% GEODEMO_4b
+% Compare horizontal slices from two different CF compliant structured
+% grid models (CH3D and ROMS) at a particular time step and depth, using
+% geosubset to subset the data
+
+clear 
+
+%% CH3D
+url{1}='http://testbedapps.sura.org/thredds/dodsC/estuarine_hypoxia/ch3d/agg.nc';
+var{1}='salinity';
+titl{1}='CH3D';
+
+%% ROMS
+url{2}='http://testbedapps.sura.org/thredds/dodsC/estuarine_hypoxia/chesroms_1tdo/agg.nc';
+var{2}='salt';
+titl{2}='CHESROMS';
+
+%% Create geosubset object
+dat=[2005 1 10 0 0 0];  % Jan 10, 2005 00:00 UTC
+depth=-5;  % horizontal slice 5 m from surface
+ax=[ -76.5220  -75.7105   36.8248   37.7850]; %lon/lat range
+cax=[0 33];  %color range
+lat_mid=38; % for scaling plots
+
+s.time=dat;
+s.lon=ax(1:2);
+s.lat=ax(3:4);
+
+%% Perform analysis without using dataset dependant code
+% Access datasets, subset data, interpolate data to a constant z, plot results at z depth
+
+figure;
+for i=1:length(url);
+  nc{i}=ncgeodataset(url{i});
+  % create a salinity geovariable object.  No data read yet.
+  svar{i}=geovariable(nc{i},var{i});
+  disp(['reading data from ' titl{i} '...'])
+  % using geosubset here, which allows for subsetting and striding, reading
+  % multiple time steps, only certain zlevels and more.
+  sub{i}=svar{i}.geosubset(s);
+  sz{i}=zsliceg(squeeze(sub{i}.data),squeeze(sub{i}.grid.z),depth);
+  a{i}=subplot(1,length(url),i);
+  pcolorjw(sub{i}.grid.lon,sub{i}.grid.lat,double(sz{i}));colorbar
+  axis(ax);
+  caxis(cax);
+  title(sprintf('%s, depth=%f: %s',titl{i},depth,datestr(sub{1}.grid.time)));
+  set (a{i}, 'DataAspectRatio', [1 cos(lat_mid*pi/180) 1000] );
+end
+
+##### SOURCE END #####
+--></body></html>

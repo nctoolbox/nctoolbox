@@ -1,0 +1,148 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>geodemo_4</title><meta name="generator" content="MATLAB 7.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-03-20"><meta name="DC.source" content="geodemo_4.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">GEODEMO_4</a></li><li><a href="#2">CH3D</a></li><li><a href="#3">ROMS</a></li><li><a href="#4">Perform analysis without using dataset dependant code</a></li></ul></div><h2>GEODEMO_4<a name="1"></a></h2><p>Compare horizontal slices from two different CF compliant structured grid models (CH3D and ROMS) at a particular time step and depth</p><pre class="codeinput">clear
+</pre><h2>CH3D<a name="2"></a></h2><pre class="codeinput">url{1}=<span class="string">'http://testbedapps.sura.org/thredds/dodsC/estuarine_hypoxia/ch3d/agg.nc'</span>;
+var{1}=<span class="string">'salinity'</span>;
+titl{1}=<span class="string">'CH3D'</span>;
+</pre><h2>ROMS<a name="3"></a></h2><pre class="codeinput">url{2}=<span class="string">'http://testbedapps.sura.org/thredds/dodsC/estuarine_hypoxia/chesroms_1tdo/agg.nc'</span>;
+var{2}=<span class="string">'salt'</span>;
+titl{2}=<span class="string">'CHESROMS'</span>;
+
+dat=[2005 1 10 0 0 0];  <span class="comment">% Jan 10, 2005 00:00 UTC</span>
+depth=-5;  <span class="comment">% horizontal slice 5 m from surface</span>
+ax=[  -77.4572  -75.4157   36.7224   39.6242]; <span class="comment">%lon/lat range</span>
+cax=[0 33];  <span class="comment">%color range</span>
+lat_mid=38; <span class="comment">% for scaling plots</span>
+</pre><h2>Perform analysis without using dataset dependant code<a name="4"></a></h2><p>Access datasets, get 3d field at given time data, interpolate data to a constant z, plot results at z depth</p><pre class="codeinput">figure;
+<span class="keyword">for</span> i=1:length(url);
+  nc{i}=ncgeodataset(url{i});
+  jd{i}=nj_time(nc{i},var{i});  <span class="comment">% using nj_time</span>
+  itime=date_index(jd{i},dat);
+  disp([<span class="string">'reading data from '</span> titl{i} <span class="string">'...'</span>])
+
+  <span class="comment">% using nj_tslice here, which doesn't allow for subsetting or</span>
+  <span class="comment">% striding:  you get the whole 3D field at a particular time step:</span>
+  [s{i},g{i}]=nj_tslice(nc{i},var{i},itime);
+  sz{i}=zsliceg(s{i},g{i}.z,depth);
+  a{i}=subplot(1,length(url),i);
+  pcolorjw(g{i}.lon,g{i}.lat,double(sz{i}));colorbar
+  axis(ax);
+  caxis(cax);
+  title(sprintf(<span class="string">'%s, depth=%f: %s'</span>,titl{i},depth,datestr(g{i}.time)));
+  set (a{i}, <span class="string">'DataAspectRatio'</span>, [1 cos(lat_mid*pi/180) 1000] );
+
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">reading data from CH3D...
+reading data from CHESROMS...
+</pre><img vspace="5" hspace="5" src="geodemo_4_01.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.11<br></p></div><!--
+##### SOURCE BEGIN #####
+%% GEODEMO_4
+% Compare horizontal slices from two different CF compliant structured
+% grid models (CH3D and ROMS) at a particular time step and depth
+clear
+
+%% CH3D
+url{1}='http://testbedapps.sura.org/thredds/dodsC/estuarine_hypoxia/ch3d/agg.nc';
+var{1}='salinity';
+titl{1}='CH3D';
+
+%% ROMS
+url{2}='http://testbedapps.sura.org/thredds/dodsC/estuarine_hypoxia/chesroms_1tdo/agg.nc';
+var{2}='salt';
+titl{2}='CHESROMS';
+
+dat=[2005 1 10 0 0 0];  % Jan 10, 2005 00:00 UTC
+depth=-5;  % horizontal slice 5 m from surface
+ax=[  -77.4572  -75.4157   36.7224   39.6242]; %lon/lat range
+cax=[0 33];  %color range
+lat_mid=38; % for scaling plots
+
+
+%% Perform analysis without using dataset dependant code
+% Access datasets, get 3d field at given time data, interpolate data to a constant z, plot results at z depth
+
+figure;
+for i=1:length(url);
+  nc{i}=ncgeodataset(url{i});
+  jd{i}=nj_time(nc{i},var{i});  % using nj_time
+  itime=date_index(jd{i},dat);
+  disp(['reading data from ' titl{i} '...'])
+  
+  % using nj_tslice here, which doesn't allow for subsetting or
+  % striding:  you get the whole 3D field at a particular time step:
+  [s{i},g{i}]=nj_tslice(nc{i},var{i},itime);
+  sz{i}=zsliceg(s{i},g{i}.z,depth);
+  a{i}=subplot(1,length(url),i);
+  pcolorjw(g{i}.lon,g{i}.lat,double(sz{i}));colorbar
+  axis(ax);
+  caxis(cax);
+  title(sprintf('%s, depth=%f: %s',titl{i},depth,datestr(g{i}.time)));
+  set (a{i}, 'DataAspectRatio', [1 cos(lat_mid*pi/180) 1000] );
+
+end
+
+##### SOURCE END #####
+--></body></html>
