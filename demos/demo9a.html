@@ -1,0 +1,199 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>DEMO9A - Like demo9 but uses 'grid' and 'data' sytax to access a variable</title><meta name="generator" content="MATLAB 7.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-02-01"><meta name="DC.source" content="demo9a.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h1>DEMO9A - Like demo9 but uses 'grid' and 'data' sytax to access a variable</h1><!--introduction--><p>and it's coordinate axis data in 2 seperate steps instead of the single call to 'struct' used in demo9a. You may want to do this if you need to subset base on the coordinates of a variable before pulling across a HUGE amount of data.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Demonstration of subsetting a CF convention dataset</a></li><li><a href="#2">Grab the variable of interest. No data is being read yet.</a></li><li><a href="#3">Grab a subset of the coordinate data only (i.e. the coordinate 'grid')</a></li><li><a href="#4">Grab the actual temp data</a></li><li><a href="#5">Make a pretty plot.</a></li></ul></div><h2>Demonstration of subsetting a CF convention dataset<a name="1"></a></h2><pre class="codeinput">echo(<span class="string">'on'</span>)
+url=<span class="string">'http://geoport.whoi.edu/thredds/dodsC/coawst_2_2/fmrc/coawst_2_2_best.ncd'</span>;
+ds = cfdataset(url);
+</pre><pre class="codeoutput">url='http://geoport.whoi.edu/thredds/dodsC/coawst_2_2/fmrc/coawst_2_2_best.ncd';
+ds = cfdataset(url);
+
+%% Grab the variable of interest. No data is being read yet.
+sz = ds.size('temp');
+</pre><h2>Grab the variable of interest. No data is being read yet.<a name="2"></a></h2><pre class="codeinput">sz = ds.size(<span class="string">'temp'</span>);
+
+<span class="comment">% !! In demo9 we used 'ds.struct' to get the data and it's coordinate axes.</span>
+<span class="comment">% In this demo we split that call into 'ds.grid' and 'ds.data' to fetch</span>
+<span class="comment">% the coordinate axes seperate from the data.</span>
+</pre><pre class="codeoutput">
+% !! In demo9 we used 'ds.struct' to get the data and it's coordinate axes.
+% In this demo we split that call into 'ds.grid' and 'ds.data' to fetch
+% the coordinate axes seperate from the data.
+%% Grab a subset of the coordinate data only (i.e. the coordinate 'grid')
+% Data is now being pulled across the network
+t = ds.grid('temp', [sz(1) sz(2) 1 1], [sz(1) sz(2) sz(3) sz(4)]);
+</pre><h2>Grab a subset of the coordinate data only (i.e. the coordinate 'grid')<a name="3"></a></h2><p>Data is now being pulled across the network</p><pre class="codeinput">t = ds.grid(<span class="string">'temp'</span>, [sz(1) sz(2) 1 1], [sz(1) sz(2) sz(3) sz(4)]);
+</pre><pre class="codeoutput">
+%% Grab the actual temp data
+d = ds.data('temp', [sz(1) sz(2) 1 1], [sz(1) sz(2) sz(3) sz(4)]);
+</pre><h2>Grab the actual temp data<a name="4"></a></h2><pre class="codeinput">d = ds.data(<span class="string">'temp'</span>, [sz(1) sz(2) 1 1], [sz(1) sz(2) sz(3) sz(4)]);
+</pre><pre class="codeoutput">
+%% Make a pretty plot. 
+% Note the call to 'squeeze'. This removes singleton dimensions.
+figure;
+</pre><h2>Make a pretty plot.<a name="5"></a></h2><p>Note the call to 'squeeze'. This removes singleton dimensions.</p><pre class="codeinput">figure;
+surf(t.lon_rho, t.lat_rho, double(squeeze(d)))
+shading(<span class="string">'interp'</span>);
+view(2)
+axis(<span class="string">'equal'</span>)
+
+xatt = ds.attributes(<span class="string">'lon_rho'</span>);
+xname = value4key(xatt, <span class="string">'long_name'</span>);
+xunits = value4key(xatt, <span class="string">'units'</span>);
+xlabel([xname <span class="string">' ['</span> xunits <span class="string">']'</span>],<span class="string">'interpreter'</span>,<span class="string">'none'</span>);
+
+yatt = ds.attributes(<span class="string">'lat_rho'</span>);
+yname = value4key(yatt, <span class="string">'long_name'</span>);
+yunits = value4key(yatt, <span class="string">'units'</span>);
+ylabel([yname <span class="string">' ['</span> yunits <span class="string">']'</span>],<span class="string">'interpreter'</span>,<span class="string">'none'</span>);
+
+zatt = ds.attributes(<span class="string">'temp'</span>);
+zname = value4key(zatt, <span class="string">'long_name'</span>);
+zunits = value4key(zatt, <span class="string">'units'</span>);
+ztime = ds.time(<span class="string">'time1'</span>, t.time1);
+title([zname <span class="string">' ['</span> zunits <span class="string">'] on '</span> datestr(ztime)],<span class="string">'interpreter'</span>,<span class="string">'none'</span>);
+
+colorbar
+shg
+echo(<span class="string">'off'</span>)
+</pre><pre class="codeoutput">surf(t.lon_rho, t.lat_rho, double(squeeze(d)))
+shading('interp');
+view(2)
+axis('equal')
+
+xatt = ds.attributes('lon_rho');
+xname = value4key(xatt, 'long_name');
+xunits = value4key(xatt, 'units');
+xlabel([xname ' [' xunits ']'],'interpreter','none');
+
+yatt = ds.attributes('lat_rho');
+yname = value4key(yatt, 'long_name');
+yunits = value4key(yatt, 'units'); 
+ylabel([yname ' [' yunits ']'],'interpreter','none');
+
+zatt = ds.attributes('temp');
+zname = value4key(zatt, 'long_name');
+zunits = value4key(zatt, 'units'); 
+ztime = ds.time('time1', t.time1);
+title([zname ' [' zunits '] on ' datestr(ztime)],'interpreter','none');
+
+colorbar
+shg
+echo('off')
+</pre><img vspace="5" hspace="5" src="demo9a_01.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.13<br></p></div><!--
+##### SOURCE BEGIN #####
+%% DEMO9A - Like demo9 but uses 'grid' and 'data' sytax to access a variable
+% and it's coordinate axis data in 2 seperate steps instead of the single
+% call to 'struct' used in demo9a. You may want to do this if you need to
+% subset base on the coordinates of a variable before pulling across a 
+% HUGE amount of data.
+
+%% Demonstration of subsetting a CF convention dataset
+echo('on')
+url='http://geoport.whoi.edu/thredds/dodsC/coawst_2_2/fmrc/coawst_2_2_best.ncd';
+ds = cfdataset(url);
+
+%% Grab the variable of interest. No data is being read yet.
+sz = ds.size('temp');
+
+% !! In demo9 we used 'ds.struct' to get the data and it's coordinate axes.
+% In this demo we split that call into 'ds.grid' and 'ds.data' to fetch
+% the coordinate axes seperate from the data.
+
+%% Grab a subset of the coordinate data only (i.e. the coordinate 'grid')
+% Data is now being pulled across the network
+t = ds.grid('temp', [sz(1) sz(2) 1 1], [sz(1) sz(2) sz(3) sz(4)]);
+
+%% Grab the actual temp data
+d = ds.data('temp', [sz(1) sz(2) 1 1], [sz(1) sz(2) sz(3) sz(4)]);
+
+%% Make a pretty plot. 
+% Note the call to 'squeeze'. This removes singleton dimensions.
+figure;
+surf(t.lon_rho, t.lat_rho, double(squeeze(d)))
+shading('interp');
+view(2)
+axis('equal')
+
+xatt = ds.attributes('lon_rho');
+xname = value4key(xatt, 'long_name');
+xunits = value4key(xatt, 'units');
+xlabel([xname ' [' xunits ']'],'interpreter','none');
+
+yatt = ds.attributes('lat_rho');
+yname = value4key(yatt, 'long_name');
+yunits = value4key(yatt, 'units'); 
+ylabel([yname ' [' yunits ']'],'interpreter','none');
+
+zatt = ds.attributes('temp');
+zname = value4key(zatt, 'long_name');
+zunits = value4key(zatt, 'units'); 
+ztime = ds.time('time1', t.time1);
+title([zname ' [' zunits '] on ' datestr(ztime)],'interpreter','none');
+
+colorbar
+shg
+echo('off')
+##### SOURCE END #####
+--></body></html>

@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>geodemo_1b</title><meta name="generator" content="MATLAB 7.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-03-20"><meta name="DC.source" content="geodemo_1b.m"><style type="text/css">
+      --><title>NCGEODATASET GEODEMO_1B</title><meta name="generator" content="MATLAB 7.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-02-01"><meta name="DC.source" content="geodemo_1b.m"><style type="text/css">
 
 body {
   background-color: white;
@@ -62,8 +62,7 @@ p.footer {
   color: gray;
 }
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">NCGEODATASET GEODEMO_1B</a></li><li><a href="#2">Take a look at the variables available within the dataset</a></li><li><a href="#3">Determine the shape of the selected variable</a></li><li><a href="#4">Use START, STOP, STRIDE array style indexing with NCTOOLBOX</a></li><li><a href="#5">START, STOP, STRIDE array style indexing to return coordinate axes</a></li><li><a href="#6">Use the <tt>time</tt> method to convert model time to MATLAB's datenum</a></li><li><a href="#7">Plot with MATLAB's pcolor command</a></li></ul></div><h2>NCGEODATASET GEODEMO_1B<a name="1"></a></h2><p>Method B: Read surface salinity with corner/edge/stride syntax. If you are more used to working with NetCDF in Fortran than in Matlab, this may be the syntax for you.</p><pre class="codeinput"><span class="comment">% OPeNDAP Data URL for a CF-Compliant curvilinear ROMS model dataset</span>
-url =<span class="string">'http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc'</span>;
+  </style></head><body><div class="content"><h1>NCGEODATASET GEODEMO_1B</h1><!--introduction--><p>Method B: Read surface salinity with corner/edge/stride syntax. If you are more used to working with NetCDF in Fortran than in Matlab, this may be the syntax for you.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">OPeNDAP Data URL for a CF-Compliant curvilinear ROMS model dataset</a></li><li><a href="#2">Take a look at the variables available within the dataset</a></li><li><a href="#3">Determine the shape of the selected variable</a></li><li><a href="#4">Use START, STOP, STRIDE array style indexing with NCTOOLBOX</a></li><li><a href="#5">START, STOP, STRIDE array style indexing to return coordinate axes</a></li><li><a href="#6">Use the <tt>time</tt> method to convert model time to MATLAB's datenum</a></li><li><a href="#7">Plot with MATLAB's pcolor command</a></li></ul></div><h2>OPeNDAP Data URL for a CF-Compliant curvilinear ROMS model dataset<a name="1"></a></h2><pre class="codeinput">url =<span class="string">'http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc'</span>;
 nc = ncgeodataset(url)
 </pre><pre class="codeoutput">
 nc = 
@@ -71,7 +70,7 @@ nc =
   ncgeodataset handle
 
   Properties:
-     location: 'http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc'
+     location: [1x58 char]
        netcdf: [1x1 ucar.nc2.dataset.NetcdfDataset]
     variables: {80x1 cell}
 
@@ -217,7 +216,7 @@ salinity_coords =
 </pre><pre class="codeoutput">
 time =
 
-  7.3162e+005
+   7.3162e+05
 
 
 time =
@@ -232,14 +231,14 @@ time =
 
  title({nc.attribute(<span class="string">'title'</span>); time})
 </pre><img vspace="5" hspace="5" src="geodemo_1b_01.png" alt=""> <p class="footer"><br>
-      Published with MATLAB&reg; 7.11<br></p></div><!--
+      Published with MATLAB&reg; 7.13<br></p></div><!--
 ##### SOURCE BEGIN #####
 %% NCGEODATASET GEODEMO_1B
 % Method B: Read surface salinity with corner/edge/stride syntax.
 % If you are more used to working with NetCDF in Fortran than in 
 % Matlab, this may be the syntax for you.
 
-% OPeNDAP Data URL for a CF-Compliant curvilinear ROMS model dataset
+%% OPeNDAP Data URL for a CF-Compliant curvilinear ROMS model dataset
 url ='http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc';
 nc = ncgeodataset(url)
 

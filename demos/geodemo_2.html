@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>geodemo_2</title><meta name="generator" content="MATLAB 7.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-03-20"><meta name="DC.source" content="geodemo_2.m"><style type="text/css">
+      --><title>GEODEMO_2</title><meta name="generator" content="MATLAB 7.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-02-01"><meta name="DC.source" content="geodemo_2.m"><style type="text/css">
 
 body {
   background-color: white;
@@ -62,8 +62,7 @@ p.footer {
   color: gray;
 }
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">GEODEMO_2</a></li><li><a href="#2">Use nj_tbx legacy functions in NCTOOLBOX</a></li><li><a href="#3">Plot the surface temperature from this data</a></li><li><a href="#4">Create a vertical cross section through the gridded dataset</a></li><li><a href="#5">calculate the vertical section using VSLICEG</a></li></ul></div><h2>GEODEMO_2<a name="1"></a></h2><p>Using VSLICEG to create a vertical section from a 3D field</p><pre class="codeinput"><span class="comment">% OpenDAP dataset:</span>
-url=<span class="string">'http://geoport.whoi.edu/thredds/dodsC/usgs/vault0/models/examples/bora_feb.nc'</span>;
+  </style></head><body><div class="content"><h1>GEODEMO_2</h1><!--introduction--><p>Using VSLICEG to create a vertical section from a 3D field</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">OpenDAP dataset:</a></li><li><a href="#2">Use nj_tbx legacy functions in NCTOOLBOX</a></li><li><a href="#3">Plot the surface temperature from this data</a></li><li><a href="#4">Create a vertical cross section through the gridded dataset</a></li><li><a href="#5">calculate the vertical section using VSLICEG</a></li></ul></div><h2>OpenDAP dataset:<a name="1"></a></h2><pre class="codeinput">url=<span class="string">'http://geoport.whoi.edu/thredds/dodsC/usgs/vault0/models/examples/bora_feb.nc'</span>;
 </pre><h2>Use nj_tbx legacy functions in NCTOOLBOX<a name="2"></a></h2><p>here we'll use a convenience function nj_tslice that returns a full 3D field and grid (t,z,y,x) at a particular time step</p><pre class="codeinput">itime=1;
 [data,grd] = nj_tslice(url,<span class="string">'temp'</span>,itime);
 </pre><h2>Plot the surface temperature from this data<a name="3"></a></h2><p>here we are using ROMS output, where the last level(end) is the surface</p><pre class="codeinput">figure;
@@ -86,19 +85,13 @@ pcolorjw(x,y,vdata);ylabel(<span class="string">'m'</span>);xlabel(<span class="
 colorbar
 title(<span class="string">'Along-track vertical section of temperature'</span>);
 shading <span class="string">interp</span>
-</pre><pre class="codeoutput">      griddata_lite is triangulating data ...
-Warning: TSEARCH will be removed in a future release. Use DelaunayTri/pointLocation instead. 
-      ... triangulation complete
-      griddata_lite is triangulating data ...
-Warning: TSEARCH will be removed in a future release. Use DelaunayTri/pointLocation instead. 
-      ... triangulation complete
 </pre><img vspace="5" hspace="5" src="geodemo_2_03.png" alt=""> <p class="footer"><br>
-      Published with MATLAB&reg; 7.11<br></p></div><!--
+      Published with MATLAB&reg; 7.13<br></p></div><!--
 ##### SOURCE BEGIN #####
 %% GEODEMO_2
 % Using VSLICEG to create a vertical section from a 3D field
 
-% OpenDAP dataset:
+%% OpenDAP dataset:
 url='http://geoport.whoi.edu/thredds/dodsC/usgs/vault0/models/examples/bora_feb.nc';
 
 %% Use nj_tbx legacy functions in NCTOOLBOX

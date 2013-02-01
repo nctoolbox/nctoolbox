@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>geodemo_1a</title><meta name="generator" content="MATLAB 7.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-03-20"><meta name="DC.source" content="geodemo_1a.m"><style type="text/css">
+      --><title>NCGEODATASET GEODEMO_1A</title><meta name="generator" content="MATLAB 7.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-02-01"><meta name="DC.source" content="geodemo_1a.m"><style type="text/css">
 
 body {
   background-color: white;
@@ -62,8 +62,7 @@ p.footer {
   color: gray;
 }
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">NCGEODATASET GEODEMO_1A</a></li><li><a href="#2">Take a look at the variables available within the dataset</a></li><li><a href="#3">Determine the shape of the selected variable</a></li><li><a href="#4">Create <tt>geovariable</tt> object to access data in MATLAB style indexing</a></li><li><a href="#5">Use <tt>geovariable</tt> object to access coordinate data using MATLAB style indexes</a></li><li><a href="#6">Use <tt>grid_interop</tt> method to return coordinate axes with standard, interoperable names</a></li><li><a href="#7">Plot using MATLAB's pcolor</a></li></ul></div><h2>NCGEODATASET GEODEMO_1A<a name="1"></a></h2><p>Method A: Read surface salinity using geovariable syntax. Takes some extra steps since you create the geovariable object before extracting data from it, but you then have all the geovariable methods available to you.</p><pre class="codeinput"><span class="comment">% OPeNDAP Data URL for a CF-Compliant curvilinear ROMS model dataset</span>
-url =<span class="string">'http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc'</span>;
+  </style></head><body><div class="content"><h1>NCGEODATASET GEODEMO_1A</h1><!--introduction--><p>Method A: Read surface salinity using geovariable syntax. Takes some extra steps since you create the geovariable object before extracting data from it, but you then have all the geovariable methods available to you.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">OPeNDAP Data URL for a CF-Compliant curvilinear ROMS model dataset</a></li><li><a href="#2">Take a look at the variables available within the dataset</a></li><li><a href="#3">Determine the shape of the selected variable</a></li><li><a href="#4">Create <tt>geovariable</tt> object to access data in MATLAB style indexing</a></li><li><a href="#5">Use <tt>geovariable</tt> object to access coordinate data using MATLAB style indexes</a></li><li><a href="#6">Use <tt>grid_interop</tt> method to return coordinate axes with standard, interoperable names</a></li><li><a href="#7">Plot using MATLAB's pcolor</a></li></ul></div><h2>OPeNDAP Data URL for a CF-Compliant curvilinear ROMS model dataset<a name="1"></a></h2><pre class="codeinput">url =<span class="string">'http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc'</span>;
 nc = ncgeodataset(url)
 </pre><pre class="codeoutput">
 nc = 
@@ -71,7 +70,7 @@ nc =
   ncgeodataset handle
 
   Properties:
-     location: 'http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc'
+     location: [1x58 char]
        netcdf: [1x1 ucar.nc2.dataset.NetcdfDataset]
     variables: {80x1 cell}
 
@@ -233,7 +232,7 @@ salinity_coords =
 
        lat_rho: [60x160 double]
        lon_rho: [60x160 double]
-    ocean_time: 1.0958e+009
+    ocean_time: 1.0958e+09
          s_rho: -0.0250
 
 </pre><h2>Use <tt>grid_interop</tt> method to return coordinate axes with standard, interoperable names<a name="6"></a></h2><p>A higher level option is to use the grid_interop method, which returns the dimensions of our geovariable using the standardized names of lat, lon, time, and z instead of the original netcdf names of the coordinate dimensions.</p><pre class="codeinput"><span class="comment">% In addition to a more programmatic/standardized structure returned with</span>
@@ -253,7 +252,7 @@ salinity_coords =
 
      lat: [60x160 double]
      lon: [60x160 double]
-    time: 7.3162e+005
+    time: 7.3162e+05
        z: [4-D double]
 
 </pre><h2>Plot using MATLAB's pcolor<a name="7"></a></h2><pre class="codeinput">pcolor(salinity_coords.lon, salinity_coords.lat, salinity)
@@ -263,7 +262,7 @@ shading <span class="string">flat</span>; colorbar; caxis([35 39]);
 <span class="comment">% attribute 'title' and the date from our coordinate structure.</span>
  title({nc.attribute(<span class="string">'title'</span>); datestr(salinity_coords.time)})
 </pre><img vspace="5" hspace="5" src="geodemo_1a_01.png" alt=""> <p class="footer"><br>
-      Published with MATLAB&reg; 7.11<br></p></div><!--
+      Published with MATLAB&reg; 7.13<br></p></div><!--
 ##### SOURCE BEGIN #####
 %% NCGEODATASET GEODEMO_1A
 % Method A: Read surface salinity using geovariable syntax. 
@@ -271,7 +270,7 @@ shading <span class="string">flat</span>; colorbar; caxis([35 39]);
 % extracting data from it, but you then have all the geovariable 
 % methods available to you.
 
-% OPeNDAP Data URL for a CF-Compliant curvilinear ROMS model dataset
+%% OPeNDAP Data URL for a CF-Compliant curvilinear ROMS model dataset
 url ='http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc';
 nc = ncgeodataset(url)
 

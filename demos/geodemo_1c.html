@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>geodemo_1c</title><meta name="generator" content="MATLAB 7.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-03-20"><meta name="DC.source" content="geodemo_1c.m"><style type="text/css">
+      --><title>NCGEODATASET GEODEMO_1C</title><meta name="generator" content="MATLAB 7.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-02-01"><meta name="DC.source" content="geodemo_1c.m"><style type="text/css">
 
 body {
   background-color: white;
@@ -62,8 +62,7 @@ p.footer {
   color: gray;
 }
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">NCGEODATASET GEODEMO_1C</a></li><li><a href="#2">Take a look at the variables available within the dataset</a></li><li><a href="#3">Determine the shape of the selected variable</a></li><li><a href="#4">Use legacy syntax for data access in NCTOOLBOX</a></li><li><a href="#5">Use legacy syntax for coordinate axes in NCTOOLBOX</a></li><li><a href="#6">Plot using MATLAB's pcolor command</a></li></ul></div><h2>NCGEODATASET GEODEMO_1C<a name="1"></a></h2><p>Method C: Read surface salinity with curly brace syntax: s = nc{'salt'}(1,end,:,:); Most compact general method, but with functionality limited to reading data, obtaining an interoperabily grid structure, and acquiring attributes.</p><pre class="codeinput"><span class="comment">% OPeNDAP Data URL for a CF-Compliant curvilinear ROMS model dataset</span>
-url =<span class="string">'http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc'</span>;
+  </style></head><body><div class="content"><h1>NCGEODATASET GEODEMO_1C</h1><!--introduction--><p>Method C: Read surface salinity with curly brace syntax: s = nc{'salt'}(1,end,:,:); Most compact general method, but with functionality limited to reading data, obtaining an interoperabily grid structure, and acquiring attributes.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">OPeNDAP Data URL for a CF-Compliant curvilinear ROMS model dataset</a></li><li><a href="#2">Take a look at the variables available within the dataset</a></li><li><a href="#3">Determine the shape of the selected variable</a></li><li><a href="#4">Use legacy syntax for data access in NCTOOLBOX</a></li><li><a href="#5">Use legacy syntax for coordinate axes in NCTOOLBOX</a></li><li><a href="#6">Plot using MATLAB's pcolor command</a></li></ul></div><h2>OPeNDAP Data URL for a CF-Compliant curvilinear ROMS model dataset<a name="1"></a></h2><pre class="codeinput">url =<span class="string">'http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc'</span>;
 nc = ncgeodataset(url)
 </pre><pre class="codeoutput">
 nc = 
@@ -71,7 +70,7 @@ nc =
   ncgeodataset handle
 
   Properties:
-     location: 'http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc'
+     location: [1x58 char]
        netcdf: [1x1 ucar.nc2.dataset.NetcdfDataset]
     variables: {80x1 cell}
 
@@ -203,7 +202,7 @@ ans =
 </pre><pre class="codeoutput">
 salinity_coords = 
 
-    time: 7.3162e+005
+    time: 7.3162e+05
      lon: [60x160 double]
      lat: [60x160 double]
        z: [60x160 double]
@@ -217,14 +216,14 @@ salinity_coords =
 
  title({nc.attribute(<span class="string">'title'</span>); datestr(salinity_coords.time)})
 </pre><img vspace="5" hspace="5" src="geodemo_1c_01.png" alt=""> <p class="footer"><br>
-      Published with MATLAB&reg; 7.11<br></p></div><!--
+      Published with MATLAB&reg; 7.13<br></p></div><!--
 ##### SOURCE BEGIN #####
 %% NCGEODATASET GEODEMO_1C
 % Method C: Read surface salinity with curly brace syntax: s = nc{'salt'}(1,end,:,:); 
 % Most compact general method, but with functionality limited to reading data,
 % obtaining an interoperabily grid structure, and acquiring attributes. 
 
-% OPeNDAP Data URL for a CF-Compliant curvilinear ROMS model dataset
+%% OPeNDAP Data URL for a CF-Compliant curvilinear ROMS model dataset
 url ='http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc';
 nc = ncgeodataset(url)
 

@@ -1,0 +1,196 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>TEST_CF_UGRID3</title><meta name="generator" content="MATLAB 7.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-02-01"><meta name="DC.source" content="test_cf_ugrid3.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h1>TEST_CF_UGRID3</h1><!--introduction--><p>Compare water levels from 3 different unstructured grid models that use UGRID conventions (<a href="http://bit.ly/cf_ugrid)">http://bit.ly/cf_ugrid)</a>, allowing comparison with no model specific code</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Datasets</a></li><li><a href="#2">ADCIRC</a></li><li><a href="#3">Setup figure parameters</a></li><li><a href="#4">bounding box for figures</a></li><li><a href="#5">There is nothing model specific in the loop below!</a></li></ul></div><h2>Datasets<a name="1"></a></h2><h2>ADCIRC<a name="2"></a></h2><pre class="codeinput">titl{1}=<span class="string">'ADCIRC'</span>;
+uris{1}=<span class="string">'http://testbedapps-dev.sura.org/thredds/dodsC/in/und/adcirc/ike/ultralite/lr/vardrag/nowave/3d'</span>;
+vars{1}=<span class="string">'zeta'</span>;
+time=[2008 9 13 06 0 0];
+
+<span class="comment">%%% SELFE</span>
+titl{2}=<span class="string">'SELFE'</span>;
+uris{2}=<span class="string">'http://testbedapps.sura.org/thredds/dodsC/inundation/selfe/ike/3Dvrwoww'</span>;
+vars{2}=<span class="string">'elev'</span>;
+
+<span class="comment">%%% FVCOM</span>
+titl{3}=<span class="string">'FVCOM'</span>;
+uris{3}=<span class="string">'http://testbedapps.sura.org/thredds/dodsC/inundation/FVCOM/ike/3Dvrwoww'</span>;
+vars{3}=<span class="string">'zeta'</span>;
+</pre><h2>Setup figure parameters<a name="3"></a></h2><h2>bounding box for figures<a name="4"></a></h2><pre class="codeinput">ax=[-95.4519  -87.3856   28.0   31.0];
+
+<span class="comment">%%% color range for figures</span>
+cax=[0 5];
+</pre><h2>There is nothing model specific in the loop below!<a name="5"></a></h2><pre class="codeinput"><span class="keyword">for</span> i=1:length(uris)
+  tic
+  <span class="comment">% Initialize dataset object</span>
+  nc=ncgeodataset(uris{i});
+  <span class="comment">%get geovariable object</span>
+  zvar=nc.geovariable(vars{i});
+  <span class="comment">% Find the coordinate variables</span>
+  lon=zvar.getlondata(:);
+  lat=zvar.getlatdata(:);
+  tdat=zvar.timewindowij(time);
+  itime=tdat.index;
+  <span class="comment">% read data at specified time step for all nodes</span>
+  zeta=zvar.data(itime,:);
+  <span class="comment">% get mesh variable name (inference array)</span>
+  gvar_name=zvar.attribute(<span class="string">'mesh'</span>);
+  gridvar=nc.geovariable(gvar_name);
+  <span class="comment">% find connectivity array variable from mesh variable</span>
+  trivar_name=gridvar.attribute(<span class="string">'face_node_connectivity'</span>);
+
+  <span class="comment">% get connnectivity array data</span>
+  tri=nc{trivar_name}(:);
+  [m,n]=size(tri);
+  <span class="comment">% check/fix orientation of connectivity array</span>
+  <span class="keyword">if</span> m==3,
+    tri=tri.';
+  <span class="keyword">elseif</span> n~=3
+    disp(<span class="string">'Error:Currently handling triangles only'</span>);<span class="keyword">return</span>
+  <span class="keyword">end</span>
+  subplot(length(uris),1,i)
+  trisurf(tri,lon,lat,zeta);shading <span class="string">interp</span>;view(2);colorbar;<span class="keyword">...</span>
+    axis(ax);caxis(cax);<span class="keyword">...</span>
+    title(sprintf(<span class="string">'%s %s (%s): %sZ'</span>,titl{i},vars{i},<span class="keyword">...</span>
+    zvar.attribute(<span class="string">'units'</span>),datestr(tdat.time)));<span class="keyword">...</span>
+    <span class="comment">% set aspect ratio for lon/lat plot based on mean latitude</span>
+  set (gca, <span class="string">'DataAspectRatio'</span>, [1 cos(mean(lat(:))*pi/180) 1] );
+
+  toc
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">Elapsed time is 72.348191 seconds.
+Elapsed time is 75.959380 seconds.
+Elapsed time is 66.551909 seconds.
+</pre><img vspace="5" hspace="5" src="test_cf_ugrid3_01.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.13<br></p></div><!--
+##### SOURCE BEGIN #####
+%% TEST_CF_UGRID3
+% Compare water levels from 3 different unstructured grid
+% models that use UGRID conventions (http://bit.ly/cf_ugrid), allowing 
+% comparison with no model specific code
+%% Datasets
+%%% ADCIRC
+titl{1}='ADCIRC';
+uris{1}='http://testbedapps-dev.sura.org/thredds/dodsC/in/und/adcirc/ike/ultralite/lr/vardrag/nowave/3d';
+vars{1}='zeta';
+time=[2008 9 13 06 0 0];
+
+%%% SELFE
+titl{2}='SELFE';
+uris{2}='http://testbedapps.sura.org/thredds/dodsC/inundation/selfe/ike/3Dvrwoww';
+vars{2}='elev';
+
+%%% FVCOM
+titl{3}='FVCOM';
+uris{3}='http://testbedapps.sura.org/thredds/dodsC/inundation/FVCOM/ike/3Dvrwoww';
+vars{3}='zeta';
+
+%% Setup figure parameters
+%%% bounding box for figures
+ax=[-95.4519  -87.3856   28.0   31.0];
+
+%%% color range for figures
+cax=[0 5];
+
+%% There is nothing model specific in the loop below!
+for i=1:length(uris)
+  tic
+  % Initialize dataset object
+  nc=ncgeodataset(uris{i});
+  %get geovariable object
+  zvar=nc.geovariable(vars{i});
+  % Find the coordinate variables
+  lon=zvar.getlondata(:);
+  lat=zvar.getlatdata(:);
+  tdat=zvar.timewindowij(time);
+  itime=tdat.index;
+  % read data at specified time step for all nodes
+  zeta=zvar.data(itime,:);
+  % get mesh variable name (inference array)
+  gvar_name=zvar.attribute('mesh');
+  gridvar=nc.geovariable(gvar_name);
+  % find connectivity array variable from mesh variable
+  trivar_name=gridvar.attribute('face_node_connectivity');
+  
+  % get connnectivity array data
+  tri=nc{trivar_name}(:);
+  [m,n]=size(tri);
+  % check/fix orientation of connectivity array
+  if m==3,
+    tri=tri.';
+  elseif n~=3
+    disp('Error:Currently handling triangles only');return
+  end
+  subplot(length(uris),1,i)
+  trisurf(tri,lon,lat,zeta);shading interp;view(2);colorbar;...
+    axis(ax);caxis(cax);...
+    title(sprintf('%s %s (%s): %sZ',titl{i},vars{i},...
+    zvar.attribute('units'),datestr(tdat.time)));...
+    % set aspect ratio for lon/lat plot based on mean latitude
+  set (gca, 'DataAspectRatio', [1 cos(mean(lat(:))*pi/180) 1] );
+  
+  toc
+end
+
+##### SOURCE END #####
+--></body></html>
