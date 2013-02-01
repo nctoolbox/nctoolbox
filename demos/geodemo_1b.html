@@ -1,0 +1,327 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>geodemo_1b</title><meta name="generator" content="MATLAB 7.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-03-20"><meta name="DC.source" content="geodemo_1b.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">NCGEODATASET GEODEMO_1B</a></li><li><a href="#2">Take a look at the variables available within the dataset</a></li><li><a href="#3">Determine the shape of the selected variable</a></li><li><a href="#4">Use START, STOP, STRIDE array style indexing with NCTOOLBOX</a></li><li><a href="#5">START, STOP, STRIDE array style indexing to return coordinate axes</a></li><li><a href="#6">Use the <tt>time</tt> method to convert model time to MATLAB's datenum</a></li><li><a href="#7">Plot with MATLAB's pcolor command</a></li></ul></div><h2>NCGEODATASET GEODEMO_1B<a name="1"></a></h2><p>Method B: Read surface salinity with corner/edge/stride syntax. If you are more used to working with NetCDF in Fortran than in Matlab, this may be the syntax for you.</p><pre class="codeinput"><span class="comment">% OPeNDAP Data URL for a CF-Compliant curvilinear ROMS model dataset</span>
+url =<span class="string">'http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc'</span>;
+nc = ncgeodataset(url)
+</pre><pre class="codeoutput">
+nc = 
+
+  ncgeodataset handle
+
+  Properties:
+     location: 'http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc'
+       netcdf: [1x1 ucar.nc2.dataset.NetcdfDataset]
+    variables: {80x1 cell}
+
+
+</pre><h2>Take a look at the variables available within the dataset<a name="2"></a></h2><p>To access the properties we can use typical dot notation like with ordinary Matlab structures. Here we want to get a list of the variables in the dataset we are looking at.</p><pre class="codeinput"> nc.variables
+</pre><pre class="codeoutput">
+ans = 
+
+    'AKs'
+    'AKt'
+    'AKv'
+    'Akk_bak'
+    'Akp_bak'
+    'Akt_bak'
+    'Akv_bak'
+    'Cs_r'
+    'Cs_w'
+    'Falpha'
+    'Fbeta'
+    'Fgamma'
+    'M2nudg'
+    'M3nudg'
+    'Tcline'
+    'Tnudg'
+    'Znudg'
+    'Zob'
+    'Zos'
+    'angle'
+    'dstart'
+    'dt'
+    'dtfast'
+    'el'
+    'f'
+    'gamma2'
+    'gls_Kmin'
+    'gls_Pmin'
+    'gls_c1'
+    'gls_c2'
+    'gls_c3m'
+    'gls_c3p'
+    'gls_cmu0'
+    'gls_m'
+    'gls_n'
+    'gls_p'
+    'gls_sigk'
+    'gls_sigp'
+    'h'
+    'hc'
+    'mask_psi'
+    'mask_rho'
+    'mask_u'
+    'mask_v'
+    'nAVG'
+    'nHIS'
+    'nRST'
+    'nSTA'
+    'ndefHIS'
+    'ndtfast'
+    'ntimes'
+    'ntsAVG'
+    'pm'
+    'pn'
+    'rdrg'
+    'rdrg2'
+    'rho0'
+    'salt'
+    'spherical'
+    'temp'
+    'theta_b'
+    'theta_s'
+    'tnu2'
+    'u'
+    'ubar'
+    'v'
+    'vbar'
+    'xl'
+    'zeta'
+    'lat_psi'
+    'lat_rho'
+    'lat_u'
+    'lat_v'
+    'lon_psi'
+    'lon_rho'
+    'lon_u'
+    'lon_v'
+    'ocean_time'
+    's_rho'
+    's_w'
+
+</pre><h2>Determine the shape of the selected variable<a name="3"></a></h2><p>The size method is a method of ncgeodataset that returns the length of each of the dimensions of a given variable in the dataset. This is a lot like Matlab's internal size command, but in this case we haven't even loaded any data into memory yet. All this information comes from the netcdf-java cdm.</p><pre class="codeinput"> sz = nc.size(<span class="string">'salt'</span>)
+</pre><pre class="codeoutput">
+sz =
+
+           8          20          60         160
+
+</pre><h2>Use START, STOP, STRIDE array style indexing with NCTOOLBOX<a name="4"></a></h2><p>This syntax uses more of a C or Java syntax for subsetting arrays (but maintains Matlab's start at 1 indices).</p><pre class="codeinput"><span class="comment">% To access data this way, use the data method on the ncgeodataset object</span>
+<span class="comment">% representing your local or remote netcdf dataset. This is a lower level</span>
+<span class="comment">% data access method. Call data with arguments of variable name, start</span>
+<span class="comment">% indices for each dimension, end indices for each dimension, and an</span>
+<span class="comment">% optional stride vector for each dimension.</span>
+
+<span class="comment">% let take a look at the dimension names first, which will inform how</span>
+<span class="comment">% we need to specify the indices</span>
+
+ nc.dimensions(<span class="string">'salt'</span>)
+
+<span class="comment">% We see that we have time, z, y, x dimensions, in that order</span>
+
+ nz=sz(2);
+ salinity = nc.data(<span class="string">'salt'</span>, [1 nz 1 1], [1 nz 60 160], [1 1 1 1]);
+ size(salinity)
+
+ salinity = squeeze(double(salinity));
+</pre><pre class="codeoutput">
+ans = 
+
+    'ocean_time'
+    's_rho'
+    'eta_rho'
+    'xi_rho'
+
+
+ans =
+
+     1     1    60   160
+
+</pre><h2>START, STOP, STRIDE array style indexing to return coordinate axes<a name="5"></a></h2><p>In order to access the coordinate information for the salt variable call the grid method on the ncgeodataset object with the same arguments as data.</p><pre class="codeinput"><span class="comment">% Note that accessing coordinate data this way depends on the coordinates</span>
+<span class="comment">% attribute in the netcdf variable to define the variable coordinates. In</span>
+<span class="comment">% this case, even though time and z coordinates should be included, only</span>
+<span class="comment">% lat_rho and lon_rho are defined in the coordinates attributes, so only</span>
+<span class="comment">% they are returned by the grid method.</span>
+
+ salinity_coords = nc.grid(<span class="string">'salt'</span>, [1 nz 1 1], [1 nz 60 160], [1 1 1 1])
+</pre><pre class="codeoutput">
+salinity_coords = 
+
+    lat_rho: [60x160 double]
+    lon_rho: [60x160 double]
+
+</pre><h2>Use the <tt>time</tt> method to convert model time to MATLAB's datenum<a name="6"></a></h2><p>Lets grab the date for the subset we requested so that we can add it to the figure title, since it wasn't included in the grid command results. We can use the time method on the ncgeodataset object to do the conversion from the model's ocean_time to Matlab's datenum. The first argument should be the name of the time variable, and the second is the value of the time that you are trying to convert or an array of values. The second argument is optional, and if omitted the entire length of the time variable is converted to datenum.</p><pre class="codeinput"> time = nc.time(<span class="string">'ocean_time'</span>, nc.data(<span class="string">'ocean_time'</span>, 1, 1))
+
+ time = datestr(time)
+</pre><pre class="codeoutput">
+time =
+
+  7.3162e+005
+
+
+time =
+
+11-Feb-2003 12:00:00
+
+</pre><h2>Plot with MATLAB's pcolor command<a name="7"></a></h2><p>Plotting using pcolor is as simple as the code below. Sometimes coordinates are stored in the netcdf datasets as vectors (vs. the 2-d arrays that these lat/lon coordinates are in). When this is the case, see Matlab's meshgrid function to create 2-d plaid grids from the vectors.</p><pre class="codeinput"> pcolor(salinity_coords.lon_rho, salinity_coords.lat_rho, salinity)
+ shading <span class="string">flat</span>; colorbar; caxis([35 39]);
+
+<span class="comment">% Now let's add a title to the figure that includes the dataset's global</span>
+<span class="comment">% attribute title and the date of the data that we subset.</span>
+
+ title({nc.attribute(<span class="string">'title'</span>); time})
+</pre><img vspace="5" hspace="5" src="geodemo_1b_01.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.11<br></p></div><!--
+##### SOURCE BEGIN #####
+%% NCGEODATASET GEODEMO_1B
+% Method B: Read surface salinity with corner/edge/stride syntax.
+% If you are more used to working with NetCDF in Fortran than in 
+% Matlab, this may be the syntax for you.
+
+% OPeNDAP Data URL for a CF-Compliant curvilinear ROMS model dataset
+url ='http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc';
+nc = ncgeodataset(url)
+
+%% Take a look at the variables available within the dataset
+% To access the properties we can use typical dot notation like with
+% ordinary Matlab structures. Here we want to get a list of the variables
+% in the dataset we are looking at.
+
+ nc.variables
+
+%% Determine the shape of the selected variable
+% The size method is a method of ncgeodataset that returns the length of
+% each of the dimensions of a given variable in the dataset. This is a lot
+% like Matlab's internal size command, but in this case we haven't even
+% loaded any data into memory yet. All this information comes from the
+% netcdf-java cdm.
+
+ sz = nc.size('salt')
+
+%% Use START, STOP, STRIDE array style indexing with NCTOOLBOX
+% This syntax uses more of a C or Java syntax for subsetting arrays (but
+% maintains Matlab's start at 1 indices).
+
+% To access data this way, use the data method on the ncgeodataset object
+% representing your local or remote netcdf dataset. This is a lower level
+% data access method. Call data with arguments of variable name, start
+% indices for each dimension, end indices for each dimension, and an
+% optional stride vector for each dimension.
+
+% let take a look at the dimension names first, which will inform how
+% we need to specify the indices
+
+ nc.dimensions('salt')
+ 
+% We see that we have time, z, y, x dimensions, in that order
+
+ nz=sz(2);
+ salinity = nc.data('salt', [1 nz 1 1], [1 nz 60 160], [1 1 1 1]);
+ size(salinity)
+
+ salinity = squeeze(double(salinity));
+
+%% START, STOP, STRIDE array style indexing to return coordinate axes
+% In order to access the coordinate information for the salt variable call
+% the grid method on the ncgeodataset object with the same arguments as
+% data.
+
+% Note that accessing coordinate data this way depends on the coordinates
+% attribute in the netcdf variable to define the variable coordinates. In
+% this case, even though time and z coordinates should be included, only
+% lat_rho and lon_rho are defined in the coordinates attributes, so only
+% they are returned by the grid method.
+
+ salinity_coords = nc.grid('salt', [1 nz 1 1], [1 nz 60 160], [1 1 1 1])
+
+
+%% Use the |time| method to convert model time to MATLAB's datenum
+% Lets grab the date for the subset we requested so that we can add it to
+% the figure title, since it wasn't included in the grid command results.
+% We can use the time method on the ncgeodataset object to do the
+% conversion from the model's ocean_time to Matlab's datenum. The first
+% argument should be the name of the time variable, and the second is the
+% value of the time that you are trying to convert or an array of values.
+% The second argument is optional, and if omitted the entire length of the
+% time variable is converted to datenum.
+
+ time = nc.time('ocean_time', nc.data('ocean_time', 1, 1))
+
+ time = datestr(time)
+
+%% Plot with MATLAB's pcolor command
+% Plotting using pcolor is as simple as the code below. Sometimes
+% coordinates are stored in the netcdf datasets as vectors (vs. the 2-d
+% arrays that these lat/lon coordinates are in). When this is the case, see
+% Matlab's meshgrid function to create 2-d plaid grids from the vectors.
+
+ pcolor(salinity_coords.lon_rho, salinity_coords.lat_rho, salinity)
+ shading flat; colorbar; caxis([35 39]);
+
+% Now let's add a title to the figure that includes the dataset's global
+% attribute title and the date of the data that we subset.
+
+ title({nc.attribute('title'); time})
+##### SOURCE END #####
+--></body></html>

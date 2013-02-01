@@ -1,0 +1,367 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>geodemo_1a</title><meta name="generator" content="MATLAB 7.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-03-20"><meta name="DC.source" content="geodemo_1a.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">NCGEODATASET GEODEMO_1A</a></li><li><a href="#2">Take a look at the variables available within the dataset</a></li><li><a href="#3">Determine the shape of the selected variable</a></li><li><a href="#4">Create <tt>geovariable</tt> object to access data in MATLAB style indexing</a></li><li><a href="#5">Use <tt>geovariable</tt> object to access coordinate data using MATLAB style indexes</a></li><li><a href="#6">Use <tt>grid_interop</tt> method to return coordinate axes with standard, interoperable names</a></li><li><a href="#7">Plot using MATLAB's pcolor</a></li></ul></div><h2>NCGEODATASET GEODEMO_1A<a name="1"></a></h2><p>Method A: Read surface salinity using geovariable syntax. Takes some extra steps since you create the geovariable object before extracting data from it, but you then have all the geovariable methods available to you.</p><pre class="codeinput"><span class="comment">% OPeNDAP Data URL for a CF-Compliant curvilinear ROMS model dataset</span>
+url =<span class="string">'http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc'</span>;
+nc = ncgeodataset(url)
+</pre><pre class="codeoutput">
+nc = 
+
+  ncgeodataset handle
+
+  Properties:
+     location: 'http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc'
+       netcdf: [1x1 ucar.nc2.dataset.NetcdfDataset]
+    variables: {80x1 cell}
+
+
+</pre><h2>Take a look at the variables available within the dataset<a name="2"></a></h2><p>To access the properties we can use typical dot notation like with ordinary Matlab structures. Here we want to get a list of the variables in the dataset we are looking at.</p><pre class="codeinput"> nc.variables
+</pre><pre class="codeoutput">
+ans = 
+
+    'AKs'
+    'AKt'
+    'AKv'
+    'Akk_bak'
+    'Akp_bak'
+    'Akt_bak'
+    'Akv_bak'
+    'Cs_r'
+    'Cs_w'
+    'Falpha'
+    'Fbeta'
+    'Fgamma'
+    'M2nudg'
+    'M3nudg'
+    'Tcline'
+    'Tnudg'
+    'Znudg'
+    'Zob'
+    'Zos'
+    'angle'
+    'dstart'
+    'dt'
+    'dtfast'
+    'el'
+    'f'
+    'gamma2'
+    'gls_Kmin'
+    'gls_Pmin'
+    'gls_c1'
+    'gls_c2'
+    'gls_c3m'
+    'gls_c3p'
+    'gls_cmu0'
+    'gls_m'
+    'gls_n'
+    'gls_p'
+    'gls_sigk'
+    'gls_sigp'
+    'h'
+    'hc'
+    'mask_psi'
+    'mask_rho'
+    'mask_u'
+    'mask_v'
+    'nAVG'
+    'nHIS'
+    'nRST'
+    'nSTA'
+    'ndefHIS'
+    'ndtfast'
+    'ntimes'
+    'ntsAVG'
+    'pm'
+    'pn'
+    'rdrg'
+    'rdrg2'
+    'rho0'
+    'salt'
+    'spherical'
+    'temp'
+    'theta_b'
+    'theta_s'
+    'tnu2'
+    'u'
+    'ubar'
+    'v'
+    'vbar'
+    'xl'
+    'zeta'
+    'lat_psi'
+    'lat_rho'
+    'lat_u'
+    'lat_v'
+    'lon_psi'
+    'lon_rho'
+    'lon_u'
+    'lon_v'
+    'ocean_time'
+    's_rho'
+    's_w'
+
+</pre><h2>Determine the shape of the selected variable<a name="3"></a></h2><p>The size method is a method of ncgeodataset that returns the length of each of the dimensions of a given variable in the dataset. This is a lot like Matlab's internal size command, but in this case we haven't even loaded any data into memory yet. All this information comes from the netcdf-java cdm.</p><pre class="codeinput"> nc.size(<span class="string">'salt'</span>)
+</pre><pre class="codeoutput">
+ans =
+
+           8          20          60         160
+
+</pre><h2>Create <tt>geovariable</tt> object to access data in MATLAB style indexing<a name="4"></a></h2><p>In this example we create a geovariable object from the salt variable in this dataset. This is done by calling geovariable with the name of the netcdf variable we are interested in as an argument.</p><pre class="codeinput"> salt = nc.geovariable(<span class="string">'salt'</span>)
+
+<span class="comment">% Now we can use Matlab style array indexing to subset the salt variable by</span>
+<span class="comment">% its indices.  We can take a look at the dimension names using the "dimensions"</span>
+<span class="comment">% method:</span>
+
+  nc.dimensions(<span class="string">'salt'</span>)
+
+<span class="comment">% We see the arrangement of the dimensions follows the order of time,</span>
+<span class="comment">% vertical level, y, and x.</span>
+<span class="comment">% A subset of (1, end, :, :) means that we are grabbing the first time step,</span>
+<span class="comment">% the last vertical level, and the entire spatial domain of the dataset.</span>
+
+<span class="comment">% Note that the values that the toolbox returns are typically the same type</span>
+<span class="comment">% that they are stored as in the netcdf file so they may need to be</span>
+<span class="comment">% converted to Matlab's double.</span>
+
+ salinity = salt.data(1, end, :, :);
+ size(salinity)
+ class(salinity)
+
+<span class="comment">% Also, it may be necessary to remove singleton dimensions for Matlab</span>
+<span class="comment">% commands like plotting using the function squeeze.</span>
+ salinity= squeeze(double(salinity));
+</pre><pre class="codeoutput">
+salt = 
+
+  ncgeovariable handle
+
+  Properties:
+       dataset: [1x1 ncgeodataset]
+          name: 'salt'
+          axes: {4x1 cell}
+    attributes: {6x2 cell}
+
+
+
+ans = 
+
+    'ocean_time'
+    's_rho'
+    'eta_rho'
+    'xi_rho'
+
+
+ans =
+
+     1     1    60   160
+
+
+ans =
+
+single
+
+</pre><h2>Use <tt>geovariable</tt> object to access coordinate data using MATLAB style indexes<a name="5"></a></h2><p>In order to plot the salt values for the first time step/first level in the dataset as a Matlab pcolor plot, we need the spatial coordinates associated with the salt values. We could grab the lat and lon coordinates in the same manner that we did with the salt variable or if the data is CF/COARDS complaint we can take advantage of the netcdf-java common data model.</p><pre class="codeinput"><span class="comment">% The grid method for the geovariable object is designed to grab the all</span>
+<span class="comment">% the coordinates associated with the geovariable for the given indices.</span>
+<span class="comment">% Usage is just like the data method, except the result is a Matlab</span>
+<span class="comment">% structure containing fields for each of the geovariable's dimensions and</span>
+<span class="comment">% whose values have been subset appropriately for the requested indices.</span>
+
+ salinity_coords = salt.grid(1, end, :, :)
+</pre><pre class="codeoutput">
+salinity_coords = 
+
+       lat_rho: [60x160 double]
+       lon_rho: [60x160 double]
+    ocean_time: 1.0958e+009
+         s_rho: -0.0250
+
+</pre><h2>Use <tt>grid_interop</tt> method to return coordinate axes with standard, interoperable names<a name="6"></a></h2><p>A higher level option is to use the grid_interop method, which returns the dimensions of our geovariable using the standardized names of lat, lon, time, and z instead of the original netcdf names of the coordinate dimensions.</p><pre class="codeinput"><span class="comment">% In addition to a more programmatic/standardized structure returned with</span>
+<span class="comment">% grid_interop (interop for interoperability), the coordinate data is also</span>
+<span class="comment">% transformed to a more standardized form:</span>
+<span class="comment">%</span>
+<span class="comment">% - Time coordinates are converted to Matlab's datenum.</span>
+<span class="comment">% - Longitude coordinates that use a 0-360 degree scheme are converted</span>
+<span class="comment">%   to the range [-180, 180].</span>
+<span class="comment">% - Projected x and y values are converted to geographic</span>
+<span class="comment">%     coordinates lat/lon.</span>
+<span class="comment">% - Stretched vertical coordinates are converted z values.</span>
+
+ salinity_coords = salt.grid_interop(1, end, :, :)
+</pre><pre class="codeoutput">
+salinity_coords = 
+
+     lat: [60x160 double]
+     lon: [60x160 double]
+    time: 7.3162e+005
+       z: [4-D double]
+
+</pre><h2>Plot using MATLAB's pcolor<a name="7"></a></h2><pre class="codeinput">pcolor(salinity_coords.lon, salinity_coords.lat, salinity)
+shading <span class="string">flat</span>; colorbar; caxis([35 39]);
+
+<span class="comment">% Add a title using the global</span>
+<span class="comment">% attribute 'title' and the date from our coordinate structure.</span>
+ title({nc.attribute(<span class="string">'title'</span>); datestr(salinity_coords.time)})
+</pre><img vspace="5" hspace="5" src="geodemo_1a_01.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.11<br></p></div><!--
+##### SOURCE BEGIN #####
+%% NCGEODATASET GEODEMO_1A
+% Method A: Read surface salinity using geovariable syntax. 
+% Takes some extra steps since you create the geovariable object before 
+% extracting data from it, but you then have all the geovariable 
+% methods available to you.
+
+% OPeNDAP Data URL for a CF-Compliant curvilinear ROMS model dataset
+url ='http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc';
+nc = ncgeodataset(url)
+
+%% Take a look at the variables available within the dataset
+% To access the properties we can use typical dot notation like with
+% ordinary Matlab structures. Here we want to get a list of the variables
+% in the dataset we are looking at.
+
+ nc.variables
+
+%% Determine the shape of the selected variable
+% The size method is a method of ncgeodataset that returns the length of
+% each of the dimensions of a given variable in the dataset. This is a lot
+% like Matlab's internal size command, but in this case we haven't even
+% loaded any data into memory yet. All this information comes from the
+% netcdf-java cdm.
+
+ nc.size('salt')
+
+%% Create |geovariable| object to access data in MATLAB style indexing
+% In this example we create a geovariable object from the salt variable in
+% this dataset. This is done by calling geovariable with the name of the
+% netcdf variable we are interested in as an argument.
+
+ salt = nc.geovariable('salt')
+
+% Now we can use Matlab style array indexing to subset the salt variable by
+% its indices.  We can take a look at the dimension names using the "dimensions" 
+% method:
+
+  nc.dimensions('salt')
+  
+% We see the arrangement of the dimensions follows the order of time, 
+% vertical level, y, and x. 
+% A subset of (1, end, :, :) means that we are grabbing the first time step,
+% the last vertical level, and the entire spatial domain of the dataset.
+
+% Note that the values that the toolbox returns are typically the same type
+% that they are stored as in the netcdf file so they may need to be
+% converted to Matlab's double.
+
+ salinity = salt.data(1, end, :, :);
+ size(salinity)
+ class(salinity)
+ 
+% Also, it may be necessary to remove singleton dimensions for Matlab
+% commands like plotting using the function squeeze.
+ salinity= squeeze(double(salinity));
+
+%% Use |geovariable| object to access coordinate data using MATLAB style indexes
+% In order to plot the salt values for the first time step/first level in
+% the dataset as a Matlab pcolor plot, we need the spatial coordinates
+% associated with the salt values. We could grab the lat and lon
+% coordinates in the same manner that we did with the salt variable or if
+% the data is CF/COARDS complaint we can take advantage of the netcdf-java
+% common data model.
+
+% The grid method for the geovariable object is designed to grab the all
+% the coordinates associated with the geovariable for the given indices.
+% Usage is just like the data method, except the result is a Matlab
+% structure containing fields for each of the geovariable's dimensions and
+% whose values have been subset appropriately for the requested indices.
+
+ salinity_coords = salt.grid(1, end, :, :)
+
+%% Use |grid_interop| method to return coordinate axes with standard, interoperable names
+% A higher level option is to use the grid_interop method, which returns
+% the dimensions of our geovariable using the standardized names of lat,
+% lon, time, and z instead of the original netcdf names of the coordinate
+% dimensions.
+
+% In addition to a more programmatic/standardized structure returned with
+% grid_interop (interop for interoperability), the coordinate data is also
+% transformed to a more standardized form:
+% 
+% - Time coordinates are converted to Matlab's datenum. 
+% - Longitude coordinates that use a 0-360 degree scheme are converted 
+%   to the range [-180, 180].
+% - Projected x and y values are converted to geographic
+%     coordinates lat/lon.  
+% - Stretched vertical coordinates are converted z values. 
+
+ salinity_coords = salt.grid_interop(1, end, :, :)
+
+%% Plot using MATLAB's pcolor
+pcolor(salinity_coords.lon, salinity_coords.lat, salinity)
+shading flat; colorbar; caxis([35 39]);
+
+% Add a title using the global
+% attribute 'title' and the date from our coordinate structure.  
+ title({nc.attribute('title'); datestr(salinity_coords.time)})
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,138 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>geodemo_2</title><meta name="generator" content="MATLAB 7.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-03-20"><meta name="DC.source" content="geodemo_2.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">GEODEMO_2</a></li><li><a href="#2">Use nj_tbx legacy functions in NCTOOLBOX</a></li><li><a href="#3">Plot the surface temperature from this data</a></li><li><a href="#4">Create a vertical cross section through the gridded dataset</a></li><li><a href="#5">calculate the vertical section using VSLICEG</a></li></ul></div><h2>GEODEMO_2<a name="1"></a></h2><p>Using VSLICEG to create a vertical section from a 3D field</p><pre class="codeinput"><span class="comment">% OpenDAP dataset:</span>
+url=<span class="string">'http://geoport.whoi.edu/thredds/dodsC/usgs/vault0/models/examples/bora_feb.nc'</span>;
+</pre><h2>Use nj_tbx legacy functions in NCTOOLBOX<a name="2"></a></h2><p>here we'll use a convenience function nj_tslice that returns a full 3D field and grid (t,z,y,x) at a particular time step</p><pre class="codeinput">itime=1;
+[data,grd] = nj_tslice(url,<span class="string">'temp'</span>,itime);
+</pre><h2>Plot the surface temperature from this data<a name="3"></a></h2><p>here we are using ROMS output, where the last level(end) is the surface</p><pre class="codeinput">figure;
+pcolorjw(grd.lon,grd.lat,double(data(end,:,:)));
+colorbar
+</pre><img vspace="5" hspace="5" src="geodemo_2_01.png" alt=""> <h2>Create a vertical cross section through the gridded dataset<a name="4"></a></h2><p>specify a lon,lat track along which to calculate the vertical slice:</p><pre class="codeinput">track=[   12.7950   45.4588
+   12.9280   44.9895
+   13.1773   44.3736
+   13.8090   43.9190
+   14.8562   43.2444];
+lon=track(:,1);
+lat=track(:,2);
+hold <span class="string">on</span>;
+plot(lon,lat,<span class="string">'k-o'</span>)
+hold <span class="string">off</span>;
+title(<span class="string">'Surface temperature and track for vertical section'</span>);
+</pre><img vspace="5" hspace="5" src="geodemo_2_02.png" alt=""> <h2>calculate the vertical section using VSLICEG<a name="5"></a></h2><pre class="codeinput">[x,y,vdata] = vsliceg(data,grd,lon,lat);
+figure;
+pcolorjw(x,y,vdata);ylabel(<span class="string">'m'</span>);xlabel(<span class="string">'km'</span>);
+colorbar
+title(<span class="string">'Along-track vertical section of temperature'</span>);
+shading <span class="string">interp</span>
+</pre><pre class="codeoutput">      griddata_lite is triangulating data ...
+Warning: TSEARCH will be removed in a future release. Use DelaunayTri/pointLocation instead. 
+      ... triangulation complete
+      griddata_lite is triangulating data ...
+Warning: TSEARCH will be removed in a future release. Use DelaunayTri/pointLocation instead. 
+      ... triangulation complete
+</pre><img vspace="5" hspace="5" src="geodemo_2_03.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.11<br></p></div><!--
+##### SOURCE BEGIN #####
+%% GEODEMO_2
+% Using VSLICEG to create a vertical section from a 3D field
+
+% OpenDAP dataset:
+url='http://geoport.whoi.edu/thredds/dodsC/usgs/vault0/models/examples/bora_feb.nc';
+
+%% Use nj_tbx legacy functions in NCTOOLBOX
+% here we'll use a convenience function nj_tslice that returns a full 3D field
+% and grid (t,z,y,x) at a particular time step 
+itime=1;
+[data,grd] = nj_tslice(url,'temp',itime);
+
+%% Plot the surface temperature from this data 
+% here we are using ROMS output, where the last level(end) is the surface
+figure;
+pcolorjw(grd.lon,grd.lat,double(data(end,:,:)));
+colorbar
+
+%% Create a vertical cross section through the gridded dataset
+% specify a lon,lat track along which to calculate the vertical slice:
+track=[   12.7950   45.4588
+   12.9280   44.9895
+   13.1773   44.3736
+   13.8090   43.9190
+   14.8562   43.2444];
+lon=track(:,1);
+lat=track(:,2);
+hold on;
+plot(lon,lat,'k-o')
+hold off;
+title('Surface temperature and track for vertical section');
+
+%% calculate the vertical section using VSLICEG
+[x,y,vdata] = vsliceg(data,grd,lon,lat);
+figure;
+pcolorjw(x,y,vdata);ylabel('m');xlabel('km');
+colorbar
+title('Along-track vertical section of temperature');
+shading interp
+##### SOURCE END #####
+--></body></html>
