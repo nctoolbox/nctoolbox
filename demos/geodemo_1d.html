@@ -1,0 +1,108 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>geodemo_1d</title><meta name="generator" content="MATLAB 7.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-03-20"><meta name="DC.source" content="geodemo_1d.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">NCGEODATASET GEODEMO_1D</a></li><li><a href="#2">Plot with pcolor</a></li></ul></div><h2>NCGEODATASET GEODEMO_1D<a name="1"></a></h2><p>Method D: Read surface salinity using NJ_TSLICE Most compact method for getting data and grid, but limited to entire slices or 3D volumes of data at a particular time step.</p><pre class="codeinput"><span class="comment">% OPeNDAP Data URL for a CF-Compliant curvilinear ROMS model dataset</span>
+url =<span class="string">'http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc'</span>;
+itime=1;
+ilevel=-1; <span class="comment">% nj_tslice uses "-1" instead of "end" to indicate last level</span>
+[salinity,grd]=nj_tslice(url,<span class="string">'salt'</span>,itime,ilevel);
+</pre><h2>Plot with pcolor<a name="2"></a></h2><p>Plotting using pcolor is as simple as the code below. Sometimes coordinates are stored in the netcdf datasets as vectors (vs. the 2-d arrays that these lat/lon coordinates are in). When this is the case, see Matlab's meshgrid function to create 2-d plaid grids from the vectors.</p><pre class="codeinput"><span class="comment">% Remember that pcolor expects a double as input</span>
+ pcolor(grd.lon, grd.lat, double(salinity))
+ shading <span class="string">flat</span>; colorbar; caxis([35 39]);
+
+<span class="comment">% Now let's add a title to the figure that includes the dataset's global</span>
+<span class="comment">% attribute title and the date of the data that we subset.</span>
+
+ title({nc.attribute(<span class="string">'title'</span>); datestr(grd.time)})
+</pre><img vspace="5" hspace="5" src="geodemo_1d_01.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.11<br></p></div><!--
+##### SOURCE BEGIN #####
+%% NCGEODATASET GEODEMO_1D
+% Method D: Read surface salinity using NJ_TSLICE
+% Most compact method for getting data and grid, but limited to 
+% entire slices or 3D volumes of data at a particular time step. 
+
+% OPeNDAP Data URL for a CF-Compliant curvilinear ROMS model dataset
+url ='http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc';
+itime=1;
+ilevel=-1; % nj_tslice uses "-1" instead of "end" to indicate last level
+[salinity,grd]=nj_tslice(url,'salt',itime,ilevel);
+
+
+%% Plot with pcolor
+% Plotting using pcolor is as simple as the code below. Sometimes
+% coordinates are stored in the netcdf datasets as vectors (vs. the 2-d
+% arrays that these lat/lon coordinates are in). When this is the case, see
+% Matlab's meshgrid function to create 2-d plaid grids from the vectors.
+
+% Remember that pcolor expects a double as input
+ pcolor(grd.lon, grd.lat, double(salinity))
+ shading flat; colorbar; caxis([35 39]);
+
+% Now let's add a title to the figure that includes the dataset's global
+% attribute title and the date of the data that we subset.
+
+ title({nc.attribute('title'); datestr(grd.time)})
+##### SOURCE END #####
+--></body></html>
