@@ -266,7 +266,14 @@ classdef ncdataset < handle
                     if (at.isString())
                         a{i, 2} = char(at.getStringValue());
                     else
-                        a{i, 2} = at.getValues().copyToNDJavaArray();
+                        try 
+                            % Scalar (1-value arrays) will throw an
+                            % exception here. The catch should grab the
+                            % right value though.
+                            a{i, 2} = at.getValues().copyToNDJavaArray();
+                        catch
+                            a{i, 2} = at.getValues().copyTo1DJavaArray();
+                        end
                     end
                 end
             else
