@@ -11,7 +11,8 @@ for i=1:length(links)
     s=char(links{i});
     if ~isempty(regexpi(s,'dodsC')),
         k=k+1;
-        e=regexpi(s,'\.html');
-        dap{k}=s(1:e-1);
+%        e=regexpi(s,'\.html');
+%        dap{k}=s(1:e-1);
+        dap{k}=s;
     end
 end

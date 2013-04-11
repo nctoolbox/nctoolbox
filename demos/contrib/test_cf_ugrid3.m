@@ -3,18 +3,17 @@
 % models that use UGRID conventions (http://bit.ly/cf_ugrid), allowing 
 % comparison with no model specific code
 titl{1}='ADCIRC';
-%uris{1}='http://testbedapps.sura.org/thredds/dodsC/inundation/ADCIRC/ike/3Dvrwoww'
-uris{1}='http://testbedapps-dev.sura.org/thredds/dodsC/in/und/adcirc/ike/ultralite/lr/vardrag/nowave/3d'
+uris{1}='http://testbedapps-dev.sura.org/thredds/dodsC/auto/in.und.adcirc.ike.ultralite.lr.vardrag.wave.2d'
 vars{1}='zeta';
 times{1}=[2008 9 13 06 0 0];
 
 titl{2}='SELFE';
-uris{2}='http://testbedapps.sura.org/thredds/dodsC/inundation/selfe/ike/3Dvrwoww';
+uris{2}='http://testbedapps-dev.sura.org/thredds/dodsC/auto/in.vims.selfe.ike.ultralite.vardrag.wave.2d';
 vars{2}='elev';
 times{2}=[2008 9 13 06 0 0];
 
 titl{3}='FVCOM';
-uris{3}='http://testbedapps.sura.org/thredds/dodsC/inundation/FVCOM/ike/3Dvrwoww';
+uris{3}='http://testbedapps-dev.sura.org/thredds/dodsC/auto/in.usf.fvcom.ike.ultralite.vardrag.wave.2d';
 vars{3}='zeta';
 times{3}=[2008 9 13 06 0 0];
 % bounding box for figures
