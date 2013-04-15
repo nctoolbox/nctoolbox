@@ -461,7 +461,7 @@ classdef ncdataset < handle
                 try
                     d = array.copyToNDJavaArray(); % this fails if the variable has no java shape/no dimension was assigned
                 catch me1
-                    warning('NCTOOLBOX:ncdataset:readdata', ['An error occurred while reading "' variable ...
+                    warning('NCTOOLBOX:ncdataset:readdata', ['An error occurred while reading "' char(variable) ...
                         '" in ' obj.location '. Cause: \n' getReport(me1)]);
                     try
                         % TODO (Alex added this code) Where is a file where
@@ -470,7 +470,7 @@ classdef ncdataset < handle
                         d = d.toCharArray';  % must transpose
                         d = str2double(d);   % matlab string to matlab numeric
                     catch me2
-                        ex = MException('NCTOOLBOX:ncdataset:data', ['Failed to open "' variable '" in ' obj.location]);
+                        ex = MException('NCTOOLBOX:ncdataset:data', ['Failed to open "' char(variable) '" in ' obj.location]);
                         ex = ex.addCause(me2);
                         ex.throw;
                     end
