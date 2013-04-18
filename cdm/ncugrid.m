@@ -221,7 +221,7 @@ classdef ncugrid < handle
             minlat = min(struct.lat);
             maxlon = max(struct.lon);
             bbox = LatLonRect(LatLonPointImpl(maxlat, minlon), LatLonPointImpl(minlat, maxlon));
-            subsatdataset = obj.netcdfugrid.subset(bbox);
+            sub = obj.netcdfugrid.subset(bbox);
 %             disp(subsatdataset.getNetcdfDataset.toString())
         end % end geosubset (datasetSubset)
         
@@ -419,8 +419,7 @@ classdef ncugrid < handle
             %              d = nc.data(variableName, first, last, stride)
             %
             
-            variable = ucar.nc2.NetcdfFile.escapeName(variable);
-            v = obj.netcdfugrid.getNetcdfFile().findVariable(variable);
+            v = obj.dataset.findvariable(variable);
             
             if (nargin == 2)
                 array = v.read();

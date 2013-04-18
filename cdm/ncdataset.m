@@ -435,10 +435,7 @@ classdef ncdataset < handle
 			n = char(java.lang.String(ba, 0, length(ba), 'UTF8'));
 			osw.close();
 			baos.close();
-		end
-        
-    end
-    methods (Access = protected)
+        end
         
         function v = findvariable(obj, variable)
             % NETCDF.FINDVARIABLE - Helper function that will escape a variable name if needed. 
@@ -450,8 +447,9 @@ classdef ncdataset < handle
                 warning('NCTOOLBOX:ncdataset:findvariable', ['Could not find the variable: ' variable]);
             end
         end
-        
-        %%
+    end
+    
+    methods (Access = protected)
         function d = readdata(obj, variable, first, last, stride)
             % NETCDF.READDATA - Helper function that's called by NETCDF.DATA
             v = obj.findvariable(variable);
