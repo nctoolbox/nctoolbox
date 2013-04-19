@@ -10,7 +10,7 @@ addpath(genpath(fullfile(home, 'cdm', 'utilities')));
 
 warning off
 try 
-    javaaddpath('tools-4.3.16-ugrid.jar', '-end')
+    javaaddpath('toolsUI-4.3.16-ugrid.jar', '-end')
 catch me
     ex = MException('MBARI:NCTOOLBOX', 'Failed to setup the Java classpath');
     ex.throw
