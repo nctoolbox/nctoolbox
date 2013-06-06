@@ -302,11 +302,15 @@ classdef ncgeovariable < ncvariable
                                 tempXY = [x; y];
                                 projection = grid.getProjection();
                                 tempLatLon = projection.projToLatLon(tempXY);
-                                if ~ismember('lat', ignore)
-                                    ig.lat = reshape(tempLatLon(1,:), s);
+                                if ~isfield(ig, 'lat')
+                                    if ~ismember('lat', ignore)
+                                        ig.lat = reshape(tempLatLon(1,:), s);
+                                    end
                                 end
-                                if ~ismember('lon', ignore)
-                                    ig.lon = reshape(tempLatLon(2,:), s);
+                                if ~isfield(ig, 'lon')
+                                    if ~ismember('lon', ignore)
+                                        ig.lon = reshape(tempLatLon(2,:), s);
+                                    end
                                 end
                             catch me
                             end
