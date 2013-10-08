@@ -444,7 +444,7 @@ classdef ncdataset < handle
             % NETCDF.FINDVARIABLE - Helper function that will escape a variable name if needed. 
             v = obj.netcdf.findVariable(variable);
             if isempty(v)
-                v = obj.netcdf.findVariable(ucar.nc2.NetcdfFile.escapeName(variable))
+                v = obj.netcdf.findVariable(ucar.nc2.NetcdfFile.escapeName(variable));
             end
             if isempty(v)
                 warning('NCTOOLBOX:ncdataset:findvariable', ['Could not find the variable: ' variable]);

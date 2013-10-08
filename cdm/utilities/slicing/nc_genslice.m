@@ -25,7 +25,7 @@ function [Tvar,Tdis,Tzed,Tlon,Tlat] = ...
 %  modified by Weifeng Gordon Zhang
 %  This version by John Wilkin 2011-01-26
 %  Alexander Crosby 2011 April - Update to using new toolbox
-% NCTOOLBOX (http://code.google.com/p/nctoolbox)
+% NCTOOLBOX (http://github.com/nctoolbox/nctoolbox)
 
 verbose = false;
 ncks = false;
@@ -63,20 +63,23 @@ st.lon = [ax(1) ax(2)];
 % Determine the minimal model/data index range required to cover the track
 % Iax,Jax will specify the subset of the full grid to read from netcdf
 if verbose
-  disp('Reading full domain lon/lat grid coordinates from ')
-  disp([' ' file])
+    disp('Reading full domain lon/lat grid coordinates from ')
+    disp([' ' file])
 end
 
-% [lonfull,latfull] = nj_lonlat(file,varname); ACrosby
-g = var.grid_interop(:,:,:,:); % Assuming data is rank 4, time z X Y
-lonfull = g.lon;
-latfull = g.lat;
+try
+    lonfull = var.getlondata(:,:);
+    latfull = var.getlatdata(:,:);
+catch
+    lonfull = var.getlondata(:);
+    latfull = var.getlatdata(:);
+end
+
 if isvector(lonfull)
   % catch case (not ROMS) where coordinates are 1-D vectors
-  [lonfull,latfull] = meshgrid(lonfull,latfull);
+  [lonfull, latfull] = meshgrid(lonfull,latfull);
 end
 [nJ,nI] = size(lonfull);
-% [Jax,Iax] = lonlat2ij(lonfull,latfull,ax); ACrosby
 [r1, r2, c1, c2] = geoij(var, st);
 Jax = r1:r2;
 Iax = c1:c2;
