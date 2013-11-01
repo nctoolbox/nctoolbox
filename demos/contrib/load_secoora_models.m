@@ -1,7 +1,7 @@
 
-
+%variable = 'salt';
 variable = 'temp';
-variable = 'salt';
+
 
 % will use dynamic field names with structures to process variable named
 % above

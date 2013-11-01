@@ -12,7 +12,7 @@ obsname = obs.name
 
 switch variable
   case 'temp'
-    bins = 20:0.25:30.5;
+    bins = 22:0.25:30.;
     c = range(bins);
   case 'salt'
  %   bins = 29:0.2:36.5;  %MARACOOS
