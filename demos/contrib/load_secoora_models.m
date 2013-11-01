@@ -8,17 +8,15 @@ variable = 'salt';
 
 
 % -----------------------------------------------------------------------
-% Obs: Single MARACOOS glider transect
-%obs.url = ['http://tashtego.marine.rutgers.edu:8080/thredds/dodsC/' ...
-%  'cool/glider/mab/Gridded/20101025T0000_marcoos_ru22_active.nc'];
-%obs.url = ['http://tds.marine.rutgers.edu:8080/thredds/dodsC/' ...
-%    'cool/glider/mab/Gridded/20101025T0000_marcoos_ru22_archive.nc'];
-obs.url = ['http://tds.marine.rutgers.edu/thredds/dodsC/' ...
-    'cool/glider/mab/Gridded/20101025T000000_20101117T000000_marcoos_ru22.nc']
+% Obs: Single glider transect
+%obs.url = ['http://tds.marine.rutgers.edu/thredds/dodsC/' ...
+%    'cool/glider/mab/Gridded/20101025T000000_20101117T000000_marcoos_ru22.nc']
 %obs.url=['http://tds.marine.rutgers.edu/thredds/dodsC/' ...
 %    'cool/glider/mab/Gridded/20100402T000000_20100511T000000_cara_ru26d.nc']
 obs.url = ['http://tds.marine.rutgers.edu:8080/thredds/dodsC/' ...
     'cool/glider/mab/Gridded/20130911T000000_20130920T000000_gp2013_modena.nc']
+%obs.url = ['http://tds.marine.rutgers.edu/thredds/dodsC/' ...
+%    'cool/glider/mab/Gridded/20130813T000000_20130826T000000_njdep_ru28.nc']
 obs.file = obs.url;
 obs.temp.name = 'temperature';
 obs.salt.name = 'salinity';
@@ -39,12 +37,7 @@ obs.dist = cumsum([0; sw_dist(obs.lat,obs.lon,'km')]);
 obs.(variable).data = data;
 obs.(variable).dist = obs.dist;
 obs.(variable).z    = obs.z;
-
-% hardwire the time processing
-% nj_time doesn't work on this url - not sure why not
-% obs.time = datenum(parsetnc(nc_attget(obs.url,'time','units'))) + ...
-%   nc_varget(obs.url,'time');
-obs.time = nc.time('time');
+obs.time = nj_time(nc,'temperature');
 tstart = min(obs.time);
 tend = max(obs.time);
 disp('  Time interval of obs:')
@@ -54,17 +47,8 @@ disp(['    ' datestr(tstart) ' to ' datestr(tend)])
 
 
 % -----------------------------------------------------------------------
-% Model: HYCOM CF-Compliant aggregation
-hycom.name = 'hycom';
-hycom.url = ['http://geoport.whoi.edu/thredds/fileServer/usgs/data1/' ...
-    'rsignell/models/hycom/glb_analysis.ncml'];
-hycom.file = hycom.url;
-hycom.temp.name = 'temperature';
-hycom.salt.name = 'salinity';
-
-% -----------------------------------------------------------------------
-% Model: NCOM CF-compliant aggregation
-ncom.name = 'ncom';
+% Model: Global NCOM CF-compliant aggregation
+ncom.name = 'global_ncom';
 ncom.url = ['http://ecowatch.ncddc.noaa.gov/thredds/dodsC/' ...
     'ncom/ncom_reg1_agg/NCOM_Region_1_Aggregation_best.ncd'];
 ncom.file = 'ncom.nc';
@@ -132,20 +116,18 @@ amseas.file = 'amseas.nc';
 amseas.temp.name = 'water_temp';
 amseas.salt.name = 'salinity';
 % -----------------------------------------------------------------------
-% Model: Global RTOFS (HYCOM) Region 1
-rtofs.name = 'rtofs';
-rtofs.url = ['http://ecowatch.ncddc.noaa.gov/thredds/dodsC/' ...
+% Model: Global HYCOM RTOFS (HYCOM) Region 1
+hycom.name = 'hycom';
+hycom.url = ['http://ecowatch.ncddc.noaa.gov/thredds/dodsC/' ...
     'hycom/hycom_reg1_agg/HYCOM_Region_1_Aggregation_best.ncd'];
-rtofs.file = 'rtofs.nc';
-rtofs.temp.name = 'water_temp';
-rtofs.salt.name = 'salinity';
+hycom.file = 'hycom.nc';
+hycom.temp.name = 'water_temp';
+hycom.salt.name = 'salinity';
 
 %% models to compare with data
-%model_list = {'RTOFS','SABGOM'};
-model_list = {'RTOFS','USEAST','SABGOM'}
-%model_list = {'COAWST','SABGOM','NCOM'};
-%model_list = {'COAWST','ESPreSSO','NCOM','HyCOM'};
-% model_list = {'ESPreSSO','COAWST'};
+%model_list = {'USEAST','ESPreSSO','HYCOM'};  %MARACOOS
+model_list = {'USEAST','SABGOM','HYCOM'};     %SECOORA
+
 
 ncks = 0;
 
@@ -178,11 +160,17 @@ for m = 1:length(model_list)
     
     % copy 'model' back to the oroginal named strucutre for this model
     eval([model.name ' = model;'])
-    
+    tocs(m)=toc;
     disp('----------------------------------------------------------------')
     disp(['  Elapsed time processing ' mname])
     disp(['  was ' num2str(toc,3) ' seconds'])
     disp('----------------------------------------------------------------')
     
 end
+disp('----------------------------------------------------------------')
+disp(['  Total Elapsed Time' ])
+disp(['  was ' num2str(sum(tocs),3) ' seconds'])
+disp('----------------------------------------------------------------')
 
+clear nc
+save secoora_models.mat
