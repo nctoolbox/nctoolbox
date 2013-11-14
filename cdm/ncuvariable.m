@@ -195,10 +195,20 @@ classdef ncuvariable < handle
         end
         
         function s = gettimedata(src, start, last, stride)
-            % NCGEOVARIABLE.gettimedata()
-            %             var = src.gettimevar;
-            %             tn = var.data(start, last, stride);
-            %             tn = var.dataset.time(src.gettimename, tn);
+            % NCUVARIABLE.GETTIMEDATA Retrive the time data for a ugrid
+            % variable
+            %
+            %
+            % Use as:
+            %   t = obj.gettimedata
+            %   t = obj.gettimedata(start, last, stride)
+            %
+            % Arguments:
+            %   start = A starting index for retrieving the time data.
+            %   end = The ending index for retrieving the time data.
+            %   stride = The stride (i.e. number of points to skip. 1 means
+            %      don't skip)
+            
             
             v = src.gettimename;
             ds = src.dataset.dataset;
