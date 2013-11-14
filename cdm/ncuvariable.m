@@ -208,6 +208,9 @@ classdef ncuvariable < handle
             %   end = The ending index for retrieving the time data.
             %   stride = The stride (i.e. number of points to skip. 1 means
             %      don't skip)
+            %
+            %   start and end use Matlab 1-based indexing. NOT 0-based
+            %   indexing ala Java or C.
             
             
             v = src.gettimename;
