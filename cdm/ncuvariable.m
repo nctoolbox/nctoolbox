@@ -125,7 +125,7 @@ classdef ncuvariable < handle
             %   stride = The stride spacing (default is 1)
             %   NOTE! first, last, and stride must be matrices the same size as the
             %       matrix returned by NCDATASET.SIZE or SIZE
-           
+            
             d = obj.dataset.data(obj.name, first, last, stride);
         end % data end
         
@@ -153,7 +153,7 @@ classdef ncuvariable < handle
             % Returns:
             %   The data is returned as a structure containing each coordinate variable
             %
-
+            
             g = obj.dataset.grid(obj.name, first, last, stride);
         end %grid end
         
@@ -162,7 +162,7 @@ classdef ncuvariable < handle
             % a structure with standardized field names for lat, lon, time, and z. Other coordiante variables
             % that are not recognized by netcdf-java as the previous four types have field names directly
             % taken from their variable names.
-            % Useage: 
+            % Useage:
             %                >> gridstruct = geovar.grid_interop(1,:,:,1:2:50);
             gi = obj.dataset.grid_interop(obj.name, first, last, stride);
         end %grid_interop end
@@ -173,6 +173,88 @@ classdef ncuvariable < handle
             e = n(k);
         end % Added to deal with end indexing functionality,
         % otherwise the indexing arugment is ignored.
+        
+        
+        function tn = gettimename(src)
+            type = cell(size(src.axes));
+            for i = 1:length(src.axes)
+                tempname = src.axes{i};
+                javaaxisvar  =   src.dataset.dataset.netcdf.findVariable(tempname);
+                type{i} = char(javaaxisvar.getAxisType());
+            end
+            match = strcmpi('time', type);
+            tn = src.axes(match);
+        end
+        
+        function ca = gettimevar(src)
+            nc = src.dataset.dataset.netcdf;
+            tn = src.gettimename();
+            tv = nc.findVariable(tn);
+            ca = ucar.nc2.dataset.CoordinateAxis1DTime.factory(nc, tv, ...
+                java.util.Formatter());
+        end
+        
+        function s = gettimedata(src, start, last, stride)
+            % NCGEOVARIABLE.gettimedata()
+            %             var = src.gettimevar;
+            %             tn = var.data(start, last, stride);
+            %             tn = var.dataset.time(src.gettimename, tn);
+            
+            v = src.gettimename;
+            ds = src.dataset.dataset;
+            t = ds.readdata(v, start, last, stride);
+            s = ds.time(v, t);
+        end
+        
+        %% These functions would rather output multiple outputs instead of struct, must reconcile
+        %     with the subsref in either ncgeovariable or ncvariable. Wait, why, then, does geoij work???
+        function d = timewindowij(src, varargin)
+            % NCGEOVARIABLE.TIMEWINDOWIJ - Function to get indices from start and stop times for sub-
+            % setting. TODO: There must be a better/fast way to do this using the java library.
+            % Useage: >> timestruct = geovar.timewindowij([2004 1 1 0 0 0], [2005 12 31 0 0 0]);
+            %              >> timestruct = geovar.timewindowij(731947, 732677);
+            % Result: time.time = time data
+            %            time.index = time indices
+            s = src.size;
+            first = ones(1, length(s));
+            last = s;
+            stride = first;
+            g.time = src.gettimedata(first, last, stride);
+            
+            if isfield(g, 'time') % are any of the fields recognized as time explictly
+                if nargin > 2 % If two times are input, do window
+                    starttime = datenum(varargin{1});
+                    stoptime = datenum(varargin{2});
+                    if isempty(starttime)
+                        starttime = g.time(1);
+                    end
+                    if isempty(stoptime)
+                        stoptime = g.time(end);
+                    end
+                    
+                    t_index1 = g.time >= starttime;
+                    t_index2 = g.time <= stoptime;
+                    d.index = find(t_index1==t_index2);
+                    d.time = g.time(d.index);
+                elseif nargin < 3 % If theres only one time, do nearest
+                    neartime = datenum(varargin{1});
+                    diff = abs(g.time-neartime);
+                    ind = find(diff==min(diff));
+                    d.index = ind(1);
+                    d.time = g.time(d.index);
+                    if length(ind) > 1;
+                        warning('NCGEOVARIABLE:TIMEWINDOWIJ',...
+                            ['Multiple time indices determined to be nearest to the supplied time,'...
+                            'only the first index was output.']);
+                    end
+                end
+            else
+                me = MException(['NCTOOLBOX:ncgeovariable:timewindowij'], ...
+                    'No grid variable returned as time.');
+                me.throw;
+            end
+        end % end timewindowij
+        
         
         function sref = subsref(obj,s)
             switch s(1).type

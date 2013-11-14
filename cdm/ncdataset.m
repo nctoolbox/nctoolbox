@@ -195,30 +195,30 @@ classdef ncdataset < handle
         end
         
         function dnames = dimensions(obj, variable)
-           % NCDATASET.DIMENSIONS Returns the dimensions of the variable.
-           %
-           % Use as:
-           %    ds = ncdataset('http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc');
-           %    dims = ds.dimensions('u');
-           %
-           % Inputs:
-           %    variableName = the name of the variables whose dimensions
-           %    you want to retrieve.
-           %
-           % Return:
-           %    An (n, 1) cell array containing the names (in order) of the
-           %    dimensions that are defined for the variable. Note that
-           %    there may not nescessesarily be a corresponding variable
-           %    for every dimensions name. If you only want to return
-           %    dimensions that have a corresponding coordinate axis use
-           %    AXES instead of DIMENSION.
-           v = obj.findvariable(variable);
-           dims = v.getDimensions();
-           dnames = cell(dims.size(), 1);
-           for i = 1:dims.size();
-               dnames{i} = char(dims.get(i - 1).getName());
-           end
-           
+            % NCDATASET.DIMENSIONS Returns the dimensions of the variable.
+            %
+            % Use as:
+            %    ds = ncdataset('http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc');
+            %    dims = ds.dimensions('u');
+            %
+            % Inputs:
+            %    variableName = the name of the variables whose dimensions
+            %    you want to retrieve.
+            %
+            % Return:
+            %    An (n, 1) cell array containing the names (in order) of the
+            %    dimensions that are defined for the variable. Note that
+            %    there may not nescessesarily be a corresponding variable
+            %    for every dimensions name. If you only want to return
+            %    dimensions that have a corresponding coordinate axis use
+            %    AXES instead of DIMENSION.
+            v = obj.findvariable(variable);
+            dims = v.getDimensions();
+            dnames = cell(dims.size(), 1);
+            for i = 1:dims.size();
+                dnames{i} = char(dims.get(i - 1).getName());
+            end
+            
         end
         
         %%
@@ -266,7 +266,7 @@ classdef ncdataset < handle
                     if (at.isString())
                         a{i, 2} = char(at.getStringValue());
                     else
-                        try 
+                        try
                             % Scalar (1-value arrays) will throw an
                             % exception here. The catch should grab the
                             % right value though.
@@ -308,7 +308,7 @@ classdef ncdataset < handle
             %   variableName)
             %
             % Note: This method is a convience method and is equivalent to the following
-            %   a = 
+            %   a =
             if nargin < 3
                 atlist = obj.attributes;
                 val = value4key(atlist, varargin{1});
@@ -323,9 +323,9 @@ classdef ncdataset < handle
         %%
         function m = metadata(obj)
             % NCDATASET.METADATA - Returns all the global and variable attributes
-            % as a single structure. 
+            % as a single structure.
             %
-            % Use as: 
+            % Use as:
             %   ds = ncdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/m1_metsys_20081008_original.nc')
             %   m = ds.metadata
             %
@@ -338,7 +338,7 @@ classdef ncdataset < handle
             %         ...
             %        variablenameN
             %
-            % Note: You can use value4key to retrive a specific value for a given key 
+            % Note: You can use value4key to retrive a specific value for a given key
             % For example:
             %     ds = ncdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/m1_metsys_20081008_original.nc')
             %     m = ds.metadata
@@ -351,7 +351,7 @@ classdef ncdataset < handle
             v = obj.variables;
             m.global_attributes = obj.attributes;
             for i=1:length(v);
-                try 
+                try
                     m.(v{i}) = obj.attributes(v{i});
                 catch me
                     warning('NCTOOLBOX:ncdataset:metadata', [me.message ...
@@ -411,7 +411,7 @@ classdef ncdataset < handle
         
         %%
         function close(obj)
-            % NCDATASET.CLOSE Added to prevent throwing an error. This is problematic since close is a 
+            % NCDATASET.CLOSE Added to prevent throwing an error. This is problematic since close is a
             % keyword in matlab for closing figure windows, but requested by Rich to avoid throwing errors
             % in legacy njtbx code...
         end
@@ -426,19 +426,19 @@ classdef ncdataset < handle
         end
         
         
-		function n = ncml(obj)
-			% NCDATASET.NCML Dumps out an NCML representation of the netcdf file as a string
-			baos = java.io.ByteArrayOutputStream();
-			osw = java.io.OutputStreamWriter(baos);
-			obj.netcdf.writeNcML(osw, '');
-			ba = baos.toByteArray();
-			n = char(java.lang.String(ba, 0, length(ba), 'UTF8'));
-			osw.close();
-			baos.close();
+        function n = ncml(obj)
+            % NCDATASET.NCML Dumps out an NCML representation of the netcdf file as a string
+            baos = java.io.ByteArrayOutputStream();
+            osw = java.io.OutputStreamWriter(baos);
+            obj.netcdf.writeNcML(osw, '');
+            ba = baos.toByteArray();
+            n = char(java.lang.String(ba, 0, length(ba), 'UTF8'));
+            osw.close();
+            baos.close();
         end
         
         function v = findvariable(obj, variable)
-            % NETCDF.FINDVARIABLE - Helper function that will escape a variable name if needed. 
+            % NETCDF.FINDVARIABLE - Helper function that will escape a variable name if needed.
             v = obj.netcdf.findVariable(variable);
             if isempty(v)
                 v = obj.netcdf.findVariable(ucar.nc2.NetcdfFile.escapeName(variable))
@@ -447,62 +447,61 @@ classdef ncdataset < handle
                 warning('NCTOOLBOX:ncdataset:findvariable', ['Could not find the variable: ' variable]);
             end
         end
-    end
     
-    methods (Access = protected)
-        function d = readdata(obj, variable, first, last, stride)
-            % NETCDF.READDATA - Helper function that's called by NETCDF.DATA
-            v = obj.findvariable(variable);
-            
-            if (nargin == 2)
-                array = v.read();
-                try
-                    d = array.copyToNDJavaArray(); % this fails if the variable has no java shape/no dimension was assigned
-                catch me1
-                    warning('NCTOOLBOX:ncdataset:readdata', ['An error occurred while reading "' char(variable) ...
-                        '" in ' obj.location '. Cause: \n' getReport(me1)]);
-                    try
-                        % TODO (Alex added this code) Where is a file where
-                        % this code section gets called?
-                        d = array.toString;  % different way to get single value out of java array
-                        d = d.toCharArray';  % must transpose
-                        d = str2double(d);   % matlab string to matlab numeric
-                    catch me2
-                        ex = MException('NCTOOLBOX:ncdataset:data', ['Failed to open "' char(variable) '" in ' obj.location]);
-                        ex = ex.addCause(me2);
-                        ex.throw;
-                    end
-                end
-                %           d = double(d);
-            else
-                s = obj.size(variable);
-                
-                % Fill in missing arguments
-                % default stride is 1
-                if (nargin < 5)
-                    stride = ones(1, length(s));
-                end
-                
-                % Default last is the end
-                if (nargin < 4)
-                    last = s;
-                end
-                
-                % Construct the range objects needed to subset the data
-                n = max(size(obj.size(variable)));
-                ranges = java.util.ArrayList(n);
-                for i = 1:n
-                    ranges.add(ucar.ma2.Range(first(i) - 1, last(i) - 1, stride(i)));
-                end
-                
-                array = v.read(ranges);
-                d = array.copyToNDJavaArray();
-                
+    function d = readdata(obj, variable, first, last, stride)
+    % NETCDF.READDATA - Helper function that's called by NETCDF.DATA
+    v = obj.findvariable(variable);
+    
+    if (nargin == 2)
+        array = v.read();
+        try
+            d = array.copyToNDJavaArray(); % this fails if the variable has no java shape/no dimension was assigned
+        catch me1
+            warning('NCTOOLBOX:ncdataset:readdata', ['An error occurred while reading "' char(variable) ...
+                '" in ' obj.location '. Cause: \n' getReport(me1)]);
+            try
+                % TODO (Alex added this code) Where is a file where
+                % this code section gets called?
+                d = array.toString;  % different way to get single value out of java array
+                d = d.toCharArray';  % must transpose
+                d = str2double(d);   % matlab string to matlab numeric
+            catch me2
+                ex = MException('NCTOOLBOX:ncdataset:data', ['Failed to open "' char(variable) '" in ' obj.location]);
+                ex = ex.addCause(me2);
+                ex.throw;
             end
-            
         end
+        %           d = double(d);
+    else
+        s = obj.size(variable);
+        
+        % Fill in missing arguments
+        % default stride is 1
+        if (nargin < 5)
+            stride = ones(1, length(s));
+        end
+        
+        % Default last is the end
+        if (nargin < 4)
+            last = s;
+        end
+        
+        % Construct the range objects needed to subset the data
+        n = max(size(obj.size(variable)));
+        ranges = java.util.ArrayList(n);
+        for i = 1:n
+            ranges.add(ucar.ma2.Range(first(i) - 1, last(i) - 1, stride(i)));
+        end
+        
+        array = v.read(ranges);
+        d = array.copyToNDJavaArray();
+        
     end
     
+    end
+    
+    
+    end
 end
 
 %%
