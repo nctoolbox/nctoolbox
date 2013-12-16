@@ -13,6 +13,7 @@ v = ds.variable('temp');
 % sz= size(v);
 
 % Grab a subset of the data. Data is now being pulled across the network
+
 t = v.data(end, end, 1:end, 1:end);
 g = v.grid(end, end, 1:end, 1:end);
 
