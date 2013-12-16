@@ -30,8 +30,8 @@
 %   voi = ds.standard_name('air_temperature')
 %   d = ds.data(voi);         % Data for the variable
 %   vAx = ds.axes(voi);       % Coordinate Variable names for the variable
-%   vGr = ds.grid(voi)       % grid data for the variable
-%   plot(ds.time('esecs'),d); datetick('x','yyyy-mm-dd')       
+%   vGr = ds.grid(voi)        % grid data for the variable
+%   plot(ds.time('esecs'), d); datetick('x', 'yyyy-mm-dd')       
 %
 % See also NCDATASET, NCGEODATASET
 
@@ -275,7 +275,7 @@ classdef cfdataset < ncdataset
             %   td = ds.data('TEMP'); 
             %   tg = ds.grid('TEMP');
             %   ds.attributes('TIME')
-            %   plot(datenum(1950,1,1)+tg.TIME,td); datetick('x',29)
+            %   plot(datenum(1950, 1, 1) + tg.TIME ,td); datetick('x', 29)
             %
             % Note:
             %   The above example is also equivalent to:
@@ -334,7 +334,7 @@ classdef cfdataset < ncdataset
             % 
             % Example:
             %
-            %   ds =cfdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/OS_M1_20081008_TS.nc');
+            %   ds = cfdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/OS_M1_20081008_TS.nc');
             %   ds.standard_name('sea_water_temperature')
             %
                 

@@ -29,7 +29,7 @@ try
     for i = 1:length(indices)
         if isa(indices{i}, 'double')
             if any(diff(diff(indices{i})))
-                indices{i}
+                %indices{i}
                 error('MATLAB:mVariable:parseIndices', ...
                     'Indexing strides must be positive and constant.')
             end
