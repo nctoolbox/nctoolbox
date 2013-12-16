@@ -8,7 +8,10 @@
 % Example of use:
 %  ds = cfdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/OS_M1_20081008_TS.nc');
 %  v = ds.variable('TEMP');
-%  t = v.data([1 1 1 1], [100 5 1 1]);
+%  t_end = v.size;
+%  t_start = t_end ./ t_end;
+%  t_stride = t_start ; t_stride(1)=10;
+%  t = v.data(t_start, t_end,t_stride);
 %  % Look at properties
 %  v.name
 %  v.axes
@@ -24,9 +27,9 @@ classdef ncvariable < handle
     
     properties (Dependent = true)
         name            % The string variable name that this object represents
-        axes2
-        axes
-        attributes
+        axes2           %  ????
+        axes            % the coordinate variables associated with the object
+        attributes      % The attributes associated with the object.
     end
     
     properties (SetAccess = private, GetAccess = protected)
@@ -68,6 +71,7 @@ classdef ncvariable < handle
         end
         
         function a = get.attributes(obj)
+	% NCVARIABLE.ATTRIBUTES returns the attributes for the varaible.
             a = obj.dataset.attributes(obj.name);
         end
         
@@ -204,7 +208,9 @@ classdef ncvariable < handle
             %
             %   ds = cfdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/OS_M1_20081008_TS.nc');
             %   v = ds.variable('TEMP');
-            %   t = v.data([1 1 1 1], [10 2 1 1]);
+            %   v.size  % 9043x11x1x1
+            %   g = v.grid  
+            %   t = v.data([1 1 1 1], [10 2 1 1]); % is not like 
             %
             
             if (nargin == 1)
@@ -250,12 +256,16 @@ classdef ncvariable < handle
         %%
         
         function e = end(obj, k, n)
+	% NCVARIABLE.END the last index in an indexing expression.
+        % e.g.: elevation.data(end-3:end,1,1)
             n = obj.dataset.size(obj.name);
             e = n(k);
         end % Added to deal with end indexing functionality,
         % otherwise the indexing arugment is ignored.
         
-        function sref = subsref(obj,s)
+            function sref = subsref(obj,s)
+            %                disp(s(2).subs{3})
+        % SUBSREF parses an object name for .name or () 
             switch s(1).type
                 % Use the built-in subsref for dot notation
                 case '.'
@@ -316,7 +326,7 @@ classdef ncvariable < handle
         
         %%
         function data = alldata(obj, withData)
-            
+            % Extract all the data
             % ---- Step 2: Add the data
             if withData == 1
                 name = char(obj.variable.getName());
@@ -333,7 +343,7 @@ classdef ncvariable < handle
         
         %%
         function data = somedata(obj, withData, first, last, stride)
-            
+ 	% NCGEOVARIABLE.SOMEDATA -- extract a slice of the data           
             s = obj.dataset.size(obj.name);
             
             % Fill in missing arguments

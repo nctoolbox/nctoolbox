@@ -12,7 +12,7 @@ function [start last stride] = indexing(indices, varShape)
 % Mississippi State University
 %
 % Note: Logic to calculate start/last/stride partially borrowed
-% from ncvar/subsref ['netcdf-toolbox' by Chuck Dhenam (c) 1996-97].
+% from ncvar/subsref ['netcdf-toolbox' by Chuck Denham (c) 1996-97].
 % and modified to suit our needs.
 %
 % Modified by Alexander Crosby 2010, 2011 (nctoolbox)
@@ -29,6 +29,7 @@ try
     for i = 1:length(indices)
         if isa(indices{i}, 'double')
             if any(diff(diff(indices{i})))
+                indices{i}
                 error('MATLAB:mVariable:parseIndices', ...
                     'Indexing strides must be positive and constant.')
             end
@@ -74,6 +75,7 @@ try
     end
 catch %gets the last error generated
     err = lasterror();
+    disp(indices)
     disp(err.message);
 end
 end

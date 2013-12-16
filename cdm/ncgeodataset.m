@@ -1,6 +1,7 @@
 % NCGEODATASET
 %
 % NCTOOLBOX (http://code.google.com/p/nctoolbox)
+% doc ncgeodataset
 classdef ncgeodataset < cfdataset
     
     properties (SetAccess = private, GetAccess = private)
@@ -29,10 +30,12 @@ classdef ncgeodataset < cfdataset
         
         %%
         function ax = axes(obj, variableName)
+            % NCGEODATASET.AXES(varname)  fetches the names of the axes of varname. 
             % ---- Attempt to fetch the variables representing the axes
             % for the variable of interest. We'll try the CF
             % conventions first and if that's not available we'll try
             % COARDS.
+            % See also ncdataset.axes ncvariable.axes ncgeovariable.axes
             
             att = obj.attributes(variableName);
             coordinates = value4key(att, 'coordinates');
@@ -118,7 +121,7 @@ classdef ncgeodataset < cfdataset
        
         
         function v = geovariable(obj, variableName, axes)
-            % NCGEODATASET.VARIABLE Returns an ncgeovariable object that provides
+            % NCGEODATASET.GEOVARIABLE Returns an ncgeovariable object that provides
             % advanced access to the data contained within that variable based on geo-
             % graphically located data.
             %
@@ -133,6 +136,8 @@ classdef ncgeodataset < cfdataset
             % Returns:
             %
             %    v = an instance of ncgeovariable
+            %
+            % See also ncgeovariable, ncvariable
             %
             
             % Check to see if we've aready fetched the variable of interest
@@ -224,7 +229,7 @@ classdef ncgeodataset < cfdataset
         end
         
         function e = extent(obj, variableName)
-            % NCGEODATASET.extent - Function to calculate lat/lon bounding box of variable.
+            % NCGEODATASET.extent(variable) - Function to calculate lat/lon bounding box of variable.
             % Usage: ex = nc.extent('temp')
             v = obj.geovariable(variableName);
             e = v.extent;

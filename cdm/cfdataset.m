@@ -20,21 +20,25 @@
 %
 % For more information on the methods use help. For example:
 %   >> help cfdataset.struct
+%   >> doc cfdataset
 %
 % Example:
-%   ds = cfdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/m1_metsys_20081008_original.nc')
+%   url='http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/m1_metsys_20081008_original.nc'
+%   ds = cfdataset(url)
 %   ga = ds.attributes;       % Global Attributes
-%   sv = 'SonicVelocity';     % A variable that we're interested in.
-%   d = ds.data(sv);          % Data for the SonicVelocity variable
-%   svAx = ds.axes(sv);       % Coordinate Variable names for the SonicVelocity variable
-%   svAt = ds.attributes(sv); % Attributes for SonicVelocity
+%   varnames = ds.variables   % Variable names
+%   voi = ds.standard_name('air_temperature')
+%   d = ds.data(voi);         % Data for the variable
+%   vAx = ds.axes(voi);       % Coordinate Variable names for the variable
+%   vGr = ds.grid(voi)       % grid data for the variable
+%   plot(ds.time('esecs'),d); datetick('x','yyyy-mm-dd')       
 %
-% See also NCDATASET
+% See also NCDATASET, NCGEODATASET
 
 % Brian Schlining
 % 2009-10-21
 % Alexander Crosby 2010, 2011
-% NCTOOLBOX (http://code.google.com/p/nctoolbox)
+% NCTOOLBOX (https://github.com/nctoolbox/nctoolbox http://code.google.com/p/nctoolbox)
 
 classdef cfdataset < ncdataset
     
@@ -84,6 +88,7 @@ classdef cfdataset < ncdataset
             %
             %    v = an instance of ncvariable
             %
+            %  See also NCVARIABLE, NCGEODATASET.VARIABLE
             
             % Check to see if we've aready fetched the variable of interest
             v = value4key(obj.ncvariables, variableName);
@@ -267,14 +272,17 @@ classdef cfdataset < ncdataset
             % Example:
             %
             %   ds = cfdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/OS_M1_20081008_TS.nc');
-            %   t = ds.grid('TEMP');
-            %
+            %   td = ds.data('TEMP'); 
+            %   tg = ds.grid('TEMP');
+            %   ds.attributes('TIME')
+            %   plot(datenum(1950,1,1)+tg.TIME,td); datetick('x',29)
             %
             % Note:
             %   The above example is also equivalent to:
             %   ds = cfdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/OS_M1_20081008_TS.nc');
             %   v = ds.variable('TEMP')
-            %   t = v.grid
+            %   tg = v.grid
+            %   td = v.data   
             %   The reason for providing the 'grid' alternative syntax is
             %   that it may be more familiar to some users.
             v = obj.variable(variableName);
@@ -323,6 +331,13 @@ classdef cfdataset < ncdataset
         function sn = standard_name(obj, standardName)
             % CFDATASET.STANDARD_NAME - Function to get a list of variable names that correspond to
             % to the input standard_name.
+            % 
+            % Example:
+            %
+            %   ds =cfdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/OS_M1_20081008_TS.nc');
+            %   ds.standard_name('sea_water_temperature')
+            %
+                
             vars = obj.variables;
             for i = 1:length(vars) % Loop through variables to get standard_name attribute if it exists
                 tempsn = obj.attribute(vars{i},'standard_name');
