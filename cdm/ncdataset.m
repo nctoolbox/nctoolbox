@@ -28,9 +28,10 @@
 %   ncdataset.size - returns the size of a variable in the data store
 %   ncdataset.time - Attempt to convert a variable to matlabs native time format (see datenum)
 %
-% For more information on the methods use help. For example:
+% For more information on the methods use help or doc. For example:
 %   >> help ncdataset.data
-%
+%   >> doc ncdataset
+%   
 % Example:
 %   ds = ncdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/m1_metsys_20081008_original.nc')
 %   ga = ds.attributes;       % Global Attributes
@@ -42,7 +43,7 @@
 % Brian Schlining (brian@mbari.org)
 % 2009-05-12
 % Alexander Crosby 2010, 2011
-% NCTOOLBOX (http://code.google.com/p/nctoolbox)
+% NCTOOLBOX (https://github.com/nctoolbox/nctoolbox  http://code.google.com/p/nctoolbox)
 classdef ncdataset < handle
     
     properties (SetAccess = private)

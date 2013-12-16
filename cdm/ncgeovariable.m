@@ -4,6 +4,11 @@
 % NCGEOVARIABLE is used to retrieve data for a given variable as well as the
 % variables associated coordinate dimensions.
 %
+% Methods:
+%
+% For more information on the methods use 'help' or 'doc'.  For example:
+%   >> help ncgeovariable
+%   >> doc ncgeovariable
 %
 % Example of use:
 %  ds = cfdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/OS_M1_20081008_TS.nc');
@@ -13,17 +18,17 @@
 %  v.name
 %  v.axes
 %
-% NCTOOLBOX (http://code.google.com/p/nctoolbox)
+% NCTOOLBOX (https://github.com/nctoolbox/nctoolbox http://code.google.com/p/nctoolbox)
 classdef ncgeovariable < ncvariable
     
     properties (SetAccess = private)
-        %         dataset          % ncdataset instance
+        %         dataset          % ncdataset instance.
     end
     
     properties (Dependent = true)
-        %         name            % The string variable name that this object represents
-        %         attributes\
-        %         axes
+        %         name            % The string variable name that this object represents.
+        %         attributes      % The attributes associated with this object.
+        %         axes            % The coordiante vaaibles associated with this object.
     end
     
     properties (SetAccess = private, GetAccess = protected)
@@ -137,7 +142,7 @@ classdef ncgeovariable < ncvariable
             % a structure with standardized field names for lat, lon, time, and z. Other coordiante variables
             % that are not recognized by netcdf-java as the previous four types have field names directly
             % taken from their variable names.
-            % Useage: >> gridstruct = geovar.grid_interop(1,:,:,1:2:50);
+            % Usage: >> gridstruct = geovar.grid_interop(1,:,:,1:2:50);
             if nargin < 5
                 ignore = {};
             end
@@ -347,7 +352,7 @@ classdef ncgeovariable < ncvariable
         function tw = timewindow(src, varargin)
             % NCGEOVARIABLE.TIMEWINDOW - Function to pull the time coordinates within the specified
             % start and stop times from the variable object.
-            % Useage: >> time = geovar.timewindow([2004 1 1 0 0 0], [2005 12 31 0 0 0]);
+            % Usage: >> time = geovar.timewindow([2004 1 1 0 0 0], [2005 12 31 0 0 0]);
             %              >> time = geovar.timewindow(731947, 732677);
             if nargin < 3
                 d = src.timewindowij(varargin{1});
@@ -361,13 +366,13 @@ classdef ncgeovariable < ncvariable
         end
         
         function tv = gettimevar(src)
-            % NCGEOVARIABLE.gettimevar()
+            % NCGEOVARIABLE.gettimevar() gets the time variable associated with the ncgeovariable.
             tn = src.gettimename();
             tv = src.dataset.geovariable(tn);
         end
         
         function [lv, type] = getlonvar(src)
-            % NCGEOVARIABLE.getlonvar()
+            % NCGEOVARIABLE.getlonvar() gets the longitude variable assiciated with the ncgeovariable.
             tn = src.getlonname();
             type = 'Lon';
             if isempty(tn)
@@ -378,7 +383,7 @@ classdef ncgeovariable < ncvariable
         end
         
         function [lv, type] = getlatvar(src)
-            % NCGEOVARIABLE.getlatvar()
+            % NCGEOVARIABLE.getlatvar() gets the latitude variable associated with the ncgeovariable.
             type = 'Lat';
             tn = src.getlatname();
             if isempty(tn)
@@ -389,7 +394,7 @@ classdef ncgeovariable < ncvariable
         end
         
         function tn = gettimename(src)
-            % NCGEOVARIABLE.gettimename()
+            % NCGEOVARIABLE.gettimename() gets the name if the time variable associated with the ncgeovariable
             for i = 1:length(src.axes)
                 tempname = src.axes{i};
                 javaaxisvar  =   src.dataset.netcdf.findVariable(tempname);
@@ -400,7 +405,7 @@ classdef ncgeovariable < ncvariable
         end
         
         function ln = getlonname(src)
-            % NCGEOVARIABLE.getlonname()
+            % NCGEOVARIABLE.getlonname() gets the name of the longitude variable associated with the ncgeovariable.
             for i = 1:length(src.axes)
                 tempname = src.axes{i};
                 javaaxisvar  =   src.dataset.netcdf.findVariable(tempname);
@@ -411,7 +416,7 @@ classdef ncgeovariable < ncvariable
         end
         
         function ln = getlatname(src)
-            % NCGEOVARIABLE.gelatname()
+            % NCGEOVARIABLE.gelatname() gets the naem of the latitude variable associated with the ncgeovariable
             for i = 1:length(src.axes)
                 tempname = src.axes{i};
                 javaaxisvar  =   src.dataset.netcdf.findVariable(tempname);
@@ -422,7 +427,7 @@ classdef ncgeovariable < ncvariable
         end
         
         function ln = getxname(src)
-            % NCGEOVARIABLE.getlonname()
+            % NCGEOVARIABLE.getxname() gets the name of the x variable associated with the ncgeovariable.
             for i = 1:length(src.axes)
                 tempname = src.axes{i};
                 javaaxisvar  =   src.dataset.netcdf.findVariable(tempname);
@@ -433,7 +438,7 @@ classdef ncgeovariable < ncvariable
         end
         
         function ln = getyname(src)
-            % NCGEOVARIABLE.gelatname()
+            % NCGEOVARIABLE.getyname() gets the name of the y variable assoxiated with the ncgeovariable
             for i = 1:length(src.axes)
                 tempname = src.axes{i};
                 javaaxisvar  =   src.dataset.netcdf.findVariable(tempname);
@@ -464,7 +469,7 @@ classdef ncgeovariable < ncvariable
         end
         
         function [s, type] = getlondata(src, start, last, stride)
-            % NCGEOVARIABLE.getlondata()
+            % NCGEOVARIABLE.getlondata() gets the longitude data associated with the ncgeovariable.
             [v, type] = src.getlonvar;
             sz = src.size();
             lonsize = v.size();
@@ -493,7 +498,7 @@ classdef ncgeovariable < ncvariable
         end
         
         function [s, type] = getlatdata(src, start, last, stride)
-            % NCGEOVARIABLE.gelatdata()
+            % NCGEOVARIABLE.gelatdata() gets the latitude data associated with the ncgeovariable.
             [v, type] = src.getlatvar;
             sz = src.size();
             latsize = v.size();
@@ -971,6 +976,8 @@ classdef ncgeovariable < ncvariable
         end % end geoij
         
         function order = getaxesorder(obj)
+            %  NCGEOVARIABLE.getaxesorder  gets the order of each axis of the ncgeovariable
+
             %             permute_nums = fliplr(obj.axes_info);
             ainfo = obj.axes_info;
             siz = obj.size;
@@ -981,6 +988,7 @@ classdef ncgeovariable < ncvariable
         end
         
         function sref = subsref(obj,s)
+	    % NCGEOVARIABLE.subsref applies various .name and () methods to the ncgeovariable 
             switch s(1).type
                 % Use the built-in subsref for dot notation
                 case '.'
