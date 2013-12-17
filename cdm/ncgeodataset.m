@@ -1,6 +1,37 @@
-% NCGEODATASET
+% NCGEODATASET  Provide access to CF/COARDS convention datasets accessable by the
+% NetCDF 4 API. CFDATASET is a subclass of NCDATASET
 %
-% NCTOOLBOX (http://code.google.com/p/nctoolbox)
+% Use as:
+%   ds = ncgeodataset(dataref)
+%
+% Arguments:
+%   dataref = A reference to a ncdataset that can be accessed by the NetCDF 4
+%       API. This includes local netcdf files, netcdf files on web servers
+%       and OpenDAP URLs
+%
+% Return:
+%   An instance of a ncgeodataset class
+%   !!! See ncgeodataset and cfdataset for additional information !!!
+%
+% Methods:
+%   ncgeodataset.grid - Retrieve coordinate data for the variable.
+%   ncgeodataset.struct - Retrieve data and coordinate data for the variable
+%   !!! Refer to ncdataset and cfdatasetfor additional methods !!!
+%
+% For more information on the methods use help. For example:
+%   >> help ncgeodataset.struct
+%   >> doc ncgeodataset
+%
+% Example:
+%
+%   url='http://geoport.whoi.edu/thredds/dodsC/bathy/gom03_v1_0'
+%   nc=ncgeodataset(url)
+%   z=nc{'topo'}(500:600,400:500);
+%   zg=nc{'topo'}(500:600,400:500).grid;
+%   pcolorjw(zg.lon,zg.lat,z);
+%
+% See also NCTOOLBOX (https://github.com/nctoolbox/nctoolbox
+% http://code.google.com/p/nctoolbox), cfdataset, ncdataset
 % doc ncgeodataset
 classdef ncgeodataset < cfdataset
     
@@ -57,7 +88,6 @@ classdef ncgeodataset < cfdataset
             %   The data is returned as a structure containing the actual data for the variable
             %   of interest as well as each coordinate variable
             %
-            % Example:
             %
             %   ds = cfdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/OS_M1_20081008_TS.nc');
             %   t = ds.struct('TEMP');

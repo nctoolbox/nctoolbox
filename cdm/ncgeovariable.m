@@ -11,14 +11,29 @@
 %   >> doc ncgeovariable
 %
 % Example of use:
-%  ds = cfdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/OS_M1_20081008_TS.nc');
-%  v = ds.variable('TEMP');
-%  t = v.data([1 1 1 1], [100 5 1 1]);
+%  ds = ncgeodataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/OS_M1_20081008_TS.nc');
+%  vn = ds.variable('TEMP');    % returns an ncvariable
+%  vg = ds.geovariable('TEMP'); % returns an ncgeovariable
+%  tn = vn.data([1 1 1 1], [100 5 1 1]);
+%  tg = vg.data(1:100,1:5,1,1);
 %  % Look at properties
-%  v.name
-%  v.axes
+%  vg.name
+%  vg.axes
+%  vg.getaxesorder
+%  vg.extent
+%  datestr(vg.timeextent)
+%  vg.grid_interop
+%  tw = vg.timewindow([2008 10 10 0 0 0], [2008 20 11 0 0 0]);
+%  datestr(tw.time)
+%  vg.getlonname
+%  vg.getlatname
+%  
+%  vg.getxname
+%  vg.getyname
 %
-% NCTOOLBOX (https://github.com/nctoolbox/nctoolbox http://code.google.com/p/nctoolbox)
+% NCTOOLBOX (https://github.com/nctoolbox/nctoolbox
+% http://code.google.com/p/nctoolbox)
+% See also ncvariable, ncgeodataset, ncgeodataset.geovariable
 classdef ncgeovariable < ncvariable
     
     properties (SetAccess = private)
