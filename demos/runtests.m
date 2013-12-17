@@ -1,7 +1,8 @@
 function runtests
 % Run tests
 tests = {'demo1', 'demo2', 'demo2a', 'demo3', 'demo3b', 'demo4', 'demo5', 'demo6' ...
-		'demo7', 'demo8', 'demo9', 'geodemo_1a', 'geodemo_1b', 'geodemo_1c'};
+		'demo7', 'demo8', 'demo9', 'demo11', 'geodemo_1a', 'geodemo_1b', 'geodemo_1c', ...
+        'access_test1'};
 		
 good = 0;
 bad = 0;

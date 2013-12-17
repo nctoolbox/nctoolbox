@@ -1,0 +1,7 @@
+% DEMO11 - Simple use of ncgeodataset
+echo on
+url = 'http://geoport.whoi.edu/thredds/dodsC/bathy/gom03_v1_0';
+nc = ncgeodataset(url);
+z = nc{'topo'}(500:600,400:500);
+zg = nc{'topo'}(500:600,400:500).grid;
+pcolorjw(zg.lon,zg.lat,z);

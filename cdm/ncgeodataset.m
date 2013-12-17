@@ -30,26 +30,28 @@ classdef ncgeodataset < cfdataset
         
                 %%
         function s = struct(obj, variableName, first, last, stride)
-            % CFDATASET.STRUCT Retrieve all or a subset of the data for the
+            % NCGEODATASET.STRUCT Retrieve all or a subset of the data for the
             % given variable. The data is returned as a structure containing a
             % variable for the data as well as for each dimension of the
             % data.
             %
             % Usage:
             %   d = cfdataset.struct(variableName)
-            %   d = cfdataset.struct(variableName, first)
-            %   d = cfdataset.struct(variableName, first, last)
-            %   d = cfdataset.struct(variableName, first, last, stride)
+            %   d = cfdataset.struct(variableName, i1)
+            %   d = cfdataset.struct(variableName, i1, i1)
+            %   d = cfdataset.struct(variableName, i0, i1, i2)
+            %   d = cfdataset.struct(variableName, i0, i1, i2, i3)
             %
             %   If no arguments are provided all the data is returned for the
             %   given variable.
             %
             % Arguments:
             %   variableName = The name of the variable of interest
-            %   first = The first point you want to retrieve (first point idx = 1)
-            %   last  = The last point you want to retrive (default is the end of
-            %       the data array)
-            %   stride = The stride spacing (default is 1)
+            %   i1 = index of data for the variables first dimension that
+            %   you want returned.
+            %   i2 = index of data for the variables second dimension
+            %   i3 = index of data for the variables second dimension
+            %   i4 = index of data for the variables second dimension
             %   NOTE! first, last, and stride must be matrices the same size as the
             %       matrix returned by NCDATASET.SIZE or SIZE
             %

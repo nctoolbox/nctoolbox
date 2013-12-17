@@ -50,9 +50,11 @@ classdef ncgeovariable < ncvariable
             % NCGEOVARIABLE.NCGEOVARIABLE  Constructor.
             %
             % Use as:
-            %    v = ncvariable(src, variableName)
             %    v = ncvariable(src, variableName, axesVariableNames)
             %
+            % Preffered Usage:
+            %    geo = ncgeodataset(...);
+            %    v = geo.ncgeovariable(variableName);
             obj = obj@ncvariable(src, variableName, axesVariableNames);
             
             

@@ -239,28 +239,8 @@ classdef ncvariable < handle
                 g = somedata(obj, 0, first, last, stride);
             end
         end
-        
+       
         %%
-        % TODO this does not make valid assumption. Will not be included
-        %         function t = gettime(obj, varargin)
-        %             g = obj.grid;
-        %             if isfield(g, 'time')
-        %                 t_converted = g.time; % this is a bad assumption
-        %                 if nargin > 2
-        %                     t_index1 = t_converted > varargin{2};
-        %                     t_index2 = t_converted < varargin{3};
-        %                     t_index = find(t_index1==t_index2);
-        %                     t = t_converted(t_index);
-        %                 else
-        %                     t = t_converted;
-        %                 end
-        %             else
-        %                 error('gettime:ncvariable','No variable that netcdf-java recognizes as time.');
-        %             end
-        %         end
-        
-        
-        
         function e = end(obj, k, n)
             % NCVARIABLE.END the last index in an indexing expression.
             % e.g.: elevation.data(end-3:end,1,1)
@@ -269,6 +249,7 @@ classdef ncvariable < handle
         end % Added to deal with end indexing functionality,
         % otherwise the indexing arugment is ignored.
         
+        %%
         function sref = subsref(obj,s)
             %                disp(s(2).subs{3})
             % SUBSREF parses an object name for .name or ()
