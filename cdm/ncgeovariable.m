@@ -58,6 +58,7 @@ classdef ncgeovariable < ncvariable
             
         end % ncgeovariable end
         
+        %%
         function a = get.axes_info(src)
             switch length(src.size)
                 case 1

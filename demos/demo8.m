@@ -10,12 +10,14 @@ ds = cfdataset(url);
 % Grab the variable of interest. No data is being read yet.
 % NOTE: You should use ds.struct now instead of ds.variable. See demo9.m
 v = ds.variable('temp');
-% sz= size(v);
+sz = size(v);
 
 % Grab a subset of the data. Data is now being pulled across the network
+first = [round(sz(1:2) / 2) 1 1]; % Grab the middle timestep/rho
+last  = [first(1:2) sz(3:4)];     % Grab a map slice
 
-t = v.data(end, end, 1:end, 1:end);
-g = v.grid(end, end, 1:end, 1:end);
+t = v.data(first, last);
+g = v.grid(first, last);
 
 % Make a pretty plot. Note the call to 'squeeze'. This removes
 % singleton dimensions.

@@ -6,6 +6,7 @@
 % OPeNDAP Data URL for a CF-Compliant curvilinear ROMS model dataset
 url ='http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc';
 nc = ncgeodataset(url)
+cf = cfdataset(nc)
 
 %% Take a look at the variables available within the dataset
 % To access the properties we can use typical dot notation like with
@@ -57,7 +58,8 @@ nc = ncgeodataset(url)
 % lat_rho and lon_rho are defined in the coordinates attributes, so only
 % they are returned by the grid method.
 
- salinity_coords = nc.grid('salt', [1 nz 1 1], [1 nz 60 160], [1 1 1 1])
+salinity_coords = cf.grid('salt', [1 nz 1 1], [1 nz 60 160], [1 1 1 1])
+
 
 
 %% Use the |time| method to convert model time to MATLAB's datenum

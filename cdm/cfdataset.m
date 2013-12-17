@@ -31,7 +31,7 @@
 %   d = ds.data(voi);         % Data for the variable
 %   vAx = ds.axes(voi);       % Coordinate Variable names for the variable
 %   vGr = ds.grid(voi)        % grid data for the variable
-%   plot(ds.time('esecs'), d); datetick('x', 'yyyy-mm-dd')       
+%   plot(ds.time('esecs'), d); datetick('x', 'yyyy-mm-dd')
 %
 % See also NCDATASET, NCGEODATASET
 
@@ -66,9 +66,9 @@ classdef cfdataset < ncdataset
             end
         end
         
-        %% 
+        %%
         % function d = data(obj, variable, first, last, stride)
-        %    d = squeeze(data@ncdataset(variable, first, last, stride)) 
+        %    d = squeeze(data@ncdataset(variable, first, last, stride))
         % end
         
         %%
@@ -187,53 +187,18 @@ classdef cfdataset < ncdataset
             %   The reason for providing the 'struct' alternative syntax is
             %   that it may be more familiar to some users.
             v = obj.variable(variableName);
-            sz = size(v);
-            if (nargin == 2)
-              switch length(sz)
-                case 1
-                  s = v.grid(:);
-                  s.(v.name) = v.data(:);
-                case 2
-                  s = v.grid(:,:);
-                  s.(v.name) = v.data(:,:);
+            switch nargin
                 case 3
-                  s = v.grid(:,:,:);
-                  s.(v.name) = v.data(:,:,:);
+                    s = v.grid(first);
+                    s.(v.name) = v.data(first);
                 case 4
-                  s = v.grid(:,:,:,:);
-                  s.(v.name) = v.data(:,:,:,:);
-              end
-            else
-                
-                
-                % Fill in missing arguments
-                % default stride is 1
-                if (nargin < 5)
-                    stride = ones(1, length(sz));
-                end
-                
-                % Default last is the end
-                if (nargin < 4)
-                    last = sz;
-                end
-                
-                switch length(sz)
-                  case 1
-                    s = v.grid(:);
-                    s.(v.name) = v.data(first:stride:last);
-                  case 2
-                    s = v.grid(:,:);
-                    s.(v.name) = v.data(first(1):stride(1):last(1),first(2):stride(2):last(2));
-                  case 3
-                    s = v.grid(:,:,:);
-                    s.(v.name) = v.data(first(1):stride(1):last(1),first(2):stride(2):last(2),first(3):stride(3):last(3));
-                  case 4
-                    s = v.grid(:,:,:,:);
-                    s.(v.name) = v.data(first(1):stride(1):last(1),first(2):stride(2):last(2),first(3):stride(3):last(3),...
-                      first(4):stride(4):last(4));
-                end
-                
+                    s = v.grid(first, last);
+                    s.(v.name) = v.data(first, last);
+                case 5
+                    s = v.grid(first, last, stride);
+                    s.(v.name) = v.data(first, last, stride);
             end
+
         end
         
         %%
@@ -272,7 +237,7 @@ classdef cfdataset < ncdataset
             % Example:
             %
             %   ds = cfdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/OS_M1_20081008_TS.nc');
-            %   td = ds.data('TEMP'); 
+            %   td = ds.data('TEMP');
             %   tg = ds.grid('TEMP');
             %   ds.attributes('TIME')
             %   plot(datenum(1950, 1, 1) + tg.TIME ,td); datetick('x', 29)
@@ -282,75 +247,47 @@ classdef cfdataset < ncdataset
             %   ds = cfdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/OS_M1_20081008_TS.nc');
             %   v = ds.variable('TEMP')
             %   tg = v.grid
-            %   td = v.data   
+            %   td = v.data
             %   The reason for providing the 'grid' alternative syntax is
             %   that it may be more familiar to some users.
             v = obj.variable(variableName);
-            sz = size(v);
             
-            if (nargin == 2)
-              switch length(sz)
-                case 1
-                 s = v.grid(:);
-                case 2
-                  s = v.grid(:,:);
+            switch nargin
                 case 3
-                  s = v.grid(:,:,:);
+                    s = v.grid(first);
                 case 4
-                  s = v.grid(:,:,:,:);
-              end
-            else
-                
-                
-                % Fill in missing arguments
-                % default stride is 1
-                if (nargin < 5)
-                    stride = ones(1, length(sz));
-                end
-                
-                % Default last is the end
-                if (nargin < 4)
-                    last = sz;
-                end
-                
-                switch length(sz)
-                  case 1
-                    s = v.grid(first:stride:last);
-                  case 2
-                    s = v.grid(first(1):stride(1):last(1),first(2):stride(2):last(2));
-                  case 3
-                    s = v.grid(first(1):stride(1):last(1),first(2):stride(2):last(2),first(3):stride(3):last(3));
-                  case 4
-                    s = v.grid(first(1):stride(1):last(1),first(2):stride(2):last(2),first(3):stride(3):last(3),...
-                      first(4):stride(4):last(4));
-                end
-                
+                    s = v.grid(first, last);
+                case 5
+                    s = v.grid(first, last, stride);
             end
+            
         end
         
+        %%
         function sn = standard_name(obj, standardName)
             % CFDATASET.STANDARD_NAME - Function to get a list of variable names that correspond to
             % to the input standard_name.
-            % 
+            %
             % Example:
             %
             %   ds = cfdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/OS_M1_20081008_TS.nc');
             %   ds.standard_name('sea_water_temperature')
             %
-                
+            
             vars = obj.variables;
+            hash = cell(length(vars));
             for i = 1:length(vars) % Loop through variables to get standard_name attribute if it exists
                 tempsn = obj.attribute(vars{i},'standard_name');
                 if ~isempty(tempsn) % Make list of standard names, maybe this is not effcient, but it can't
-                                               % be too bad?
-%                     hash{i, 1} = vars{i};
+                    % be too bad?
+                    %                     hash{i, 1} = vars{i};
                     hash{i} = tempsn;
                 end
             end
             matches = strcmp(standardName, hash);
             sn = vars(matches);
         end
-
+        
     end
     
     
