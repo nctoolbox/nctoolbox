@@ -1085,8 +1085,8 @@ classdef ncgeovariable < ncvariable
                             sref = builtin('subsref',obj,s);
                     end
                 case '()'
-                    warning(['NCTOOLBOX:ncgeovariable:subsref'], ...
-                        'Not a supported subscripted reference, "()" are not permitted to call variable object methods');
+                    [first last stride] = indexing(s(1).subs, double(size(obj)));
+                    sref = obj.data(first, last, stride);
                 case '{}'
                     warning(['NCTOOLBOX:ncgeovariable:subsref'], ...
                         'Not a supported subscripted reference, "{}" are not permitted to call variable object methods');
