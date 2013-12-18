@@ -552,8 +552,8 @@ classdef ncgeodataset < cfdataset
             
         end
         
-        function ln = getlatdata(obj, variableName, start, last, stride)
-            % NCGEOVARIABLE.gelatdata()
+        function s = getlatdata(obj, variableName, start, last, stride)
+            % NCGEOVARIABLE.getlatdata()
             var = obj.geovariable(variableName);
             sz = var.size();
             switch length(sz)
