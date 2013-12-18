@@ -65,11 +65,14 @@ classdef ncgeovariable < ncvariable
             % NCGEOVARIABLE.NCGEOVARIABLE  Constructor.
             %
             % Use as:
-            %    v = ncvariable(src, variableName, axesVariableNames)
+            %    v = ncgeovariable(src, variableName, axesVariableNames)
             %
             % Preffered Usage:
             %    geo = ncgeodataset(...);
-            %    v = geo.ncgeovariable(variableName);
+            %    v = geo.geovariable(variableName); % uses ncgeodataset.geovariable 
+            % Alternate Usage:
+            %    geo = ncgeodataset(...);
+            %    v = ncgeovariable(geo,variableName,geo.axes(variableName))
             obj = obj@ncvariable(src, variableName, axesVariableNames);
             
             
