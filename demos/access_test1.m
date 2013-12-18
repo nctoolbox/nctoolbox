@@ -44,4 +44,10 @@ data(g3,[1 1 1 1],[10 2 1 1])  % 10x2
 % data(g3,1:10,1:2)  % ERROR: data exceeds matrix dimensions
 % data(n3,1:10,1:2)  % ERROR: data exceeds matrix dimensions
 
+% ncgeodataset{varname} subsref access
+g5 = geo{'TEMP'} % works, returns ncgeovariable
+geo{'TEMP'}(1:10,1:2)       % 10x2
+geo{'TEMP'}(1:10,1:2).data  % 10x2 (works with patch)
+geo{'TEMP'}(1:10,1:2).grid  % structure with subsetted grid
+
 echo off
