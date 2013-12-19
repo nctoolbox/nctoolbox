@@ -613,7 +613,11 @@ classdef ncgeodataset < cfdataset
                             a = substruct('.',s(1).subs);
                             A = builtin('subsref',obj,a);
                             %                         b = substruct('.',s(2).subs,'()',s(2).subs);
-                            B = builtin('subsref',A,s(2:end));
+                            if(s(2).subs == 'close')
+                                builtin('subsref',A,s(2:end));
+                            else
+                                B = builtin('subsref',A,s(2:end));
+                            end
                         else
                             g = substruct('.',s(1).subs,'()',s(2).subs);
                             % g.type = '()';
