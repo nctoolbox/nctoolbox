@@ -22,7 +22,7 @@
 %   >> help ncgeodataset.struct
 %   >> doc ncgeodataset
 %
-% Example:
+% Example 1:
 %
 %   url='http://geoport.whoi.edu/thredds/dodsC/bathy/gom03_v1_0'
 %   nc=ncgeodataset(url)
@@ -30,8 +30,30 @@
 %   zg=nc{'topo'}(500:600,400:500).grid;
 %   pcolorjw(zg.lon,zg.lat,z);
 %
+% Example 2:
+%
+%   url = 'http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/OS_M1_20081008_TS.nc'
+%   geo = ncgeodataset(url)
+%   nm = geo.standard_name('sea_water_temperature')
+%   v = geo{nm} % works, returns ncgeovariable
+%   geo{nm}(1:10,1:2)           % 10x2 {} with matlab indexing
+%   geo{nm}(1:10,1:2).data      % 10x2 (works with patch) 
+%   geo{nm}(1:10,1:2).grid      % structure with subsetted grid
+%   geo.data(nm,[1 1 1 1],[10 2 1 1]) % 10x2 () with netcdf indexing
+%   geo.axes(nm)                % Axis names
+%   geo.extent(nm)              % geographic extent
+%   datestr(geo.timeextent(nm)) % temporal extent
+%   tv=geo.gettimevar(nm)       % ncgeovariable of nm's time
+%   lonv=geo.getlonvar(nm)      % ncgeovariable of nm's latitude
+%   latv=geo.getlatvar(nm)      % ncgeovariable of nm's longitude
+%   tnm=geo.gettimename(nm)     % name of nm's time variable
+%   lonnm=geo.getlonname(nm)    % name of nm's latitude variable
+%   latnm=geo.getlatname(nm)    % name of nm's longitude variable
+%   xnm=geo.getxname(nm)        % name of nm's x variable
+%   ynm=geo.getyname(nm)        % name of nm's y variable
+%
 % See also NCTOOLBOX (https://github.com/nctoolbox/nctoolbox
-% http://code.google.com/p/nctoolbox), cfdataset, ncdataset
+% http://code.google.com/p/nctoolbox), cfdataset, ncdataset, ncgeovariable
 % doc ncgeodataset
 classdef ncgeodataset < cfdataset
     
@@ -530,8 +552,8 @@ classdef ncgeodataset < cfdataset
             
         end
         
-        function ln = getlatdata(obj, variableName, start, last, stride)
-            % NCGEOVARIABLE.gelatdata()
+        function s = getlatdata(obj, variableName, start, last, stride)
+            % NCGEOVARIABLE.getlatdata()
             var = obj.geovariable(variableName);
             sz = var.size();
             switch length(sz)
@@ -633,7 +655,7 @@ classdef ncgeodataset < cfdataset
                         echo off
                         switch s(3).subs
                             case 'data'
-                                B = squeeze(v.data(s(2).subs)); % Adding squeeze of results related to Issue 23
+                                B = squeeze(v.data(s(2).subs{:})); % Adding squeeze of results related to Issue 23
                             case 'grid'
                                 A = v.grid_interop(s(2).subs{:});
                                 try %Filtering added for njtbx similar results, entire syntax will be deprecated in the future
