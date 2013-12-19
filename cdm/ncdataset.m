@@ -18,6 +18,7 @@
 %       be tweaked as needed. (For example, to enable/disable
 %       data caching.) See
 %       http://www.unidata.ucar.edu/software/netcdf-java/v4.2/javadoc/index.html
+%       Examples: ds.netcdf.toString ; ds.netcdf.getLocation ; ds.netcdf.getDetailInfo 
 %   variables = A cell array of all variables in the ncdataset. These names
 %        are used as arguments into other ncdataset methods
 %
@@ -67,6 +68,10 @@ classdef ncdataset < handle
             % If the argument is another instance of ncdataset or one of it's
             % subtypes, such as cfdataset or ncgeodataset then this creates
             % a new ncdataset that shares the underlying data.
+            %
+            % For documentation on the Java ncdataset.netcdf
+            % methods, see
+            % http://www.unidata.ucar.edu/software/thredds/current/netcdf-java/v4.2/javadoc/ucar/nc2/dataset/NetcdfDataset.html  
             if isa(url, 'ncdataset')
                 obj.location = url.location;
                 obj.netcdf = ucar.nc2.dataset.NetcdfDataset.openDataset(url.netcdf.getLocation());
@@ -417,8 +422,9 @@ classdef ncdataset < handle
             % in legacy njtbx code...
         end
         
-        function delete(obj)
+        function B = delete(obj)
             % NCDATASET.DELETE Closes netcdf files when object NCDATASET object is disposed or leaves scope
+            B = 0;
             try
                 obj.netcdf.close()
             catch me
