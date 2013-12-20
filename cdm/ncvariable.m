@@ -68,6 +68,7 @@ classdef ncvariable < handle
         end
         
         function a = get.attributes(obj)
+            % NCVARIABLE.ATTRIBUTES returns the attributes for the variable.
             a = obj.dataset.attributes(obj.name);
         end
         
@@ -85,13 +86,17 @@ classdef ncvariable < handle
         function v = get.name(obj)
             % NCVARIABLE.NAME Provides dynamic access to the underlying
             % netcdf datasets variable name
+            %
+            % Example:
+            %   vname=v.name % returns the name of the variable
+            %
             v = char(obj.variable.getName());
         end
         
         %%
         function n = size(obj)
             % NCVARIABLE.SIZE returns the size of the variable, including
-            % it's singleton dimensions
+            % its singleton dimensions
             n = obj.dataset.size(obj.name);
         end
         
@@ -250,6 +255,10 @@ classdef ncvariable < handle
         %%
         
         function e = end(obj, k, n)
+            % NCVARIABLE.END the last index in an indexing
+            % expression.
+            % v.end(2) % returns the last index of the second dimension.
+            % e.g.: elevation.data(end-3:end,1,1)
             n = obj.dataset.size(obj.name);
             e = n(k);
         end % Added to deal with end indexing functionality,
@@ -316,8 +325,10 @@ classdef ncvariable < handle
         
         %%
         function data = alldata(obj, withData)
-            
-            % ---- Step 2: Add the data
+            % NCVARIABLE.ALLDATA -- extract the data or the axes
+            % v.alldata(1) % returns the data
+            % v.alldata()  % returns a structure with the axesVariables
+            %              % and their data
             if withData == 1
                 name = char(obj.variable.getName());
                 data = obj.dataset.data(name);
@@ -333,7 +344,19 @@ classdef ncvariable < handle
         
         %%
         function data = somedata(obj, withData, first, last, stride)
-            
+            % NCGEOVARIABLE.SOMEDATA -- extract a hyperslab of data
+            % SOMEDATA can extract a subset of data from an NCVARIABLE or
+            % the subset of the corresponding axis variables.
+            % 
+            % Example:
+            %  first=ones(length(v.size));
+            %  last=v.size;
+            %       stride=first;
+            % vd = v.somedata(1,first,last,stride); % returns data
+            % vg = v.somedata(0,first,last,stride); % returns struct w/grid
+            % 
+            % See also NCVARIABLE, NCVARIABLE.ALLDATA,
+            % NCVARIABLE.DATA, NCVARIABLE.GRID
             s = obj.dataset.size(obj.name);
             
             % Fill in missing arguments
