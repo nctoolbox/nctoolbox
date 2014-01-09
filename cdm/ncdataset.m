@@ -1,10 +1,4 @@
-% NCDATASET  Provide access to datasets accessable by the NetCDF 4 API
-%
-% Use as:
-%   ds = ncdataset(dataref)
-%
-% Arguments:
-%   dataref = A reference to a ncdataset that can be accessed by the NetCDF 4
+% NCDATASET  Provide access to datasets accessable by the NetCDF 4 API % % Use as: %   ds = ncdataset(dataref) % % Arguments: %   dataref = A reference to a ncdataset that can be accessed by the NetCDF 4
 %       API. This includes local netcdf files, netcdf files on web servers
 %       and OpenDAP URLs
 %
@@ -420,6 +414,7 @@ classdef ncdataset < handle
         function delete(obj)
             % NCDATASET.DELETE Closes netcdf files when object NCDATASET object is disposed or leaves scope
             try
+                %fprintf(1, 'Closed\n');
                 obj.netcdf.close()
             catch me
                 % Do nothing
