@@ -187,17 +187,20 @@ classdef cfdataset < ncdataset
             %   The reason for providing the 'struct' alternative syntax is
             %   that it may be more familiar to some users.
             v = obj.variable(variableName);
-            switch nargin
-                case 3
-                    s = v.grid(first);
-                    s.(v.name) = v.data(first);
-                case 4
-                    s = v.grid(first, last);
-                    s.(v.name) = v.data(first, last);
-                case 5
-                    s = v.grid(first, last, stride);
-                    s.(v.name) = v.data(first, last, stride);
+            if nargin < 3
+               first = ones(obj.size(variableName));
             end
+            
+            if nargin < 4
+               last = obj.size(variableName); 
+            end
+            
+            if nargin < 5
+               stride = ones(obj.size(variableName));
+            end
+            
+            s = v.grid(first, last, stride);
+            s.(v.name) = v.data(first, last, stride);
 
         end
         
@@ -251,15 +254,18 @@ classdef cfdataset < ncdataset
             %   The reason for providing the 'grid' alternative syntax is
             %   that it may be more familiar to some users.
             v = obj.variable(variableName);
-            
-            switch nargin
-                case 3
-                    s = v.grid(first);
-                case 4
-                    s = v.grid(first, last);
-                case 5
-                    s = v.grid(first, last, stride);
+            if nargin < 3
+               first = ones(obj.size(variableName));
             end
+            
+            if nargin < 4
+               last = obj.size(variableName); 
+            end
+            
+            if nargin < 5
+               stride = ones(obj.size(variableName));
+            end
+            s = v.grid(first, last, stride);
             
         end
         
