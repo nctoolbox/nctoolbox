@@ -16,4 +16,5 @@ function setproxy(proxyname, port)
 % httpClient.getHostConfiguration().setProxy(proxyname, port);
 % ucar.nc2.dataset.NetcdfDataset.setHttpClient(httpClient);
 
-ucar.nc2.util.net.HTTPSession.setGlobalSimpleProxy(proxyname, port)
+%ucar.nc2.util.net.HTTPSession.setGlobalSimpleProxy(proxyname, port)
+ucar.nc2.util.net.HTTPSession.setGlobalProxy(proxyname, port)
