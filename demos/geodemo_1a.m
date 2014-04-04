@@ -95,4 +95,4 @@ shading flat; colorbar; caxis([35 39]);
 
 % Add a title using the global
 % attribute 'title' and the date from our coordinate structure.  
- title({nc.attribute('title'); datestr(salinity_coords.time)})
+ title({nc.attribute('title'); datestr(salinity_coords.time);nc.location},'interpreter','none')

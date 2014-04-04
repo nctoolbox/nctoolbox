@@ -28,12 +28,12 @@ lat=track(:,2);
 hold on;
 plot(lon,lat,'k-o')
 hold off;
-title('Surface temperature and track for vertical section');
+title({'Surface temperature and track for vertical section';url},'interpreter','none');
 
 %% calculate the vertical section using VSLICEG
 [x,y,vdata] = vsliceg(data,grd,lon,lat);
 figure;
 pcolorjw(x,y,vdata);ylabel('m');xlabel('km');
 colorbar
-title('Along-track vertical section of temperature');
+title({'Along-track vertical section of temperature';url},'interpreter','none');
 shading interp

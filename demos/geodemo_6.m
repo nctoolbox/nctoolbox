@@ -36,7 +36,7 @@ pcolorjw(g.lon, g.lat, Uobj.magnitude(itime, klev, :, :));
 colorbar;
 arrows(g.lon(1:end,1:end), g.lat(1:end,1:end),...
     Uobj.vectors(itime, klev, 1:end,1:end), 0.08, 'black');
-title(datestr(g.time));
+title({nc.attribute('title');nc.location;datestr(g.time)},'interpreter','none');
 dasp(44);
 
 %% Plot subset of vectors 
@@ -46,5 +46,5 @@ pcolorjw(g.lon(1:58, 1:70), g.lat(1:58, 1:70), ...
 colorbar; 
 arrows(g.lon(1:2:58,1:2:70), g.lat(1:2:58,1:2:70),...
     Uobj.vectors(itime, klev, 1:2:58,1:2:70), 0.08, 'black');
-title(datestr(g.time));
+title({nc.attribute('title');nc.location;datestr(g.time)},'interpreter','none');
 dasp(44);

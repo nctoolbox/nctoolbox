@@ -32,7 +32,7 @@ plot(ds.time('TIME', t.TIME), t.TEMP)
 cs = cellstr(num2str(t.DEPTH));
 for i = 1:length(cs); cs{i} = [cs{i} ' m'];end
 legend(cs)
-title(['Temperature at ' num2str(t.LATITUDE) 'N, ' num2str(t.LONGITUDE) 'E']);
+title({ds.attribute('title'),ds.location,['Temperature at ' num2str(t.LATITUDE) 'N, ' num2str(t.LONGITUDE) 'E']},'interpreter','none');
 at = ds.attributes('TEMP');
 units = value4key(at, 'units');
 ylabel(char(units));

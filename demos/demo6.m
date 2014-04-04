@@ -15,4 +15,5 @@ grid('on')
 xlabel('meters')
 ylabel('meters')
 zlabel('meters')
+title({'Gratuitis demo showing AUV path',nav.location})
 echo('off') % Ending DEMO6 ------------------------------------------------

@@ -15,5 +15,5 @@ tz = zsliceg(t,g.z,-5);  % return temperature slice at 5 m depth
 
 figure
 pcolorjw(g.lon,g.lat,double(tz));  % plot temp at 5 m depth
-title('Horizontal Section of Temperature at 5 m depth');
+title({'Horizontal Section of Temperature at 5 m depth';uri},'interpreter','none');
 colorbar
