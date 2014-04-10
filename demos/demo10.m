@@ -13,6 +13,7 @@ echo('on')
 
 
 ds = ncdataset('http://elvis.shore.mbari.org/dods/bog/BCTD');
+% URL inaccessible with 404 2014-04-03
 
 % netcdf.getVariables() returns a Java ArrayList we use the java method get(0)
 % to return the first (and in this case only) variable/structure. The result from

@@ -88,4 +88,4 @@ salinity_coords = cf.grid('salt', [1 nz 1 1], [1 nz 60 160], [1 1 1 1])
 % Now let's add a title to the figure that includes the dataset's global
 % attribute title and the date of the data that we subset.
 
- title({nc.attribute('title'); time})
+ title({nc.attribute('title'); time; nc.location},'interpreter','none')

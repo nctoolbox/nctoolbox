@@ -36,7 +36,7 @@ zatt = ds.attributes('temp');
 zname = value4key(zatt, 'long_name');
 zunits = value4key(zatt, 'units'); 
 ztime = ds.time('time1', t.time1);
-title([zname ' [' zunits '] on ' datestr(ztime(1))],'interpreter','none');
+title({ds.attribute('title'),ds.location,[zname ' [' zunits '] on ' datestr(ztime(1))]},'interpreter','none');
 
 colorbar
 shg
