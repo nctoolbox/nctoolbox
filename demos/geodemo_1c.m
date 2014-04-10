@@ -71,4 +71,4 @@ nc = ncgeodataset(url)
 % Now let's add a title to the figure that includes the dataset's global
 % attribute title and the date of the data that we subset.
 
- title({nc.attribute('title'); datestr(salinity_coords.time)})
+ title({nc.attribute('title'); datestr(salinity_coords.time);nc.location},'interpreter','none')
