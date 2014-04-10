@@ -188,7 +188,7 @@ classdef cfdataset < ncdataset
             %   that it may be more familiar to some users.
             v = obj.variable(variableName);
             if nargin < 3
-               first = ones(obj.size(variableName));
+               first = ones(1,length(obj.size(variableName)));
             end
             
             if nargin < 4
@@ -196,7 +196,7 @@ classdef cfdataset < ncdataset
             end
             
             if nargin < 5
-               stride = ones(obj.size(variableName));
+               stride = ones(1,length(obj.size(variableName)));
             end
             
             s = v.grid(first, last, stride);
@@ -255,7 +255,7 @@ classdef cfdataset < ncdataset
             %   that it may be more familiar to some users.
             v = obj.variable(variableName);
             if nargin < 3
-               first = ones(obj.size(variableName));
+               first = ones(1,length(obj.size(variableName)));
             end
             
             if nargin < 4
@@ -263,7 +263,7 @@ classdef cfdataset < ncdataset
             end
             
             if nargin < 5
-               stride = ones(obj.size(variableName));
+               stride = ones(1,length(obj.size(variableName)));
             end
             s = v.grid(first, last, stride);
             
