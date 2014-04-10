@@ -42,8 +42,8 @@ Run the setup_nctoolbox.m function
 This sets up nctoolbox for the current Matlab session only. You will need to add the follwing lines to your startup.m file if you would like nctoolbox automatically when you start Matlab:
 
 
-    % Edit "/Path/to/nctoolbox" to correct nctoolbox directory
-    addpath("/Path/To/nctoolbox")
+    % Edit '/Path/to/nctoolbox' to correct nctoolbox directory
+    addpath('/Path/To/nctoolbox')
     setup_nctoolbox
       
 ###Demos
