@@ -3,17 +3,17 @@
 % models that use UGRID conventions (http://bit.ly/cf_ugrid), allowing 
 % comparison with no model specific code
 titl{1}='ADCIRC';
-uris{1}='http://testbedapps-dev.sura.org/thredds/dodsC/in/und/adcirc/ike/ultralite/lr/vardrag/wave/2d'
+uris{1}='http://comt.sura.org/thredds/dodsC/comt_1_archive_full/inundation_tropical/UND_ADCIRC/Hurricane_Ike_2D_final_run_with_waves/00_dir.ncml'
 vars{1}='zeta';
 times{1}=[2008 9 13 06 0 0];
 
 titl{2}='SELFE';
-uris{2}='http://testbedapps-dev.sura.org/thredds/dodsC/in/vims/selfe/ike/ultralite/vardrag/wave/2d';
+uris{2}='http://comt.sura.org/thredds/dodsC/comt_1_archive_full/inundation_tropical/VIMS_SELFE/Hurricane_Ike_2D_final_run_with_waves/00_dir.ncml';
 vars{2}='elev';
 times{2}=[2008 9 13 06 0 0];
 
 titl{3}='FVCOM';
-uris{3}='http://testbedapps-dev.sura.org/thredds/dodsC/in/usf/fvcom/ike/ultralite/vardrag/wave/2d';
+uris{3}='http://comt.sura.org/thredds/fileServer/comt_1_archive_full/inundation_tropical/USF_FVCOM/Hurricane_Ike_2D_final_run_with_waves/00_dir.ncml';
 vars{3}='zeta';
 times{3}=[2008 9 13 06 0 0];
 % bounding box for figures
@@ -42,7 +42,9 @@ for i=1:length(uris)
   trivar_name=gridvar.attribute('face_node_connectivity');
   
   % get connnectivity array data
-  tri=nc{trivar_name}(:);
+  % tri=nc{trivar_name}(:); % fails: ncgeovariable-type access on an ncvariable
+  %tri=nc.data{trivar_name} ; %works
+  tri=data(nc{trivar_name}) ; % works
   [m,n]=size(tri);
   % check/fix orientation of connectivity array
   if m==3,
