@@ -66,7 +66,7 @@
 
 <p>All types of datasets (NetCDF, HDF5, OpenDAP) are read exactly the same way. Want to read data from an OpenDAP URL?</p>
 
-<pre><code>ds = ncgeodataset('http://geoport.whoi.edu/thredds/dodsC/coawst_2_2/fmrc/coawst_2_2_best.ncd')
+<pre><code>ds = <a href="https://github.com/nctoolbox/nctoolbox/wiki/ncgeodataset">ncgeodataset</a>('http://geoport.whoi.edu/thredds/dodsC/coawst_2_2/fmrc/coawst_2_2_best.ncd')
 time_run = ds.data('time_run');
 </code></pre>
 
@@ -109,21 +109,46 @@ lwrad = ds.data('lwrad', [10000 100 400], [10100 105 400], [1 1 1]) % With Strid
 
 <p>This sets up nctoolbox for the current Matlab session only. You will need to add the follwing lines to your startup.m file if you would like nctoolbox automatically when you start Matlab:</p>
 
-<pre><code>% Edit "/Path/to/nctoolbox" to correct nctoolbox directory
-addpath("/Path/To/nctoolbox")
-setup_nctoolbox
+<pre><code>% Edit '/Path/to/nctoolbox' to correct nctoolbox directory
+addpath('/Path/To/nctoolbox');
+setup_nctoolbox;
 </code></pre>
 
 <h3>Demos</h3>
 
 <ul>
 <li>Demos that display basic functionality are in the 'demos' subdirectory.  These demos
- can fail if the machines serving the remote data access URLs are unavailable.</li>
+ can fail if the machines serving the remote data access URLs are
+  unavailable.  A gallery of these demos is available <a href="http://nctoolbox.github.io/nctoolbox/demos.html">here</a>.</li>
 <li>Contributed demos that display additional or specialized functionality are in 
  the demos/contrib directory.  Some of these depend on accessing remote sites for
  data that can be less reliable than the data URLs in the 'demos' directory.</li>
 </ul>
-      </section>
+
+<h3>Documentation</h3>
+
+<ul>
+  <li>We are migrating the documentation from <a
+  href="http://code.google.com/p/nctoolbox/wiki/Documentation">GoogleCode
+  nctoolbox documentation</a>
+  to <a
+  href="https://github.com/nctoolbox/nctoolbox/wiki/Documentation">Github
+  nctoolbox documentation</a>. </li>
+  <li>Descriptions of the nctoolbox clasees are available as <a
+  href="https://github.com/nctoolbox/nctoolbox/wiki/NctoolboxClasses">NctoolboxClasses</a>.</li>
+  <li>This repository includes a number of useful <a
+  href="https://github.com/nctoolbox/nctoolbox/wiki/NctoolboxUtilityFunctions">utility
+  functions</a>.</li>
+  <li>The <a
+  href="https://github.com/nctoolbox/nctoolbox/wiki">wiki</a> includes
+  <a href="https://github.com/nctoolbox/nctoolbox/wiki/Documentation">documentation</a> on <a
+  href="https://github.com/nctoolbox/nctoolbox/wiki/UsingNcdataset">using
+  ncdataset</a> and <a
+  href="https://github.com/nctoolbox/nctoolbox/wiki/UsingNcgeodataset">using ncgeodataset</a>.</li>
+</ul>
+
+
+</section>
       <footer>
         <!--<p>This project is maintained by <a href="https://github.com/nctoolbox">nctoolbox</a></p>-->
         <small>Hosted on GitHub Pages &mdash; Based on theme by <a href="https://github.com/orderedlist">orderedlist</a></small>
