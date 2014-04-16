@@ -12,7 +12,7 @@ function [p1,p2]=iso_plot(data,g,iso_value,vax);
 % [t,g]=nj_tslice(uri,'temp',1);% grab 3d field of 'temp' at time step 1
 % [p1,p2]=iso_plot(t,g,14,300); % plot 14 degree isosurface with vert exag = 300
 %
-% NCTOOLBOX (http://code.google.com/p/nctoolbox)
+% NCTOOLBOX (https://github.com/nctoolbox/nctoolbox)
 g.z=squeeze(g.z);
 data=squeeze(data);
 h=squeeze(min(g.z)); % find deepest z values at each grid point

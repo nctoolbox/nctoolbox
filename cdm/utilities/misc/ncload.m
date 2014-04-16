@@ -10,7 +10,7 @@ function [v]=ncload(url,var)
 %                If supplied, loads variables into structure
 %                If not supplies, loads variables into workspace
 
-% NCTOOLBOX (http://code.google.com/p/nctoolbox)
+% NCTOOLBOX (https://github.com/nctoolbox/nctoolbox)
 nc=ncgeodataset(url);
 if nargin==1,
   for i=1:length(nc.variables)

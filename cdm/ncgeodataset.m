@@ -53,7 +53,7 @@
 %   ynm=geo.getyname(nm)        % name of nm's y variable
 %
 % See also NCTOOLBOX (https://github.com/nctoolbox/nctoolbox
-% http://code.google.com/p/nctoolbox), cfdataset, ncdataset, ncgeovariable
+% https://github.com/nctoolbox/nctoolbox), cfdataset, ncdataset, ncgeovariable
 % doc ncgeodataset
 classdef ncgeodataset < cfdataset
     

@@ -3,7 +3,7 @@ function interpolatedvalues = interptoxy(data, lon, lat, x, y, method)
 % location or set of locations when inputs are vectors of the same length.
 % Usage: data = interptoxy(data, datalon, datalat, -77, 45, 'linear');
 %
-% NCTOOLBOX (http://code.google.com/p/nctoolbox)
+% NCTOOLBOX (https://github.com/nctoolbox/nctoolbox)
 s = size(data);
 if length(x) ~= length(y)
   error('NCTOOLBOX:interptoxy','Input coordinate vectors do not agree.')

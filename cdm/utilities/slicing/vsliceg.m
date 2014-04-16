@@ -21,7 +21,7 @@ function varargout = vsliceg(njData,njGrid,cx,cy, varargin)
 %    shading flat
 %
 %
-% NCTOOLBOX (http://code.google.com/p/nctoolbox)
+% NCTOOLBOX (https://github.com/nctoolbox/nctoolbox)
 
 % error(nargchk(4,4,nargin,'struct'));
 coords=[cx(:) cy(:)];
