@@ -2,13 +2,8 @@ NCTOOLBOX
 =========
 
 Download the latest release:
-[You can download the latest stable release at by clicking here.](https://github.com/nctoolbox/nctoolbox/tags)
+[You can download the latest stable release at by clicking here.](https://github.com/nctoolbox/nctoolbox/releases)
 
-
-Full instructions and documentation at:
-http://code.google.com/p/nctoolbox/
-
-We are in the progress of moving the project hosting here to github.com.
 
 ##Brief summary:
 
@@ -47,15 +42,25 @@ Run the setup_nctoolbox.m function
 This sets up nctoolbox for the current Matlab session only. You will need to add the follwing lines to your startup.m file if you would like nctoolbox automatically when you start Matlab:
 
 
-    % Edit "/Path/to/nctoolbox" to correct nctoolbox directory
-    addpath("/Path/To/nctoolbox")
+    % Edit '/Path/to/nctoolbox' to correct nctoolbox directory
+    addpath('/Path/To/nctoolbox')
     setup_nctoolbox
       
 ###Demos
 
   * Demos that display basic functionality are in the 'demos' subdirectory.  These demos
-     can fail if the machines serving the remote data access URLs are unavailable.
+     can fail if the machines serving the remote data access URLs are unavailable. A gallery
+     of these demos is [visible on github](http://nctoolbox.github.io/nctoolbox/demos.html).
   * Contributed demos that display additional or specialized functionality are in 
      the demos/contrib directory.  Some of these depend on accessing remote sites for
      data that can be less reliable than the data URLs in the 'demos' directory.
+
+###Documentation
+
+  * We are migrating the documentation from the [GoogleCode nctoolbox documentation](http://code.google.com/p/nctoolbox/wiki/Documentation) to the [Github nctoolbox documentation](https://github.com/nctoolbox/nctoolbox/wiki/Documentation).
+  * Descriptions of the nctoolbox classes are available as [NctoolboxClasses](https://github.com/nctoolbox/nctoolbox/wiki/NctoolboxClasses).
+  * This repository includes a number of useful [utility functions](https://github.com/nctoolbox/nctoolbox/wiki/NctoolboxUtilityFunctions).
+  * The [wiki](https://github.com/nctoolbox/nctoolbox/wiki) includes [documentation](https://github.com/nctoolbox/nctoolbox/wiki/Documentation) on [using ncdataset](https://github.com/nctoolbox/nctoolbox/wiki/UsingNcdataset) and [using ncgeodataset](https://github.com/nctoolbox/nctoolbox/wiki/UsingNcgeodataset).
+  * Several of the [demos](https://github.com/nctoolbox/nctoolbox/tree/master/demos) are rendered in the [demos gallery](http://nctoolbox.github.io/nctoolbox/demos.html).
+
 

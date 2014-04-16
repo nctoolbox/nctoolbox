@@ -12,7 +12,7 @@ function varz = zsliceg(data, z, depth)
 % tz = zsliceg(t,g.z,-5);  % return temperature slice at 5 m depth
 % pcolorjw(g.lon,g.lat,double(tz));  % plot temp at 5 m depth
 %
-% NCTOOLBOX (http://code.google.com/p/nctoolbox)
+% NCTOOLBOX (https://github.com/nctoolbox/nctoolbox)
 
 [NZ,NY,NX]=size(data);
 [nz,ny,nx]=size(z);

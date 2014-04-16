@@ -15,7 +15,7 @@
 %
 %
 % See also CFDATASET, SIZE, DATA
-% NCTOOLBOX (http://code.google.com/p/nctoolbox)
+% NCTOOLBOX (https://github.com/nctoolbox/nctoolbox)
 classdef ncvariable < handle
     
     properties (SetAccess = private)

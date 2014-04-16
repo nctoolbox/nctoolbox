@@ -16,7 +16,7 @@ function [start last stride] = indexing(indices, varShape)
 % and modified to suit our needs.
 %
 % Modified by Alexander Crosby 2010, 2011 (nctoolbox)
-% http://code.google.com/p/nctoolbox
+% https://github.com/nctoolbox/nctoolbox
 
 %init
 start = ones(1, length(varShape));

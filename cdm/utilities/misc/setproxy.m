@@ -1,6 +1,6 @@
 function setproxy(proxyname, port)
 % SETPROXY - Set the proxy to use when making all remote calls with
-% NCTOOLBOX (http://code.google.com/p/nctoolbox)
+% NCTOOLBOX (https://github.com/nctoolbox/nctoolbox)
 %
 % Use as: setproxy(proxyname, port)
 %

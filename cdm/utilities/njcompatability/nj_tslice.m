@@ -17,7 +17,7 @@ function [data,grd]=nj_tslice(ncRef,var,iTime,level)
 %   [data,grd_temp]=nj_tslice(uri,'temp',2); % get 3D data at time step 2
 %   [data,grd_temp]=nj_tslice(uri,'h'); % Retrieve 2D non time dependent array
 %
-% NCTOOLBOX (http://code.google.com/p/nctoolbox)
+% NCTOOLBOX (https://github.com/nctoolbox/nctoolbox)
 
 if nargin < 2, help(mfilename), return, end
 try

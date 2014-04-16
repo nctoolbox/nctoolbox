@@ -6,7 +6,7 @@
 %         >> modellook(daplink, datenum)
 %         >> modellook('uri',daplink,'date',datenum,'level',1)
 %
-% NCTOOLBOX (http://code.google.com/p/nctoolbox)
+% NCTOOLBOX (https://github.com/nctoolbox/nctoolbox)
 %
 function [] = modellook(varargin)
 

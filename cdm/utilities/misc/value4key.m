@@ -21,7 +21,7 @@ function v = value4key(a, key)
 %   at = ds.attributes('TEMP');
 %   units = value4key(at, 'units'); % returns 'celsius'
 %
-% NCTOOLBOX (http://code.google.com/p/nctoolbox)
+% NCTOOLBOX (https://github.com/nctoolbox/nctoolbox)
 
 keys = a(:, 1);    % Cell array of keys
 values = a(:, 2);  % Cell array of values
