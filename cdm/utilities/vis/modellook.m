@@ -5,7 +5,7 @@
 % Usage : >> modellook(daplink, datevec)
 %             >> modellook(daplink, datenum)
 %
-% NCTOOLBOX (http://code.google.com/p/nctoolbox)
+% NCTOOLBOX (https://github.com/nctoolbox/nctoolbox)
 %
 function [] = modellook(varargin)
 input_hash = arg2hash(varargin);

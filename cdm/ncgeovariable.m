@@ -32,7 +32,7 @@
 %  vg.getyname
 %
 % NCTOOLBOX (https://github.com/nctoolbox/nctoolbox
-% http://code.google.com/p/nctoolbox)
+% https://github.com/nctoolbox/nctoolbox/wiki/ncgeovariable)
 % See also ncvariable, ncgeodataset, ncgeodataset.geovariable
 classdef ncgeovariable < ncvariable
     

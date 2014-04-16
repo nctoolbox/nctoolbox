@@ -1,9 +1,9 @@
 NCTOOLBOX - 20130305
 
-Full instructions and documentation at:
-http://code.google.com/p/nctoolbox/
+Full instructions and documentation are being ported from 
+http://code.google.com/p/nctoolbox/ to https://github.com/nctoolbox/nctoolbox/wiki/Documentation
 
-We are in the progress of moving the project hosting here to github.com.
+We are in the progress of moving the project hosting to github.com.
 
 Brief summary:
 
@@ -26,8 +26,8 @@ Brief summary:
      You will need to add the follwing lines to your startup.m file if you would like 
      nctoolbox automatically when you start Matlab:
 
-        % Edit "/Path/to/nctoolbox" to correct nctoolbox directory
-        addpath("/Path/To/nctoolbox")
+        % Edit '/Path/to/nctoolbox' to correct nctoolbox directory
+        addpath('/Path/To/nctoolbox')
         setup_nctoolbox
       
 III. Demos

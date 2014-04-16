@@ -3,7 +3,7 @@
           % GETINTERP - Get interpolant of gridded data.
           % Useage: >> int = getinterp(data, lon, lat, method);
           %
-          % NCTOOLBOX (http://code.google.com/p/nctoolbox)
+          % NCTOOLBOX (https://github.com/nctoolbox/nctoolbox)
           s = size(data);
 %           if length(x) ~= length(y)
 %             error('NCTOOLBOX:interptoxy','Input coordinate vectors do not agree.')

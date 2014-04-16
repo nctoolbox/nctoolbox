@@ -38,7 +38,7 @@
 % Brian Schlining
 % 2009-10-21
 % Alexander Crosby 2010, 2011
-% NCTOOLBOX (https://github.com/nctoolbox/nctoolbox http://code.google.com/p/nctoolbox)
+% NCTOOLBOX (https://github.com/nctoolbox/nctoolbox https://github.com/nctoolbox/nctoolbox/wiki/cfdataset)
 
 classdef cfdataset < ncdataset
     

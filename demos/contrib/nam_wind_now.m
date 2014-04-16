@@ -10,7 +10,7 @@
 %    - select "nam_na_00z" or "nam_na_06z", for 33 km
 
 % Rich Signell (rsignell@usgs.gov)
-% NCTOOLBOX (http://code.google.com/p/nctoolbox/)
+% NCTOOLBOX (https://github.com/nctoolbox/nctoolbox)
 
 jd=now_utc; % gets the current time in UTC
 g=datevec(jd-6/24); % go for forecast 6 hours before

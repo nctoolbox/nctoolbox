@@ -25,7 +25,7 @@ function [Tvar,Tdis,Tzed,Tlon,Tlat] = ...
 % modified by Weifeng Gordon Zhang
 % and by John Wilkin 2011-01-26
 % Alexander Crosby 2011 April - Update to using new toolbox
-% NCTOOLBOX (http://code.google.com/p/nctoolbox)
+% NCTOOLBOX (https://github.com/nctoolbox/nctoolbox)
 %
 % Modified 2013-09-13 John Wilkin because the release version is throwing
 % java heap space errors in handling the time coordinate with grid_interop.

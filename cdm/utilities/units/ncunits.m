@@ -1,7 +1,7 @@
 % NCUNITS - Function to do unit conversions using the ucar.units library in the Unidata netcdf-java
 % package.
 %
-% NCTOOLBOX (http://code.google.com/p/nctoolbox)
+% NCTOOLBOX (https://github.com/nctoolbox/nctoolbox)
 %
 % Usage: converted_data = ncunits(data, 'm/s', 'cm/s');
 %
