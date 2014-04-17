@@ -49,8 +49,17 @@ This sets up nctoolbox for the current Matlab session only. You will need to add
 ###Demos
 
   * Demos that display basic functionality are in the 'demos' subdirectory.  These demos
-     can fail if the machines serving the remote data access URLs are unavailable.
+     can fail if the machines serving the remote data access URLs are unavailable. A gallery
+     of these demos is [visible on github](http://nctoolbox.github.io/nctoolbox/demos.html).
   * Contributed demos that display additional or specialized functionality are in 
      the demos/contrib directory.  Some of these depend on accessing remote sites for
      data that can be less reliable than the data URLs in the 'demos' directory.
+
+###Documentation
+
+  * We are migrating the documentation from the [GoogleCode nctoolbox documentation](http://code.google.com/p/nctoolbox/wiki/Documentation) to the [Github nctoolbox documentation](https://github.com/nctoolbox/nctoolbox/wiki/Documentation).
+  * Descriptions of the nctoolbox clasees are available as [NctoolboxClasses](https://github.com/nctoolbox/nctoolbox/wiki/NctoolboxClasses).
+  * This repository includes a number of useful [utility functions](https://github.com/nctoolbox/nctoolbox/wiki/NctoolboxUtilityFunctions).
+  * The [wiki](https://github.com/nctoolbox/nctoolbox/wiki) includes documentation(https://github.com/nctoolbox/nctoolbox/wiki/Documentation) on [using ncdataset](https://github.com/nctoolbox/nctoolbox/wiki/UsingNcdataset) and [using ncgeodataset](https://github.com/nctoolbox/nctoolbox/wiki/UsingNcgeodataset).
+
 
