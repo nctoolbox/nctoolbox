@@ -1,0 +1,7 @@
+<netcdf xmlns="http://www.unidata.ucar.edu/namespaces/netcdf/ncml-2.2">
+  <aggregation dimName="esecs" type="joinExisting">
+    <netcdf location="http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200610/m1_aanderaaoxy_20070105.nc" />
+    <netcdf location="http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200711/m1_aanderaaoxy_20071106.nc" />
+    <netcdf location="http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/m1_aanderaaoxy_20081008.nc" />
+  </aggregation>
+</netcdf>
