@@ -7,7 +7,7 @@ time_ = 'esecs';
 %% ---- Create the full pathname for an ncml file
 
 scriptname = which('demo3c');  %% find the absolute path of a local file
-fName = strrep(x,'.m','.ncml') ; % create a path to the associated ncml file
+fName = strrep(scriptname,'.m','.ncml') ; % create a path to the associated ncml file
 
 if ~exist(fName,'file')
   error(strcat(fName,' does not exist.'));
