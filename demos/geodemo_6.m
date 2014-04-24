@@ -1,12 +1,11 @@
-%% GEODEMO_6
-% Extracting a layer of velocity from a C-GRID model like ROMS
+% GEODEMO_6 - Extracting a layer of velocity from a C-GRID model like ROMS
 url = 'http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc';
 hname = 'h';
 uname = 'u';
 vname = 'v';
 aname = 'angle';
 
-%% Use NCTOOLBOX for data access
+%% Use NCTOOLBOX ncgeodataset for data access
 % Create a geodataset object that represents the dataset from the opendap endpoint
 nc = ncgeodataset(url);
 

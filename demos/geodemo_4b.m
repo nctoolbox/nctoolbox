@@ -1,16 +1,15 @@
-%% GEODEMO_4b
-% Compare horizontal slices from two different CF compliant structured
+%% GEODEMO_4b Compare horizontal slice subsets from two different CF compliant structured
 % grid models (CH3D and ROMS) at a particular time step and depth, using
 % geosubset to subset the data
 
 clear 
 
-%% CH3D
+%% CH3D salinity
 url{1}='http://testbedapps.sura.org/thredds/dodsC/estuarine_hypoxia/ch3d/agg.nc';
 var{1}='salinity';
 titl{1}='CH3D';
 
-%% ROMS
+%% ROMS salt
 url{2}='http://testbedapps.sura.org/thredds/dodsC/estuarine_hypoxia/chesroms_1tdo/agg.nc';
 var{2}='salt';
 titl{2}='CHESROMS';

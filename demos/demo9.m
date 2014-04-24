@@ -1,20 +1,20 @@
-% DEMO9 - Like demo8 but uses 'struct' sytax to access a variable
+% DEMO9 - subsetting with cfdataset like demo8 but uses 'struct' sytax to access a variable
 % and it's coordinate axis data
 
 echo('on')
 % Starting DEMO9 ----------------------------------------------------------
-% Demonstration of subsetting a CF convention dataset
+%% Demonstration of subsetting a CF convention dataset
 
 url='http://geoport.whoi.edu/thredds/dodsC/coawst_2_2/fmrc/coawst_2_2_best.ncd';
 ds = cfdataset(url);
 
-% Grab the variable of interest. No data is being read yet.
+%% Grab the variable of interest. No data is being read yet.
 sz = ds.size('temp');
 
-% Grab a subset of the data. Data is now being pulled across the network
+%% Grab a subset of the data. Data is now being pulled across the network
 t = ds.struct('temp', [sz(1) sz(2) 1 1], [sz(1) sz(2) sz(3) sz(4)]);
 
-% Make a pretty plot. Note the call to 'squeeze'. This removes
+%% Make a pretty plot. Note the call to 'squeeze'. This removes
 % singleton dimensions.
 figure;
 surf(t.lon_rho, t.lat_rho, double(squeeze(t.temp)))

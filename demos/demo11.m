@@ -1,4 +1,4 @@
-% DEMO11 - Simple use of ncgeodataset
+% DEMO11 - Simple matlab-style use of ncgeodataset
 echo on
 url = 'http://geoport.whoi.edu/thredds/dodsC/bathy/gom03_v1_0';
 nc = ncgeodataset(url);

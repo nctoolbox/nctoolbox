@@ -1,4 +1,4 @@
-% DEMO3 - Chaining files and finding attributes
+% DEMO3 - Chaining files and finding attributes with ncdataset
 
 echo('on')
 % Starting DEMO3 ----------------------------------------------------------

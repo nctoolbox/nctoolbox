@@ -1,7 +1,7 @@
-% DEMO4 - Playing with NetCDF-JAVA
+% DEMO4 - Playing with NetCDF-JAVA functions
 echo('on')
 % Starting DEMO4 ----------------------------------------------------------
-% Example of data access using the NetCDF-Java API
+%% ---- Example of data access using the NetCDF-Java API
 ds = ncdataset('http://geoport.whoi.edu/thredds/dodsC/examples/OS_MBARI-M1_20091020_R_TS.nc');
 nc = ds.netcdf;
 
@@ -16,7 +16,7 @@ nc.getUseNaNs()
 % NOTE: This switches ALL netcdf files not just the one you are working on.
 % nc.setUseNaNs(0)
 
-%% ---- Dump NcML using Java API
+%% ---- Dump NcML to file using Java API
 out = java.io.BufferedWriter(java.io.FileWriter('trash_me.xml'));
 nc.writeNcML(out, '')
 out.close()

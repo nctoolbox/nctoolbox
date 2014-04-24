@@ -3,7 +3,7 @@
 echo('on')
 % Starting DEMO5 ----------------------------------------------------------
 % Accessing both local and remote NetCDF files.
-%% ---- Open datasets
+%% ---- Open local and remote datasets
 ds = {  ...
     ncdataset('m1_pco2.nc'), ... % ---- Open local NetCDF
     ncdataset('http://www.mbari.org/staff/brian/pub/m1_pco2.nc') ... % ---- Open NetCDF on webserver

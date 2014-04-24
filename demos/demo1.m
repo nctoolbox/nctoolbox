@@ -1,4 +1,4 @@
-% DEMO1 - Basic data access
+% DEMO1 - Basic ncdataset data access
 echo('on')
 % STARTING DEMO1 ----------------------------------------------------------
 % Basic usage of ncdataset

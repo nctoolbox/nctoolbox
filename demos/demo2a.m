@@ -1,8 +1,8 @@
-% DEMO2A - Subsetting data with Matlab style indexing
+% DEMO2A - Subsetting ncgeodataset data with Matlab style indexing
 
 echo('on')
 % STARTING DEMO2A ----------------------------------------------------------
-% An example of subsetting data using ncdataset
+% An example of subsetting data using ncgeodataset
 
 %% ---- Open the dataset
 ds = ncgeodataset('http://geoport.whoi.edu/thredds/dodsC/examples/OS_M1_20081008_TS.nc')

@@ -1,4 +1,4 @@
-% DEMO2 - Subsetting data
+% DEMO2 - Subsetting ncdataset data
 echo('on')
 % STARTING DEMO2 ----------------------------------------------------------
 % An example of subsetting data using ncdataset

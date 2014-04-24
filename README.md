@@ -58,8 +58,9 @@ This sets up nctoolbox for the current Matlab session only. You will need to add
 ###Documentation
 
   * We are migrating the documentation from the [GoogleCode nctoolbox documentation](http://code.google.com/p/nctoolbox/wiki/Documentation) to the [Github nctoolbox documentation](https://github.com/nctoolbox/nctoolbox/wiki/Documentation).
-  * Descriptions of the nctoolbox clasees are available as [NctoolboxClasses](https://github.com/nctoolbox/nctoolbox/wiki/NctoolboxClasses).
+  * Descriptions of the nctoolbox classes are available as [NctoolboxClasses](https://github.com/nctoolbox/nctoolbox/wiki/NctoolboxClasses).
   * This repository includes a number of useful [utility functions](https://github.com/nctoolbox/nctoolbox/wiki/NctoolboxUtilityFunctions).
   * The [wiki](https://github.com/nctoolbox/nctoolbox/wiki) includes [documentation](https://github.com/nctoolbox/nctoolbox/wiki/Documentation) on [using ncdataset](https://github.com/nctoolbox/nctoolbox/wiki/UsingNcdataset) and [using ncgeodataset](https://github.com/nctoolbox/nctoolbox/wiki/UsingNcgeodataset).
+  * Several of the [demos](https://github.com/nctoolbox/nctoolbox/tree/master/demos) are rendered in the [demos gallery](http://nctoolbox.github.io/nctoolbox/demos.html).
 
 

@@ -1,4 +1,4 @@
-% DEMO9A - Like demo9 but uses 'grid' and 'data' sytax to access a variable
+% DEMO9A - subsetting with cfdataset like demo9 but uses 'grid' and 'data' sytax to access a variable
 % and it's coordinate axis data in 2 seperate steps instead of the single
 % call to 'struct' used in demo9a. You may want to do this if you need to
 % subset base on the coordinates of a variable before pulling across a 

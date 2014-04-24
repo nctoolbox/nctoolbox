@@ -1,4 +1,4 @@
-% DEMO10 - Example of working with Structures using Netcdf-Java API. 
+% DEMO10 - Example of working with Java Structures using Netcdf-Java API. 
 % This is just a reference until we decide how to best wrap this in a Matlab API.
 % Also, this code is probably naive, I don't usually work with Structures. The 
 % samples represent CTD bottle data.
@@ -15,11 +15,12 @@ echo('on')
 ds = ncdataset('http://elvis.shore.mbari.org/dods/bog/BCTD');
 % URL inaccessible with 404 2014-04-03
 
-% netcdf.getVariables() returns a Java ArrayList we use the java method get(0)
+%% netcdf.getVariables() returns a Java ArrayList we use the java method get(0)
 % to return the first (and in this case only) variable/structure. The result from
 % 'get' is also a Java ArrayList
 bctd = ds.netcdf.getVariables().get(0)
 
+%% Use NetCDF-Java copyto*JavaArrary()
 % Read in the data of interest. I'm just reading in all the data for each variable
 % of interest, then subsetting it in memory.
 depth = bctd.findVariable('DEPTH').read().copyToNDJavaArray();

@@ -1,4 +1,4 @@
-% DEMO3B - Chaining files and finding attributes using 'value4key'
+% DEMO3B - Chaining files with ncdataset and finding attributes using 'value4key'
 
 echo('on')
 o2_ = 'Oxygen';
