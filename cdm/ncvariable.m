@@ -190,6 +190,52 @@ classdef ncvariable < handle
             end
         end
         
+        function d = mdata(obj,varargin)
+        % NCVARIABLE.mdata retrieve data with Matlab-style indexing
+        % provide matlab-style indexing access to data
+        %
+                        % Usage:
+        %   d = ncvariable.mdata  % all the data
+        %   d = ncvariable.mdata() % all the data
+        %   d = ncvariable.mdata(:) % all the data
+        %   d = ncvariable.mdata(end-3:end,1:3,:,:,:,:) % suset of
+        %   the data
+            %
+            %   If no arguments are provided all the data is returned.
+            %
+            % Arguments:
+            %   first = The first point you want to retrieve (first point idx = 1)
+            %   last  = The last point you want to retrive (default is the end of
+            %       the data array)
+            %   stride = The stride spacing (default is 1)
+            %   NOTE! first, last, and stride must be matrices the same size as the
+            %       matrix returned by NCDATASET.SIZE or SIZE
+            %
+            % Returns:
+            %   The data is returned as a variable containing the actual data for the netcdf variable
+            %
+            % Example:
+            %
+            %   ds = cfdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/OS_M1_20081008_TS.nc');
+            %   v = ds.variable('TEMP');
+        %   t = v.mdata; size(t)  % all
+        %   t = v.mdata(); size(t)  % all
+        %   t = v.mdata(:); size(t) % all
+        %   t = v.mdata(:,:); size(t) % all
+        %   t = v.mdata(1,end,:); size(t)  % 1x1 sample
+        %   t = v.mdata(end-2:end,3:2:7); size(t) % 3x3 hyperslab
+        %   t = v.mdata(-1,end); size(t) % last value
+            %
+            osize = double(size(obj));
+            [vr,vc]=size(varargin);
+            if vc == 0   % handle .mdata and mdata() cases
+                varargin = {{':'}};
+            end
+            [first, last, stride] = indexing(varargin, ...
+                                             osize);
+            d=obj.data(first,last,stride);
+        end
+
         function g = grid(obj, first, last, stride)
             % NCVARIABLE.GRID Retrieve all or a subset of the coordinate
             % data for the variable. The data is returned as a structure
