@@ -645,18 +645,18 @@ classdef ncgeodataset < cfdataset
                     echo off
                     v = obj.geovariable(s(1).subs);
                     echo on
-                    if length(s) == 1
+                    if length(s) == 1  % assume ncgeodataset{varname}
                         B = v;
-                    elseif length(s) == 2
+                    elseif length(s) == 2 % assume ncgeodataset{varname}(...) 
                         echo off
                         B = v.data(s(2).subs{:});
                         echo on
-                    elseif length(s) == 3
+                    elseif length(s) == 3  % assume ncgeodataset{varname}????? 
                         echo off
                         switch s(3).subs
-                            case 'data'
+                            case 'data'    % assume ncgeodataset{varname}.data(...)  ????
                                 B = squeeze(v.data(s(2).subs{:})); % Adding squeeze of results related to Issue 23
-                            case 'grid'
+                            case 'grid'    % assume ncgeodataset{varname}.grid(...)  ?????
                                 A = v.grid_interop(s(2).subs{:});
                                 try %Filtering added for njtbx similar results, entire syntax will be deprecated in the future
                                     B.time = squeeze(A.time); % Adding squeeze of results related to Issue 23
