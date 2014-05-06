@@ -682,6 +682,8 @@ classdef ncgeodataset < cfdataset
                                     B.y = squeeze(A.y); % Adding squeeze of results related to Issue 23
                                 catch me
                                 end
+                            case 'mdata'    % assume ncgeodataset{varname}.data(...)  ????
+                                B = squeeze(v.mdata(s(3).subs{:})); 
                         end
                         echo on
                     else
