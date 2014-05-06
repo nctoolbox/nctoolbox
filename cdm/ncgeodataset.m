@@ -649,7 +649,7 @@ classdef ncgeodataset < cfdataset
                         B = v;
                     elseif length(s) == 2 % assume ncgeodataset{varname}(...) 
                         echo off
-                        B = v.data(s(2).subs{:});
+                        B = v.mdata(s(2).subs{:});
                         echo on
                     elseif length(s) == 3  % assume ncgeodataset{varname}(matlab indexes).method 
                         echo off
