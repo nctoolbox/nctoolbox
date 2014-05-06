@@ -651,12 +651,12 @@ classdef ncgeodataset < cfdataset
                         echo off
                         B = v.data(s(2).subs{:});
                         echo on
-                    elseif length(s) == 3  % assume ncgeodataset{varname}????? 
+                    elseif length(s) == 3  % assume ncgeodataset{varname}(matlab indexes).method 
                         echo off
                         switch s(3).subs
-                            case 'data'    % assume ncgeodataset{varname}.data(...)  ????
+                            case 'data'    % assume ncgeodataset{varname}(matlab indexes).data
                                 B = squeeze(v.data(s(2).subs{:})); % Adding squeeze of results related to Issue 23
-                            case 'grid'    % assume ncgeodataset{varname}.grid(...)  ?????
+                            case 'grid'    % assume ncgeodataset{varname}(matlab indexes).grid
                                 A = v.grid_interop(s(2).subs{:});
                                 try %Filtering added for njtbx similar results, entire syntax will be deprecated in the future
                                     B.time = squeeze(A.time); % Adding squeeze of results related to Issue 23
