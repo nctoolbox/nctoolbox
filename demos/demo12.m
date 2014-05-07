@@ -6,4 +6,10 @@ nc=ncgeodataset(url)
 varname = 'temp';
 V=nc.geovariable(varname);
 lon=nc{V.getlonname}(:,:); 
+lat=nc{V.getlatname}(:,:); 
+temp=nc{varname}(1,1,:,:);
+pcolorjw(lon,lat,temp);
+colorbar
+% acknowledge source
+title({nc.attribute('title'),nc.location,V.attribute('long_name')},'interpreter','none')
 
