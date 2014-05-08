@@ -190,16 +190,16 @@ classdef ncvariable < handle
             end
         end
         
-        function d = mdata(obj,varargin)
-        % NCVARIABLE.mdata retrieve data with Matlab-style indexing
-        % provide matlab-style indexing access to data
-        %
-                        % Usage:
-        %   d = ncvariable.mdata  % all the data
-        %   d = ncvariable.mdata() % all the data
-        %   d = ncvariable.mdata(:) % all the data
-        %   d = ncvariable.mdata(end-3:end,1:3,:,:,:,:) % suset of
-        %   the data
+        function d = mdata(obj, varargin)
+            % NCVARIABLE.mdata retrieve data with Matlab-style indexing
+            % provide matlab-style indexing access to data
+            %
+            % Usage:
+            %   d = ncvariable.mdata  % all the data
+            %   d = ncvariable.mdata() % all the data
+            %   d = ncvariable.mdata(:) % all the data
+            %   d = ncvariable.mdata(end-3:end,1:3,:,:,:,:) % suset of
+            %   the data
             %
             %   If no arguments are provided all the data is returned.
             %
@@ -218,22 +218,22 @@ classdef ncvariable < handle
             %
             %   ds = cfdataset('http://dods.mbari.org/cgi-bin/nph-nc/data/ssdsdata/deployments/m1/200810/OS_M1_20081008_TS.nc');
             %   v = ds.variable('TEMP');
-        %   t = v.mdata; size(t)  % all
-        %   t = v.mdata(); size(t)  % all
-        %   t = v.mdata(:); size(t) % all
-        %   t = v.mdata(:,:); size(t) % all
-        %   t = v.mdata(1,end,:); size(t)  % 1x1 sample
-        %   t = v.mdata(end-2:end,3:2:7); size(t) % 3x3 hyperslab
-        %   t = v.mdata(-1,end); size(t) % last value
+            %   t = v.mdata; size(t)  % all
+            %   t = v.mdata(); size(t)  % all
+            %   t = v.mdata(:); size(t) % all
+            %   t = v.mdata(:,:); size(t) % all
+            %   t = v.mdata(1,end,:); size(t)  % 1x1 sample
+            %   t = v.mdata(end-2:end,3:2:7); size(t) % 3x3 hyperslab
+            %   t = v.mdata(-1,end); size(t) % last value
             %
             osize = double(size(obj));
-            [vr,vc]=size(varargin);
+            [~, vc]=size(varargin);
             if vc == 0   % handle .mdata and mdata() cases
                 varargin = {{':'}};
             end
             [first, last, stride] = indexing(varargin, ...
                                              osize);
-            d=obj.data(first,last,stride);
+            d = obj.data(first,last,stride);
         end
 
         function g = grid(obj, first, last, stride)
@@ -291,7 +291,7 @@ classdef ncvariable < handle
         end
        
         %%
-        function e = end(obj, k, n)
+        function e = end(obj, k)
             % NCVARIABLE.END the last index in an indexing
             % expression.
             % v.end(2) % returns the last index of the second dimension.
@@ -315,26 +315,10 @@ classdef ncvariable < handle
                             if ~isempty(nums)
                                 switch length(s)
                                     case 1
-                                        sref = obj;
+                                        sref = obj.data;
                                     case 2
                                         idx = s(2).subs;
-                                        nidx = length(idx);
-                                        % Fill in missing arguments
-                                        % default stride is 1
-                                        if (nidx < 3)
-                                            stride = ones(1, length(nums));
-                                        else
-                                            stride = idx{3};
-                                        end
-
-                                        % Default last is the end
-                                        if (nidx < 2)
-                                            last = nums;
-                                        else
-                                            last = idx{2};
-                                        end
-                                        
-                                        first = idx{1};
+                                        [first, last, stride] = indexing(idx, obj.size);
                                         sref = obj.somedata(1, first, last, stride);
                                 end
                                 
@@ -353,22 +337,7 @@ classdef ncvariable < handle
                                         sref = obj;
                                     case 2
                                         idx = s(2).subs;
-                                        nidx = length(idx);
-                                        % Fill in missing arguments
-                                        % default stride is 1
-                                        if (nidx < 3)
-                                            stride = ones(1, length(nums));
-                                        else
-                                            stride = idx{3};
-                                        end
-
-                                        % Default last is the end
-                                        if (nidx < 2)
-                                            last = nums;
-                                        else
-                                            last = idx{2};
-                                        end
-                                        first = idx{1};
+                                        [first, last, stride] = indexing(idx, obj.size);
                                         sref = obj.grid(first, last, stride);
                                 end
                                 
@@ -382,9 +351,9 @@ classdef ncvariable < handle
                 case '()'
                     if length(s)<2
                         % Note that obj.Data is passed to subsref
-                        sref = builtin('subsref',obj.data,s);
+                        sref = builtin('subsref', obj.data, s);
                     else
-                        sref = builtin('subsref',obj,s);
+                        sref = builtin('subsref', obj, s);
                     end
                     % No support for indexing using '{}'
                 case '{}'
@@ -493,7 +462,7 @@ classdef ncvariable < handle
                             end
                             
                         else
-                            %% case: variable is coordiantes. Look for size
+                            %% case: variable is coordinates. Look for size
                             % TODO this is a lame implementation.
                             dim = find(s == vs(1), 1);
                             if ~isempty(dim)
