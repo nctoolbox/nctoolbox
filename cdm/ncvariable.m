@@ -349,7 +349,7 @@ classdef ncvariable < handle
                             sref = builtin('subsref',obj,s);
                     end
                 case '()'
-                    if length(s)<2
+                    if length(s) < 2
                         % Note that obj.Data is passed to subsref
                         sref = builtin('subsref', obj.data, s);
                     else
