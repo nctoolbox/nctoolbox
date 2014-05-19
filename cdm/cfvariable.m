@@ -226,7 +226,7 @@ classdef cfvariable < handle
             %   t = v.mdata(-1,end); size(t) % last value
             %
             osize = double(size(obj));
-            [~, vc]=size(varargin);
+            [~, vc] = size(varargin);
             if vc == 0   % handle .mdata and mdata() cases
                 varargin = {{':'}};
             end

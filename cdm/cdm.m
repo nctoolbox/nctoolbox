@@ -64,19 +64,22 @@ classdef cdm < handle
         % function d = data(obj, variable, first, last, stride)
 
         function v = variable(obj, variableName)
-            v = cdmvariable(obj, variableName);
+            v = cdmvariable(obj, variableName); 
         end
 
         function v = data(obj, variableName, varargin)
-            v = obj.variable(variableName).data(varargin);
+            [first, last, stride] = obj.toncindex(variableName, varargin);
+            v = obj.dataset.data(variableName, first, last, stride);
         end
 
         function v = struct(obj, variableName, varargin)
-            v = obj.variable(variableName).struct(varargin);
+            [first, last, stride] = obj.toncindex(variableName, varargin);
+            v = obj.dataset.struct(variableName, first, last, stride);
         end
 
         function v = grid(obj, variableName, varargin)
-            v = obj.variable(variableName).grid(varargin);
+            [first, last, stride] = obj.toncindex(variableName, varargin);
+            v = obj.dataset.grid(variableName, first, last, stride);
         end
 
         function v = standard_name(obj, standardName)
@@ -84,6 +87,18 @@ classdef cdm < handle
         end
         
 
+    end
+
+    methods (Access = private)
+        function [first, last, stride] = toncindex(obj, variableName, a)
+            osize = double(size(obj.variable(variableName)));
+            [~, vc] = size(a);
+            if vc == 0   % handle .mdata and mdata() cases
+                a = {{':'}};
+            end
+            [first, last, stride] = indexing(a, osize);
+        end
+        
     end
 
 end

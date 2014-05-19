@@ -72,29 +72,31 @@ classdef cdmvariable < handle
         end
 
         function v = data(obj, varargin)
-            v = obj.variable.mdata(varargin);
+            [first, last, stride] = obj.toncindex(varargin);
+            v = obj.variable.data(first, last, stride);
         end
  
         function v = grid(obj, varargin)
-            osize = double(size(obj));
-            [~, vc]=size(varargin);
-            if vc == 0   % handle .mdata and mdata() cases
-                varargin = {{':'}};
-            end
-            [first, last, stride] = indexing(varargin, osize);
+            [first, last, stride] = obj.toncindex(varargin);
             v = obj.variable.grid(first, last, stride);
         end
         
-
         function v = struct(obj, varargin) 
-            osize = double(size(obj));
-            [~, vc]=size(varargin);
-            if vc == 0   % handle .mdata and mdata() cases
-                varargin = {{':'}};
-            end
-            [first, last, stride] = indexing(varargin, osize);
+            [first, last, stride] = obj.toncindex(varargin);
             v = obj.variable.grid(first, last, stride);
-            v.(obj.name) = v.data(varargin);
+            v.(obj.name) = obj.variable.data(first, last, stride);
+        end
+        
+    end
+    
+    methods (Access = private)
+        function [first, last, stride] = toncindex(obj, a)
+            osize = double(size(obj));
+            [~, vc] = size(a);
+            if vc == 0   % handle .mdata and mdata() cases
+                a = {{':'}};
+            end
+            [first, last, stride] = indexing(a, osize);
         end
         
     end
