@@ -26,87 +26,76 @@
 %
 % See also CFDATASET, SIZE, DATA
 % NCTOOLBOX (https://github.com/nctoolbox/nctoolbox)
-classdef cdmvariable < cfvariable
+classdef cdmvariable < handle
+
+    properties (SetAccess = private)
+        dataset % cdm instance
+    end
+
+    properties (Dependent = true)
+        name            % The string variable name that this object represents
+        axes            % the coordinate variables associated with the object
+        attributes      % The attributes associated with the object.
+    end
     
+    properties (SetAccess = private, GetAccess = protected)
+       variable 
+    end
+
     
     methods
-        
+
         %%
-        function obj = cdmvariable(src, variableName, axesVariableNames)
-            % CFVARIABLE.CFVARIABLE  Constructor.
-            %
-            % Use as:
-            %    v = cfvariable(src, variableName)
-            %    v = cfvariable(src, variableName, axesVariableNames)
-            %
-            obj = obj@cfvariable(src, variableName, axesVariableNames)
-            
-            
+        function obj = cdmvariable(cdmInstance, variableName)
+            obj.dataset = cdmInstance;
+            obj.variable = obj.dataset.dataset.variable(variableName);
         end
         
+        function v = get.attributes(obj)
+            v = obj.variable.attributes;
+        end
+
+        function v = get.axes(obj)
+            v = obj.variable.axes;
+        end
+
+        function v = get.name(obj)
+            v = obj.variable.name;
+        end
+
+        function v = size(obj)
+            v = obj.variable.size;
+        end
+
+        function v = attribute(obj, key)
+            v = obj.variable.attribute(key);
+        end
+
+        function v = data(obj, varargin)
+            v = obj.variable.mdata(varargin);
+        end
  
- 
-        %%
-        function sref = subsref(obj,s)
-            %                disp(s(2).subs{3})
-            % SUBSREF parses an object name for .name or ()
-            switch s(1).type
-                % Use the built-in subsref for dot notation
-                case '.'
-                    switch s(1).subs
-                        case 'data'
-                            %% .data
-                            nums = size(obj);
-                            if ~isempty(nums)
-                                switch length(s)
-                                    case 1
-                                        sref = obj.data;
-                                    case 2
-                                        idx = s(2).subs;
-                                        [first, last, stride] = indexing(idx, obj.size);
-                                        sref = obj.somedata(1, first, last, stride);
-                                end
-                                
-                            else
-                                sref = obj.data;
-                                warning('NCTOOLBOX:cfvariable:subsref', ...
-                                    ['Variable "' obj.name '" has no netcdf dimension associated with it. Errors may result from non CF compliant files.'])
-                            end
-                        
-                        case 'grid'
-                            %% .grid
-                            nums = size(obj);
-                            if ~isempty(nums)
-                                switch length(s)
-                                    case 1
-                                        sref = obj;
-                                    case 2
-                                        idx = s(2).subs;
-                                        [first, last, stride] = indexing(idx, obj.size);
-                                        sref = obj.grid(first, last, stride);
-                                end
-                                
-                            else
-                                warning('NCTOOLBOX:cfvariable:subsref', ...
-                                    ['Variable "' name '" has no netcdf dimension associated with it. Errors may result from non CF compliant files.'])
-                            end
-                        otherwise
-                            sref = builtin('subsref',obj,s);
-                    end
-                case '()'
-                    if length(s) < 2
-                        % Note that obj.Data is passed to subsref
-                        sref = builtin('subsref', obj.data, s);
-                    else
-                        sref = builtin('subsref', obj, s);
-                    end
-                    % No support for indexing using '{}'
-                case '{}'
-                    error('NCTOOLBOX:cfvariable:subsref', ...
-                        'Not a supported subscripted reference, "{}" are not permitted to call variable object methods');
+        function v = grid(obj, varargin)
+            osize = double(size(obj));
+            [~, vc]=size(varargin);
+            if vc == 0   % handle .mdata and mdata() cases
+                varargin = {{':'}};
             end
+            [first, last, stride] = indexing(varargin, osize);
+            v = obj.variable.grid(first, last, stride);
         end
         
+
+        function v = struct(obj, varargin) 
+            osize = double(size(obj));
+            [~, vc]=size(varargin);
+            if vc == 0   % handle .mdata and mdata() cases
+                varargin = {{':'}};
+            end
+            [first, last, stride] = indexing(varargin, osize);
+            v = obj.variable.grid(first, last, stride);
+            v.(obj.name) = v.data(varargin);
+        end
         
     end
     

@@ -42,8 +42,8 @@
 
 classdef cfdataset < ncdataset
     
-    properties (SetAccess = private, GetAccess = private)
-        ncvariables % 2 by n cell array
+    properties (SetAccess = public, GetAccess = public)
+        cfvariables % 2 by n cell array
     end
     
     methods
@@ -60,9 +60,9 @@ classdef cfdataset < ncdataset
             
             % Java hashTable doens't store matlab objects SO we'll use
             % poor man's hash of a n x 2 cell array
-            obj.ncvariables = cell(length(obj.variables), 2);
+            obj.cfvariables = cell(length(obj.variables), 2);
             for i = 1:length(obj.variables)
-                obj.ncvariables{i, 1} = obj.variables{i};
+                obj.cfvariables{i, 1} = obj.variables{i};
             end
         end
         
@@ -91,7 +91,7 @@ classdef cfdataset < ncdataset
             %  See also NCVARIABLE, NCGEODATASET.VARIABLE
             
             % Check to see if we've aready fetched the variable of interest
-            v = value4key(obj.ncvariables, variableName);
+            v = value4key(obj.cfvariables, variableName);
             if isempty(v)
                 
                 % ---- Attempt to fetch the variables representing the axes
@@ -129,11 +129,11 @@ classdef cfdataset < ncdataset
                 
                 
                 
-                v = ncvariable(obj, variableName, axesVariableNames);
+                v = cfvariable(obj, variableName, axesVariableNames);
                 if ~isempty(v)
                     for i = 1:length(obj.variables)
-                        if strcmp(obj.ncvariables{i, 1}, variableName)
-                            obj.ncvariables{i, 2} = v;
+                        if strcmp(obj.cfvariables{i, 1}, variableName)
+                            obj.cfvariables{i, 2} = v;
                             break;
                         end
                     end

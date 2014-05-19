@@ -6,7 +6,7 @@ classdef cdm < handle
         variables
     end
 
-    properties(SetAccess = protected, GetAccess = protected)
+    properties(SetAccess = protected, GetAccess = public)
         dataset % A CFDATASET
     end
 
@@ -57,26 +57,26 @@ classdef cdm < handle
         end
 
         function v = ncml(obj)
-            v = obj.ncml;
+            v = obj.dataset.ncml;
         end
+        
         % Methods to be converted to matlab style indexing
         % function d = data(obj, variable, first, last, stride)
 
-
         function v = variable(obj, variableName)
-            % TODO 
+            v = cdmvariable(obj, variableName);
         end
 
         function v = data(obj, variableName, varargin)
-            % TODO
+            v = obj.variable(variableName).data(varargin);
         end
 
         function v = struct(obj, variableName, varargin)
-            % TODO
+            v = obj.variable(variableName).struct(varargin);
         end
 
         function v = grid(obj, variableName, varargin)
-
+            v = obj.variable(variableName).grid(varargin);
         end
 
         function v = standard_name(obj, standardName)
