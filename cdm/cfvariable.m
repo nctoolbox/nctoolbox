@@ -1,7 +1,7 @@
-% NCVARIABLE Provide advanced access to variables and their related
+% CFVARIABLE Provide advanced access to variables and their related
 % dimensions.
 %
-% NCVARIABLE is used to retrieve data for a given variable as well as the
+% CFVARIABLE is used to retrieve data for a given variable as well as the
 % variables associated coordinate dimensions. Normally, you would retrive
 % it using CFDATASET.VARIABLE
 %
@@ -26,7 +26,7 @@
 %
 % See also CFDATASET, SIZE, DATA
 % NCTOOLBOX (https://github.com/nctoolbox/nctoolbox)
-classdef ncvariable < handle
+classdef cfvariable < handle
     
     properties (SetAccess = private)
         dataset          % ncdataset instance
@@ -34,7 +34,6 @@ classdef ncvariable < handle
     
     properties (Dependent = true)
         name            % The string variable name that this object represents
-        axes2           %  ????
         axes            % the coordinate variables associated with the object
         attributes      % The attributes associated with the object.
     end
@@ -47,19 +46,19 @@ classdef ncvariable < handle
     methods
         
         %%
-        function obj = ncvariable(src, variableName, axesVariableNames)
-            % NCVARIABLE.NCVARIABLE  Constructor.
+        function obj = cfvariable(src, variableName, axesVariableNames)
+            % CFVARIABLE.CFVARIABLE  Constructor.
             %
             % Use as:
-            %    v = ncvariable(src, variableName)
-            %    v = ncvariable(src, variableName, axesVariableNames)
+            %    v = cfvariable(src, variableName)
+            %    v = cfvariable(src, variableName, axesVariableNames)
             %
             if ischar(src)
                 obj.dataset = ncdataset(src);  % src is a string URL/File
             elseif isa(src, 'ncdataset')
                 obj.dataset = src;             % src is a ncdataset
             else
-                ex = MException('NCTOOLBOX:ncvariable', 'Invalid dataset was specified');
+                ex = MException('NCTOOLBOX:cfvariable', 'Invalid dataset was specified');
                 ex.throw;
             end
             
@@ -78,13 +77,13 @@ classdef ncvariable < handle
         end
         
         function a = get.attributes(obj)
-            % NCVARIABLE.ATTRIBUTES returns the attributes for the variable.
+            % CFVARIABLE.ATTRIBUTES returns the attributes for the variable.
             a = obj.dataset.attributes(obj.name);
         end
         
         %%
         function a = get.axes(obj)
-            % NCVARIABLE.AXES Returns the names of the coordinate axes
+            % CFVARIABLE.AXES Returns the names of the coordinate axes
             a = cell(size(obj.axesVariables));
             for i = 1:length(obj.axesVariables)
                 name = char(obj.axesVariables{i}.getName());
@@ -94,7 +93,7 @@ classdef ncvariable < handle
         
         %%
         function v = get.name(obj)
-            % NCVARIABLE.NAME Provides dynamic access to the underlying
+            % CFVARIABLE.NAME Provides dynamic access to the underlying
             % netcdf datasets variable name
             %
             % Example:
@@ -105,18 +104,18 @@ classdef ncvariable < handle
         
         %%
         function n = size(obj)
-            % NCVARIABLE.SIZE returns the size of the variable, including
+            % CFVARIABLE.SIZE returns the size of the variable, including
             % its singleton dimensions
             n = obj.dataset.size(obj.name);
         end
         
         function val = attribute(obj, key)
-            % NCVARIABLE.ATTRIBUTE returns the value a global attribute specified by its key or the
+            % CFVARIABLE.ATTRIBUTE returns the value a global attribute specified by its key or the
             % variable attribute specified by key and variable.
             %
             % Use as:
-            %   a = ncvariable.attribute('title')
-            %   a = ncvariable.attribute(key)
+            %   a = cfvariable.attribute('title')
+            %   a = cfvariable.attribute(key)
             %
             %
             % Inputs:
@@ -129,16 +128,16 @@ classdef ncvariable < handle
         
         %%
         function d = data(obj, first, last, stride)
-            % NCVARIABLE.DATA Retrieve all or a subset of the data for the
+            % CFVARIABLE.DATA Retrieve all or a subset of the data for the
             % variable. The data is returned as a structure containing a
             % variable for the data as well as for each dimension of the
             % data.
             %
             % Usage:
-            %   d = ncvariable.data
-            %   d = ncvariable.data(first)
-            %   d = ncvariable.data(first, last)
-            %   d = ncvariable.data(first, last, stride)
+            %   d = cfvariable.data
+            %   d = cfvariable.data(first)
+            %   d = cfvariable.data(first, last)
+            %   d = cfvariable.data(first, last, stride)
             %
             %   If no arguments are provided all the data is returned.
             %
@@ -165,7 +164,7 @@ classdef ncvariable < handle
                     try
                         d = alldata(obj,1);
                     catch me
-                        ex = MException('NCTOOLBOX:ncvariable:data', ['Failed to open ' url]);
+                        ex = MException('NCTOOLBOX:cfvariable:data', ['Failed to open ' url]);
                         ex = ex.addCause(me);
                         ex.throw;
                     end
@@ -191,14 +190,14 @@ classdef ncvariable < handle
         end
         
         function d = mdata(obj, varargin)
-            % NCVARIABLE.mdata retrieve data with Matlab-style indexing
+            % CFVARIABLE.mdata retrieve data with Matlab-style indexing
             % provide matlab-style indexing access to data
             %
             % Usage:
-            %   d = ncvariable.mdata  % all the data
-            %   d = ncvariable.mdata() % all the data
-            %   d = ncvariable.mdata(:) % all the data
-            %   d = ncvariable.mdata(end-3:end,1:3,:,:,:,:) % suset of
+            %   d = cfvariable.mdata  % all the data
+            %   d = cfvariable.mdata() % all the data
+            %   d = cfvariable.mdata(:) % all the data
+            %   d = cfvariable.mdata(end-3:end,1:3,:,:,:,:) % suset of
             %   the data
             %
             %   If no arguments are provided all the data is returned.
@@ -237,15 +236,15 @@ classdef ncvariable < handle
         end
 
         function g = grid(obj, first, last, stride)
-            % NCVARIABLE.GRID Retrieve all or a subset of the coordinate
+            % CFVARIABLE.GRID Retrieve all or a subset of the coordinate
             % data for the variable. The data is returned as a structure
             % containing a variable for each dimension of the data.
             %
             % Usage:
-            %   d = ncvariable.grid
-            %   d = ncvariable.grid(first)
-            %   d = ncvariable.grid(first, last)
-            %   d = ncvariable.grid(first, last, stride)
+            %   d = cfvariable.grid
+            %   d = cfvariable.grid(first)
+            %   d = cfvariable.grid(first, last)
+            %   d = cfvariable.grid(first, last, stride)
             %
             %   If no arguments are provided all the data is returned.
             %
@@ -292,7 +291,7 @@ classdef ncvariable < handle
        
         %%
         function e = end(obj, k)
-            % NCVARIABLE.END the last index in an indexing
+            % CFVARIABLE.END the last index in an indexing
             % expression.
             % v.end(2) % returns the last index of the second dimension.
             % e.g.: elevation.data(end-3:end,1,1)
@@ -300,68 +299,7 @@ classdef ncvariable < handle
             e = n(k);
         end % Added to deal with end indexing functionality,
         % otherwise the indexing arugment is ignored.
-        
-        %%
-        function sref = subsref(obj,s)
-            %                disp(s(2).subs{3})
-            % SUBSREF parses an object name for .name or ()
-            switch s(1).type
-                % Use the built-in subsref for dot notation
-                case '.'
-                    switch s(1).subs
-                        case 'data'
-                            %% .data
-                            nums = size(obj);
-                            if ~isempty(nums)
-                                switch length(s)
-                                    case 1
-                                        sref = obj.data;
-                                    case 2
-                                        idx = s(2).subs;
-                                        [first, last, stride] = indexing(idx, obj.size);
-                                        sref = obj.somedata(1, first, last, stride);
-                                end
-                                
-                            else
-                                sref = obj.data;
-                                warning('NCTOOLBOX:ncvariable:subsref', ...
-                                    ['Variable "' obj.name '" has no netcdf dimension associated with it. Errors may result from non CF compliant files.'])
-                            end
-                        
-                        case 'grid'
-                            %% .grid
-                            nums = size(obj);
-                            if ~isempty(nums)
-                                switch length(s)
-                                    case 1
-                                        sref = obj;
-                                    case 2
-                                        idx = s(2).subs;
-                                        [first, last, stride] = indexing(idx, obj.size);
-                                        sref = obj.grid(first, last, stride);
-                                end
-                                
-                            else
-                                warning('NCTOOLBOX:ncvariable:subsref', ...
-                                    ['Variable "' name '" has no netcdf dimension associated with it. Errors may result from non CF compliant files.'])
-                            end
-                        otherwise
-                            sref = builtin('subsref',obj,s);
-                    end
-                case '()'
-                    if length(s) < 2
-                        % Note that obj.Data is passed to subsref
-                        sref = builtin('subsref', obj.data, s);
-                    else
-                        sref = builtin('subsref', obj, s);
-                    end
-                    % No support for indexing using '{}'
-                case '{}'
-                    error('NCTOOLBOX:ncvariable:subsref', ...
-                        'Not a supported subscripted reference, "{}" are not permitted to call variable object methods');
-            end
-        end
-        
+          
         
     end
     
@@ -370,7 +308,7 @@ classdef ncvariable < handle
         
         %%
         function data = alldata(obj, withData)
-            % NCVARIABLE.ALLDATA -- extract the data or the axes
+            % CFVARIABLE.ALLDATA -- extract the data or the axes
             % v.alldata(1) % returns the data
             % v.alldata()  % returns a structure with the axesVariables
             %              % and their data
@@ -390,7 +328,7 @@ classdef ncvariable < handle
         %%
         function data = somedata(obj, withData, first, last, stride)
             % NCGEOVARIABLE.SOMEDATA -- extract a hyperslab of data
-            % SOMEDATA can extract a subset of data from an NCVARIABLE or
+            % SOMEDATA can extract a subset of data from an CFVARIABLE or
             % the subset of the corresponding axis variables.
             % 
             % Example:
@@ -400,8 +338,8 @@ classdef ncvariable < handle
             % vd = v.somedata(1,first,last,stride); % returns data
             % vg = v.somedata(0,first,last,stride); % returns struct w/grid
             % 
-            % See also NCVARIABLE, NCVARIABLE.ALLDATA,
-            % NCVARIABLE.DATA, NCVARIABLE.GRID
+            % See also CFVARIABLE, CFVARIABLE.ALLDATA,
+            % CFVARIABLE.DATA, CFVARIABLE.GRID
             s = obj.dataset.size(obj.name);
             
             % Fill in missing arguments
@@ -437,7 +375,7 @@ classdef ncvariable < handle
                                 vLast = last;
                                 vStride = stride;
                             else
-                                me = MException('NCTOOLBOX:ncvariable:somedata', ...
+                                me = MException('NCTOOLBOX:cfvariable:somedata', ...
                                     ['The data size of the coordinate variable,' ...
                                     name ', does not fit the size of ' obj.name]);
                                 me.throw;
@@ -455,7 +393,7 @@ classdef ncvariable < handle
                                 vLast = last(dim);
                                 vStride = stride(dim);
                             else
-                                me = MException('NCTOOLBOX:ncvariable:somedata', ...
+                                me = MException('NCTOOLBOX:cfvariable:somedata', ...
                                     ['The data size of the coordinate variable,' ...
                                     name ', does not fit the size of ' obj.name]);
                                 me.throw;
@@ -468,7 +406,7 @@ classdef ncvariable < handle
                             if ~isempty(dim)
                                 for j = 2:length(vs)
                                     if vs(j) ~= s(dim + j - 1)
-                                        me = MException('NCTOOLBOX:ncvariable:somedata', ...
+                                        me = MException('NCTOOLBOX:cfvariable:somedata', ...
                                             ['The data size of the coordinate variable,' ...
                                             name ', does not fit the size of ' obj.name]);
                                         me.throw;
