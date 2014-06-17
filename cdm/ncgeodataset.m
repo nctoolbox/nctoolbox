@@ -457,7 +457,7 @@ classdef ncgeodataset < cfdataset
                         end
                     catch
                         warning('NCGEODATASET:GEOVARIABLE', 'The netcdf-java cdm contains no coordinate information associated with the variable. Returning ncvariable instead of ncgeovariable object. (Methods that rely on coordinate information like ''grid'' or ''geosubset'' are not available.');
-                        v = ncvariable(obj, variableName);
+                        v = cfvariable(obj, variableName);
                     end
                 else
                     

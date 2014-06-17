@@ -6,7 +6,7 @@ classdef cdm < handle
         variables
     end
 
-    properties(SetAccess = protected, GetAccess = public)
+    properties(SetAccess = protected, GetAccess = ?cdmvariable)
         dataset % A CFDATASET
     end
 
@@ -60,8 +60,8 @@ classdef cdm < handle
             v = obj.dataset.ncml;
         end
         
-        % Methods to be converted to matlab style indexing
-        % function d = data(obj, variable, first, last, stride)
+        % Methods to be converted to matlab style indexing from netcdf style indexing
+        % e.g. function d = data(obj, variable, first, last, stride)
 
         function v = variable(obj, variableName)
             v = cdmvariable(obj, variableName); 
@@ -89,7 +89,7 @@ classdef cdm < handle
 
     end
 
-    methods (Access = private)
+    methods (Access = protected)
         function [first, last, stride] = toncindex(obj, variableName, a)
             osize = double(size(obj.variable(variableName)));
             [~, vc] = size(a);

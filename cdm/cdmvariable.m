@@ -89,7 +89,7 @@ classdef cdmvariable < handle
         
     end
     
-    methods (Access = private)
+    methods (Access = protected)
         function [first, last, stride] = toncindex(obj, a)
             osize = double(size(obj));
             [~, vc] = size(a);
