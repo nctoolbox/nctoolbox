@@ -38,10 +38,6 @@ classdef geocdmvariable < cdmvariable
                     v.(tempname) = g.(tempname);
                 else
                     switch type
-                    case 'Height'
-                        if ~ismember('z', ignore)
-                            v.z = obj.handleHeight(tempname, g);
-                        end
                     case 'GeoX'
                         % Do Nothing. Handled in GeoY as GeoX and GeoY alwasy travel together
                     case 'GeoY'
@@ -57,17 +53,21 @@ classdef geocdmvariable < cdmvariable
                             [first, last, stride] = obj.toncindex(varargin);
                             v.z = obj.handleGeoZ(tempname, g, griddataset, first, last, stride);
                         end
-                    case 'Time'
-                        if ~ismember('time', ignore)
-                            v.time = obj.handleTime(tempname, g);
+                    case 'Height'
+                        if ~ismember('z', ignore)
+                            v.z = obj.handleHeight(tempname, g);
+                        end
+                    case 'Lat'
+                        if ~ismember('lat', ignore)
+                            v.lat = double(g.(tempname));
                         end
                     case 'Lon'
                         if ~ismember('lon', ignore)
                             v.lon = obj.handleLon(tempname, g);
                         end
-                    case 'Lat'
-                        if ~ismember('lat', ignore)
-                            v.lat = double(g.(tempname));
+                    case 'Time'
+                        if ~ismember('time', ignore)
+                            v.time = obj.handleTime(tempname, g);
                         end
                     otherwise
                         if ~ismember(tempname, ignore)
