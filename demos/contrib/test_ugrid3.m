@@ -4,17 +4,17 @@
 % (https://github.com/ugrid-conventions) 
 % which makes it possible for no model specific code
 titl{1}='ADCIRC';
-uris{1}='http://testbedapps-dev.sura.org/thredds/dodsC/in/und/adcirc/ike/ultralite/lr/vardrag/wave/2d'
+uris{1}='http://comt.sura.org/thredds/dodsC/data/comt_1_archive/inundation_tropical/UND_ADCIRC/Hurricane_Ike_2D_final_run_with_waves'
 vars{1}='zeta';
 times{1}=[2008 9 13 06 0 0];
 
 titl{2}='SELFE';
-uris{2}='http://testbedapps-dev.sura.org/thredds/dodsC/in/vims/selfe/ike/ultralite/vardrag/wave/2d';
+uris{2}='http://comt.sura.org/thredds/dodsC/data/comt_1_archive/inundation_tropical/VIMS_SELFE/Hurricane_Ike_2D_final_run_with_waves';
 vars{2}='elev';
 times{2}=[2008 9 13 06 0 0];
 
 titl{3}='FVCOM';
-uris{3}='http://testbedapps-dev.sura.org/thredds/dodsC/in/usf/fvcom/ike/ultralite/vardrag/wave/2d';
+uris{3}='http://comt.sura.org/thredds/dodsC/data/comt_1_archive/inundation_tropical/USF_FVCOM/Hurricane_Ike_2D_final_run_with_waves'
 vars{3}='zeta';
 times{3}=[2008 9 13 06 0 0];
 % bounding box for figures
