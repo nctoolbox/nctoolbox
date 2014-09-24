@@ -98,7 +98,6 @@ classdef cdm < handle
             end
             [first, last, stride] = indexing(a, osize);
         end
-        
     end
 
 end
