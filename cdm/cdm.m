@@ -37,11 +37,15 @@ classdef cdm < handle
         end
 
         function v = attributes(obj, variable)
-            v = obj.dataset.attributes(variable);
+            if nargin < 2
+                v = obj.dataset.attributes;
+            else
+                v = obj.dataset.attributes(variable);
+            end
         end
 
         function v = attribute(obj, varargin)
-            v = obj.dataset.attribute(varargin);
+            v = obj.dataset.attribute(varargin{:});
         end
 
         function v = metadata(obj)
