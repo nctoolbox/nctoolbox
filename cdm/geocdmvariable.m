@@ -1,7 +1,7 @@
 classdef geocdmvariable < cdmvariable
 
     properties (SetAccess = private, GetAccess = private)
-        axes_info % list of axes names and dinensions in one cell dict
+        axes_info % list of axes names and dimensions in one cell dict
     end
 
     methods
@@ -15,10 +15,10 @@ classdef geocdmvariable < cdmvariable
             try 
                 griddataset = ucar.nc2.dt.grid.GridDataset.open(obj.dataset.location);
             catch me
-
+                % TODO handle error
             end
 
-            g = obj.grid(varargin{:})
+            g = obj.grid(varargin{:});
             names = fieldnames(g);
 
             for i = 1:length(names) % Loop through fields returned by grid
@@ -41,7 +41,7 @@ classdef geocdmvariable < cdmvariable
                     case 'GeoX'
                         % Do Nothing. Handled in GeoY as GeoX and GeoY alwasy travel together
                     case 'GeoY'
-                        [x y] = obj.handleGeoXY(tempname, g, griddataset);
+                        [x, y] = obj.handleGeoXY(tempname, g, griddataset);
                         if ~ismember('lon', ignore)
                             v.lon = x;
                         end
@@ -88,15 +88,15 @@ classdef geocdmvariable < cdmvariable
             javaaxisvar = obj.dataset.netcdf.findVariable(variableName);
             pos_z = char(javaaxisvar.getPositive());
             if strcmpi(pos_z, 'POSITIVE_DOWN') || strcmpi(pos_z, 'down')
-                tmp = g.(variableName);
-                v = temp * -1 % adjust for positive direction
+                tmp = gridData.(variableName);
+                v = tmp * -1; % adjust for positive direction
             else
-                v = g.(variableName);
+                v = gridData.(variableName);
             end
         end
 
         function [vx, vy] = handleGeoXY(obj, variableName, gridData, griddataset)
-            g = griddataset.findGridByName(obj.name)
+            g = griddataset.findGridByName(obj.name);
             cs = g.getCoordinateSystem();
             try 
                 [x, y] = meshgrid(gridData.x, gridData.y);
@@ -172,12 +172,12 @@ classdef geocdmvariable < cdmvariable
         end
 
         function v = handleTime(obj, variableName, gridData)
-            tmp = g.(variableName);
-            v = obj.dataset(time, variableName, tmp);
+            tmp = gridData.(variableName);
+            v = obj.dataset.time(variableName, tmp);
         end
 
         function v = handleLon(obj, variableName, gridData)
-            tmp = g.(variableName);
+            tmp = gridData.(variableName);
             if max(max(tmp)) > 360
                 if min(min(tmp)) > 0
                     tmp(tmp > 360) = tmp(tmp > 360) - 360;

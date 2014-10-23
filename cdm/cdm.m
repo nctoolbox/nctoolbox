@@ -57,7 +57,7 @@ classdef cdm < handle
         end
 
         function v = time (obj, variable, data)
-            v = obj.time(variable, data);
+            v = obj.dataset.time(variable, data);
         end
 
         function v = ncml(obj)
