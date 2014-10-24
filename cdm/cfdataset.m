@@ -127,8 +127,6 @@ classdef cfdataset < ncdataset
                     end
                 end
                 
-                
-                
                 v = cfvariable(obj, variableName, axesVariableNames);
                 if ~isempty(v)
                     for i = 1:length(obj.variables)
@@ -293,6 +291,8 @@ classdef cfdataset < ncdataset
             matches = strcmp(standardName, hash);
             sn = vars(matches);
         end
+
+        
         
     end
     

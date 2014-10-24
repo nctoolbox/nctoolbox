@@ -39,7 +39,7 @@ classdef cdmvariable < handle
     end
     
     properties (SetAccess = private, GetAccess = protected)
-       variable 
+       variable         % cfvariable
     end
 
     

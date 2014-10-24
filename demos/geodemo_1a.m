@@ -6,14 +6,14 @@
 
 % OPeNDAP Data URL for a CF-Compliant curvilinear ROMS model dataset
 url ='http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc';
-nc = ncgeodataset(url)
+nc = geocdm(url)
 
 %% Take a look at the variables available within the dataset
 % To access the properties we can use typical dot notation like with
 % ordinary Matlab structures. Here we want to get a list of the variables
 % in the dataset we are looking at.
 
- nc.variables
+nc.variables
 
 %% Determine the shape of the selected variable
 % The size method is a method of ncgeodataset that returns the length of
@@ -29,7 +29,7 @@ nc = ncgeodataset(url)
 % this dataset. This is done by calling geovariable with the name of the
 % netcdf variable we are interested in as an argument.
 
- salt = nc.geovariable('salt')
+ salt = nc.variable('salt')
 
 % Now we can use Matlab style array indexing to subset the salt variable by
 % its indices.  We can take a look at the dimension names using the "dimensions" 
@@ -62,7 +62,7 @@ nc = ncgeodataset(url)
 % the data is CF/COARDS complaint we can take advantage of the netcdf-java
 % common data model.
 
-% The grid method for the geovariable object is designed to grab the all
+% The grid method for the geovariable object is designed to grab all
 % the coordinates associated with the geovariable for the given indices.
 % Usage is just like the data method, except the result is a Matlab
 % structure containing fields for each of the geovariable's dimensions and

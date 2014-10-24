@@ -38,7 +38,7 @@ classdef cfvariable < handle
         attributes      % The attributes associated with the object.
     end
     
-    properties (SetAccess = private, GetAccess = protected)
+    properties (SetAccess = private, GetAccess = {?geocdmvariable, ?cdmvariable})
         variable        % ucar.nc2.Variable instance. Represents the data
         axesVariables    % ucar.nc2.Variable instance. Represents the data.
     end

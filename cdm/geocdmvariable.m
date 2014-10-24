@@ -7,7 +7,34 @@ classdef geocdmvariable < cdmvariable
     methods
 
         function obj = geocdmvariable(cdmInstance, variableName)
-            obj = obj@cdmvariable(cdmInstance, variableName)
+            obj = obj@cdmvariable(cdmInstance, variableName);
+        end
+
+        function a = get.axes_info(obj)
+            switch length(obj.size)
+                case 1
+                    a = fieldnames(obj.grid_interop(1,1,1));
+                    b = fieldnames(obj.grid(1,1,1));
+                case 2
+                    a = fieldnames(obj.grid_interop([1,1],[1,1],[1,1]));
+                    b = fieldnames(obj.grid([1,1],[1,1],[1,1]));
+                case 3
+                    a = fieldnames(obj.grid_interop([1,1,1], [1,1,1], [1,1,1]));
+                    b = fieldnames(obj.grid([1,1,1], [1,1,1], [1,1,1]));
+                case 4
+                    a = fieldnames(obj.grid_interop([1,1,1,1], [1,1,1,1], [1,1,1,1]));
+                    b = fieldnames(obj.grid([1,1,1,1], [1,1,1,1], [1,1,1,1]));
+                case 5
+                    a = fieldnames(obj.grid_interop([1,1,1,1,1], [1,1,1,1,1], [1,1,1,1,1]));
+                    b = fieldnames(obj.grid([1,1,1,1,1], [1,1,1,1,1], [1,1,1,1,1]));
+                case 6
+                    a = fieldnames(obj.grid_interop([1,1,1,1,1,1], [1,1,1,1,1,1], [1,1,1,1,1,1]));
+                    b = fieldnames(obj.grid([1,1,1,1,1,1], [1,1,1,1,1,1], [1,1,1,1,1,1]));
+            end
+            len = length(a);
+            for i = 1:len
+                a{i, 2} = src.dataset.size(b{i});
+            end
         end
 
         function v = grid_interop(obj, varargin)
@@ -79,11 +106,32 @@ classdef geocdmvariable < cdmvariable
             end
         end
 
+        function v = time(obj)
+            v = obj.lookupAxisByType('Time');
+            if ~isempty(v)
+                v = cdmvariable(obj.dataset, v);
+            end
+        end
+
+        function v = y(obj)
+            v = obj.lookupAxisByType('Lat');
+            if isempty(v)
+                v = obj.lookupAxisByType('GeoY');
+            end
+        end
+
+        function v = x(obj)
+            v = obj.lookupAxisByType('Lon');
+            if isempty(v)
+                v = obj.lookupAxisByType('GeoX');
+            end
+        end
 
     end
 
     methods (Access = protected)
 
+        %% Handlers for different data types
         function v = handleHeight(obj, variableName, gridData) 
             javaaxisvar = obj.dataset.netcdf.findVariable(variableName);
             pos_z = char(javaaxisvar.getPositive());
@@ -195,6 +243,28 @@ classdef geocdmvariable < cdmvariable
             end
             v = double(tmp);
         end
+
+
+        %% Lookup axis by type
+        % Types: Lon, GeoX, Lat, GeoY, Time
+        function v = lookupAxisByType(obj, t)
+            axesVars = obj.variable.axesVariables;
+            n = '';
+            for i = 1:length(axesVars)
+                ja = axesVars{i};
+                at = char(ja.getAxisType());
+                if ~isempty(at) && strcmp(t, at)
+                    n = obj.axes{i};
+                    break;
+                end
+            end
+            if isempty(n)
+                v = '';
+            else
+                v = cdmvariable(obj.dataset, n);
+            end
+        end
+
 
     end
 
