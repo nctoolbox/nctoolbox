@@ -10,7 +10,7 @@
 %    - select "nam_na_00z" or "nam_na_06z", for 33 km
 
 % Rich Signell (rsignell@usgs.gov)
-% NCTOOLBOX (http://code.google.com/p/nctoolbox/)
+% NCTOOLBOX (https://github.com/nctoolbox/nctoolbox)
 
 jd=now_utc; % gets the current time in UTC
 g=datevec(jd-6/24); % go for forecast 6 hours before
@@ -19,7 +19,12 @@ h=floor(g(4)/6)*6;
 
 % NAM 4km
 url=sprintf('http://nomads.ncep.noaa.gov:9090/dods/nam/nam%s/nam_conusnest_%2.2dz',d,h);
-lon_range=[-71.5 -63];lat_range=[41 46];  % 4km lon is [-180 180]
+if (exist('lon_range')==0) 
+	lon_range=[-71.5 -63];
+end
+if (exist('lat_range')==0)
+   lat_range=[41 46];  % 4km lon is [-180 180]
+end
 
 % NAM 12km
 %url=sprintf('http://nomads.ncep.noaa.gov:9090/dods/nam/nam%s/nam_%2.2dz',str,d,h);

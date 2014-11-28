@@ -12,7 +12,7 @@ function [Tvar,Tdis,Tzed,Tlon,Tlat] = ...
 %   lon, lat  coordinates along the track
 %   timTrk    time values along the track
 %                given as Matlab datenum
-%                Must have the same dimension as lon/lat  OR  be a scalar in
+%                Must have the same dimension as lon/lat OR be a scalar in
 %                which case it is assumed the track is for a single time
 % Output:
 %   Tvar      interpolated 2D data along the track
@@ -21,11 +21,16 @@ function [Tvar,Tdis,Tzed,Tlon,Tlat] = ...
 %   Tlon      2D lon along the track
 %   Tlat      2D lat along the track
 %
-%  gslice originally by John Evans
-%  modified by Weifeng Gordon Zhang
-%  This version by John Wilkin 2011-01-26
-%  Alexander Crosby 2011 April - Update to using new toolbox
+% gslice originally by John Evans
+% modified by Weifeng Gordon Zhang
+% and by John Wilkin 2011-01-26
+% Alexander Crosby 2011 April - Update to using new toolbox
 % NCTOOLBOX (http://code.google.com/p/nctoolbox)
+%
+% Modified 2013-09-13 John Wilkin because the release version is throwing
+% java heap space errors in handling the time coordinate with grid_interop.
+% Works for large ROMS files now - not sure if I broke it for other ocean
+% models.
 
 verbose = false;
 ncks = false;
@@ -62,28 +67,27 @@ st.lon = [ax(1) ax(2)];
 
 % Determine the minimal model/data index range required to cover the track
 % Iax,Jax will specify the subset of the full grid to read from netcdf
+
 if verbose
   disp('Reading full domain lon/lat grid coordinates from ')
   disp([' ' file])
 end
+lonfull = nc{var.getlonname}(:);
+latfull = nc{var.getlatname}(:);
 
-% [lonfull,latfull] = nj_lonlat(file,varname); ACrosby
-g = var.grid_interop(:,:,:,:); % Assuming data is rank 4, time z X Y
-lonfull = g.lon;
-latfull = g.lat;
-if isvector(lonfull)
+if isvector(lonfull) % might be unnecessary with nctoolbox JWilkin
   % catch case (not ROMS) where coordinates are 1-D vectors
   [lonfull,latfull] = meshgrid(lonfull,latfull);
 end
 [nJ,nI] = size(lonfull);
-% [Jax,Iax] = lonlat2ij(lonfull,latfull,ax); ACrosby
+
 [r1, r2, c1, c2] = geoij(var, st);
 Jax = r1:r2;
 Iax = c1:c2;
 
 % This subset will be strictly inside the limits of the track, so
 % expand Iax,Jax by 1 in each dimension (if possible) or some track
-% points will fall outside the data subset
+% points might fall outside the data subset
 if Iax(1)~=0
   Iax = [Iax(1)-1 Iax];
 end
@@ -96,6 +100,7 @@ end
 if Jax(end)~=nJ
   Jax = [Jax Jax(end)+1];
 end
+
 disp('Spatial subset to be extracted from ')
 disp([' ' file])
 disp('  is for index limits ')
@@ -107,43 +112,8 @@ if verbose
   disp('Reading full vector of all times from ')
   disp([' ' file])
 end
-% tim_mod = nj_time(file,varname); - ACrosby
-tim_mod = g.time;
+tim_mod = nj_time(file,varname); % JWilkin
 Ttrk = interp1(tim_mod,1:length(tim_mod),timTrk);
-
-% ------------------------------------------------------------------------
-if ncks
-  % Give the ncks command that would extract the necessary subset
-  % to a local file, then return
-  % *** This only work for ROMS at present
-  try
-    modeltype = nc_attget(file,nc_global,'type');
-    if strcmp(modeltype(1:4),'ROMS')
-      coords = 's_rho,Cs_r,zeta,h,hc,';
-      varlst = [' -v ' coords varname];
-      deta = [' -d eta_rho,' int2str(Jax(1)) ',' int2str(Jax(end))];
-      dxi = [' -d xi_rho,' int2str(Iax(1)) ',' int2str(Iax(end))];
-      dt = [' -d ocean_time,' int2str(min(Ttrk)) ',' int2str(max(Ttrk)+1)];
-      str = ['ncks -F' varlst dxi deta dt ' ' file ' '];
-      disp(str)
-      Tvar = str;
-    else
-      disp('You may need to modify dimension names for this model')
-      Tvar = [];
-    end
-  catch
-    disp('You may need to modify dimension names for this model')
-    varlst = [' -v ' varname];
-    deta = [' -d lat,' int2str(Jax(1)) ',' int2str(Jax(end))];
-    dxi  = [' -d lon,' int2str(Iax(1)) ',' int2str(Iax(end))];
-    dt   = [' -d time,' int2str(min(Ttrk)) ',' int2str(max(Ttrk)+1)];
-    str  = ['ncks -F' varlst dxi deta dt ' ' file ' local.nc'];
-    disp(str)
-    Tvar = str;
-  end
-  return
-end
-% ------------------------------------------------------------------------
 
 % Extract one time record just to get coordinates of the subset grid
 if verbose
@@ -151,7 +121,18 @@ if verbose
 end
 % [tmp,geo] = nj_grid_varget(file,varname,...
 %   [1 1 Jax(1) Iax(1)],[1 Inf length(Jax) length(Iax)]);
+
+% JWilkin - disable
 geo = var.grid_interop(1, :, Jax(1):Jax(end), Iax(1):Iax(end));
+% geo = var.grid(1,:,Jax,Iax);
+
+
+
+
+
+% ROMS
+% geo.lon = geo.lon_rho;
+% geo.lat = geo.lat_rho;
 
 % lon,lat of the subset grid
 lon_mod = double(geo.lon);
@@ -169,6 +150,14 @@ if isvector(geo.z)
   % catch case (not ROMS) where coordinates are 1-D vectors
   geo.z = repmat(geo.z,[1 length(geo.lat) length(geo.lon)]);
 end
+
+% J Wilkin - ROMS geo.z comes with a leading singleton, presumably because 
+% ROMS s-coordinate depends on zeta (time varying). But I have not allowed
+% for time dependent z in the processing here (for other models) so squeeze
+% out the singleton dimension if it occurs.
+geo.z = squeeze(geo.z);
+
+% Probably don't need this because grid_interop has a convention z < 0
 geo_t1.z = -abs(geo.z);
 geo_t2.z = -abs(geo.z);
 
@@ -216,14 +205,7 @@ if verbose
   disp([' T = ' int2str(min(Ttrk)) ':' int2str(max(Ttrk))])
 end
 
-
-
-
-
-
-
-
-% counter for alongtrack profiles
+% Counter for alongtrack profiles
 prof = 1;
 
 % Open data object
@@ -231,7 +213,7 @@ prof = 1;
 
 for nchunk = 1:length(chunks)
   
-  % index of time at beginning of interval
+  % Index of time at beginning of interval
   tindex0 = chunks(nchunk);
   
   % find the chunk of track coordinates in this time interval
@@ -247,15 +229,22 @@ for nchunk = 1:length(chunks)
     disp([' Doing interval ' int2str(nchunk) ' with ' ...
       int2str(length(Section)) ' coordinates in time range:'])
   end
+  
   % Load time and data for this tindex and the next
   % We cannot economize by assuming that tindex increments by 1 for each
-  % chunk because the track times might be at larger intervals than
-  % the model output
-%   geo_t1.time = nj_time(nc,varname,tindex0); ACrosby
-  geo_t1.time = g.time(tindex0);
-%   geo_t2.time = nj_time(nc,varname,tindex0+1); ACrosby
-  geo_t2.time = g.time(tindex0+1);
-%   data_t12 = nc{varname}(tindex0+(0:1),1:nz,Jax,Iax); ACrosby
+  % successive chunk because the track times might be at larger intervals 
+  % than the model output
+  
+  % JWilkin - this throws java heap errors
+  % %   geo_t1.time = nj_time(nc,varname,tindex0); ACrosby
+  %   geo_t1.time = g.time(tindex0);
+  % %   geo_t2.time = nj_time(nc,varname,tindex0+1); ACrosby
+  %   geo_t2.time = g.time(tindex0+1);
+  % %   data_t12 = nc{varname}(tindex0+(0:1),1:nz,Jax,Iax); ACrosby
+  
+  geo_t1.time = tim_mod(tindex0);
+  geo_t2.time = tim_mod(tindex0+1);
+  
   data_t12 = var.data(tindex0:(tindex0+1), 1:nz, Jax(1):Jax(end), Iax(1):Iax(end));
   data_t1 = squeeze(double(data_t12(1,:,:,:)));
   data_t2 = squeeze(double(data_t12(2,:,:,:)));
@@ -288,8 +277,10 @@ for nchunk = 1:length(chunks)
       Twgt_t2 = (timS(j)-geo_t1.time)/(geo_t2.time-geo_t1.time);
       Twgt_t1 = 1-Twgt_t2;
       
-      % I have not allowed for partial weights in the event some of the
-      % data are in the land mask
+      % For a track lon/lat point in the cell adjacent to the land mask 
+      % this is going to give NaN in the 4-point interpolation. This could
+      % be avoided by modifying weights to only use valid points. Will 
+      % revisit this some other time (J Wilkin). 
       
       % Get vertical vector of model values interpolated to
       % each track position at both times
