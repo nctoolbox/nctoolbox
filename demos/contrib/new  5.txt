@@ -1,0 +1,1 @@
+PATH=/opt/wakari/wakari-gateway/bin:$PATH /opt/wakari/wakari-gateway/bin/wk-gateway-configure --server http://geoport.whoi.edu:3690 --host 128.128.181.81 --port 7512 --name Gateway --protocol http --summary Gateway --username wakari --password password

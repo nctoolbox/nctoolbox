@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ogc="http://www.opengis.net/ogc"
+    xmlns:gml="http://www.opengis.net/gml" outputSchema="http://www.opengis.net/cat/csw/2.0.2"
+    outputFormat="application/xml" version="2.0.2" service="CSW" resultType="results"
+    maxRecords="MAX_RECORDS"
+    xsi:schemaLocation="http://www.opengis.net/cat/csw/2.0.2 http://schemas.opengis.net/csw/2.0.2/CSW-discovery.xsd">
+    <csw:Query typeNames="csw:Record">
+        <csw:ElementSetName>full</csw:ElementSetName>
+        <csw:Constraint version="1.1.0">
+            <ogc:Filter>
+                <ogc:And>
+                    <ogc:BBOX>
+                        <ogc:PropertyName>ows:BoundingBox</ogc:PropertyName>
+                        <gml:Envelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                            <gml:lowerCorner>LON_MIN LAT_MIN</gml:lowerCorner>
+                            <gml:upperCorner>LON_MAX LAT_MAX</gml:upperCorner>
+                        </gml:Envelope>
+                    </ogc:BBOX>
+                    <ogc:PropertyIsLessThanOrEqualTo>
+                        <ogc:PropertyName>apiso:TempExtent_begin</ogc:PropertyName>
+                        <ogc:Literal>TIME_STOP</ogc:Literal>
+                    </ogc:PropertyIsLessThanOrEqualTo>
+                    <ogc:PropertyIsGreaterThanOrEqualTo>
+                        <ogc:PropertyName>apiso:TempExtent_end</ogc:PropertyName>
+                        <ogc:Literal>TIME_START</ogc:Literal>
+                    </ogc:PropertyIsGreaterThanOrEqualTo>
+                    <ogc:PropertyIsLike wildCard="*" singleChar="?" escapeChar="\\">
+                        <ogc:PropertyName>apiso:AnyText</ogc:PropertyName>
+                        <ogc:Literal>*ANY_TEXT_STRING*</ogc:Literal>
+                    </ogc:PropertyIsLike>
+                </ogc:And>
+            </ogc:Filter>
+        </csw:Constraint>
+    </csw:Query>
+</csw:GetRecords>

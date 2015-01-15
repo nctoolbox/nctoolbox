@@ -231,6 +231,14 @@ classdef ncgeodataset < cfdataset
             
         end
         
+        function e = top_bot(obj, variableName)
+            % NCGEODATASET.top_bot - Function to calculate lat/lon bounding box of variable.
+            % Usage: ex = nc.extent('temp')
+            v = obj.geovariable(variableName);
+            e = v.top_bot;
+            
+        end
+        
         function te = timeextent(obj, variableName)
             % NCGEODATASET.timeextent - Function to calculate the start and stop times of for a variable.
             % Usage: t = nc.timeextent('salt')

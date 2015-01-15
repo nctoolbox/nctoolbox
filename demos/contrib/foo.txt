@@ -1,0 +1,61 @@
+
+<dc:identifier scheme="urn:x-esri:specification:ServiceType:ArcIMS:Metadata:FileID">hycom_global</dc:identifier>
+<dc:identifier scheme="urn:x-esri:specification:ServiceType:ArcIMS:Metadata:DocID">{A4DFF1CD-4FA1-4BA2-A0BD-364A638A25C0}</dc:identifier>
+<dc:title>HYbrid Coordinate Ocean Model (HYCOM): Global</dc:title>
+<dc:type scheme="urn:x-esri:specification:ServiceType:ArcIMS:Metadata:ContentType">downloadableData</dc:type>
+<dc:type scheme="urn:x-esri:specification:ServiceType:ArcIMS:Metadata:ContentType">liveData</dc:type>
+<dc:subject>Earth Science &gt; Atmosphere &gt; Atmospheric Radiation &gt; Heat Flux</dc:subject>
+<dc:subject>Earth Science Services &gt; Models &gt; Ocean General Circulation Models (OGCM)/Regional Ocean Models</dc:subject>
+<dc:subject>Earth Science Services &gt; Models &gt; Weather Research/Forecast Models</dc:subject>
+<dc:subject>Earth Science &gt; Oceans &gt; Ocean Circulation &gt; Fresh Water Flux</dc:subject>
+<dc:subject>Earth Science &gt; Oceans &gt; Ocean Circulation &gt; Ocean Currents</dc:subject>
+<dc:subject>Earth Science &gt; Oceans &gt; Ocean Circulation &gt; Ocean Mixed Layer</dc:subject>
+<dc:subject>Earth Science &gt; Oceans &gt; Ocean Temperature &gt; Ocean Mixed Layer</dc:subject>
+<dc:subject>Earth Science &gt; Oceans &gt; Ocean Temperature &gt; Sea Surface Temperature</dc:subject>
+<dc:subject>Earth Science &gt; Oceans &gt; Salinity/Density &gt; Salinity</dc:subject>
+<dc:subject>Earth Science &gt; Oceans &gt; Sea Surface Topography &gt; Sea Surface Height</dc:subject>
+<dc:subject>Geographic Region &amp;gt; Global Ocean</dc:subject>
+<dc:subject>Pacific Islands Ocean Observing System (PacIOOS)</dc:subject>
+<dc:subject>Pacific Islands Ocean Observing System (PacIOOS)</dc:subject>
+<dc:subject>sea_water_potential_temperature</dc:subject>
+<dc:subject>sea_water_salinity</dc:subject>
+<dc:subject>eastward_sea_water_velocity</dc:subject>
+<dc:subject>northward_sea_water_velocity</dc:subject>
+<dc:subject>surface_downward_heat_flux_in_air</dc:subject>
+<dc:subject>water_flux_into_ocean</dc:subject>
+<dc:subject>tendency_of_sea_surface_temperature</dc:subject>
+<dc:subject>tendency_of_sea_surface_salinity</dc:subject>
+<dc:subject>sea_surface_height</dc:subject>
+<dc:subject>ocean_mixed_layer_thickness</dc:subject>
+<dc:subject>climatologyMeteorologyAtmosphere</dc:subject>
+<dct:modified>2014-12-15T18:00:50-07:00</dct:modified>
+<dct:abstract>Global HYbrid Coordinate Ocean Model (HYCOM) and U.S. Navy Coupled Ocean Data Assimilation (NCODA) 3-day, daily forecast at approximately 9-km (1/12-degree) resolution. This is a demonstration product from the HYCOM Consortium and is provided as is. While considerable effort has been made to implement all model components in a thorough, correct, and accurate manner, numerous sources of error are possible. As such, please use these data with the caution appropriate for any ocean related activity.</dct:abstract>
+<dct:abstract>Global HYbrid Coordinate Ocean Model (HYCOM) and U.S. Navy Coupled Ocean Data Assimilation (NCODA) 3-day, daily forecast at approximately 9-km (1/12-degree) resolution. This is a demonstration product from the HYCOM Consortium and is provided as is. While considerable effort has been made to implement all model components in a thorough, correct, and accurate manner, numerous sources of error are possible. As such, please use these data with the caution appropriate for any ocean related activity.</dct:abstract>
+<dct:abstract>Global HYbrid Coordinate Ocean Model (HYCOM) and U.S. Navy Coupled Ocean Data Assimilation (NCODA) 3-day, daily forecast at approximately 9-km (1/12-degree) resolution. This is a demonstration product from the HYCOM Consortium and is provided as is. While considerable effort has been made to implement all model components in a thorough, correct, and accurate manner, numerous sources of error are possible. As such, please use these data with the caution appropriate for any ocean related activity.</dct:abstract>
+<dct:abstract>Global HYbrid Coordinate Ocean Model (HYCOM) and U.S. Navy Coupled Ocean Data Assimilation (NCODA) 3-day, daily forecast at approximately 9-km (1/12-degree) resolution. This is a demonstration product from the HYCOM Consortium and is provided as is. While considerable effort has been made to implement all model components in a thorough, correct, and accurate manner, numerous sources of error are possible. As such, please use these data with the caution appropriate for any ocean related activity.</dct:abstract>
+<dct:abstract>Global HYbrid Coordinate Ocean Model (HYCOM) and U.S. Navy Coupled Ocean Data Assimilation (NCODA) 3-day, daily forecast at approximately 9-km (1/12-degree) resolution. This is a demonstration product from the HYCOM Consortium and is provided as is. While considerable effort has been made to implement all model components in a thorough, correct, and accurate manner, numerous sources of error are possible. As such, please use these data with the caution appropriate for any ocean related activity.</dct:abstract>
+<dct:references scheme="urn:x-esri:specification:ServiceType:distribution:url">http://oos.soest.hawaii.edu/thredds/idd/ocn_mod.html?dataset=hycom_global</dct:references>
+<dct:references scheme="urn:x-esri:specification:ServiceType:distribution:url">http://oos.soest.hawaii.edu/thredds/dodsC/pacioos/hycom/global.html</dct:references>
+<dct:references scheme="urn:x-esri:specification:ServiceType:distribution:url">http://pacioos.org/voyager/index.html?b=-85.200475%2C-180%2C85.200475%2C180&amp;o=ofore:5:f:d1</dct:references>
+<dct:references scheme="urn:x-esri:specification:ServiceType:distribution:url">http://oos.soest.hawaii.edu/las/UI.vm?dsid=hycom_global&amp;varid=temperature-hycom_global</dct:references>
+<dct:references scheme="urn:x-esri:specification:ServiceType:distribution:url">http://oos.soest.hawaii.edu/erddap/griddap/HYCOM_Global_3D.graph</dct:references>
+<dct:references scheme="urn:x-esri:specification:ServiceType:distribution:url">http://oos.soest.hawaii.edu/erddap/griddap/HYCOM_Global_2D.graph</dct:references>
+<dct:references scheme="urn:x-esri:specification:ServiceType:wms:url">http://oos.soest.hawaii.edu/thredds/wms/pacioos/hycom/global?service=WMS&amp;version=1.3.0&amp;request=GetCapabilities</dct:references>
+<dct:references scheme="urn:x-esri:specification:ServiceType:wcs:url">http://oos.soest.hawaii.edu/thredds/wcs/pacioos/hycom/global?service=WCS&amp;version=1.0.0&amp;request=GetCapabilities</dct:references>
+<dct:references scheme="urn:x-esri:specification:ServiceType:odp:url">http://oos.soest.hawaii.edu/thredds/dodsC/pacioos/hycom/global</dct:references>
+<dct:references scheme="urn:x-esri:specification:ServiceType:download:url">http://oos.soest.hawaii.edu/thredds/idd/ocn_mod.html?dataset=hycom_global</dct:references>
+<dct:references scheme="urn:x-esri:specification:ServiceType:download:url">http://oos.soest.hawaii.edu/thredds/dodsC/pacioos/hycom/global.html</dct:references>
+<dct:references scheme="urn:x-esri:specification:ServiceType:download:url">http://pacioos.org/voyager/index.html?b=-85.200475%2C-180%2C85.200475%2C180&amp;o=ofore:5:f:d1</dct:references>
+<dct:references scheme="urn:x-esri:specification:ServiceType:download:url">http://oos.soest.hawaii.edu/las/UI.vm?dsid=hycom_global&amp;varid=temperature-hycom_global</dct:references>
+<dct:references scheme="urn:x-esri:specification:ServiceType:download:url">http://oos.soest.hawaii.edu/erddap/griddap/HYCOM_Global_3D.graph</dct:references>
+<dct:references scheme="urn:x-esri:specification:ServiceType:download:url">http://oos.soest.hawaii.edu/erddap/griddap/HYCOM_Global_2D.graph</dct:references>
+<ows:WGS84BoundingBox>
+<ows:LowerCorner>-180.0 -78.64</ows:LowerCorner>
+<ows:UpperCorner>180.0 46.8781</ows:UpperCorner>
+</ows:WGS84BoundingBox>
+<ows:BoundingBox>
+<ows:LowerCorner>-180.0 -78.64</ows:LowerCorner>
+<ows:UpperCorner>180.0 46.8781</ows:UpperCorner>
+</ows:BoundingBox>
+<dc:source>{68FF11D8-D66B-45EE-B33A-21919BB26421}</dc:source>
+

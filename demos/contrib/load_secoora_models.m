@@ -101,7 +101,7 @@ espresso.salt.name = 'salt';
 % -----------------------------------------------------------------------
 % Model: SABGOM CF-compliant ROMS aggregation
 sabgom.name = 'sabgom';
-sabgom.url = ['http://omgsrv1.meas.ncsu.edu:8080/thredds/dodsC/' ...
+sabgom.url = ['http://omgarch1.meas.ncsu.edu:8080/thredds/dodsC/' ...
     'fmrc/sabgom/SABGOM_Forecast_Model_Run_Collection_best.ncd'];
 sabgom.file = 'sabgom.nc';
 sabgom.temp.name = 'temp';
@@ -126,7 +126,7 @@ hycom.salt.name = 'salinity';
 
 %% models to compare with data
 %model_list = {'USEAST','ESPreSSO','HYCOM'};  %MARACOOS
-model_list = {'USEAST','SABGOM','HYCOM'};     %SECOORA
+model_list = {'SABGOM','USEAST','HYCOM'};     %SECOORA
 
 
 ncks = 0;
