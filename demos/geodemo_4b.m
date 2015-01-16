@@ -1,9 +1,8 @@
+function geodemo_4b
 %% GEODEMO_4b
 % Compare horizontal slices from two different CF compliant structured
 % grid models (EFDC and CBOFS) at a particular time step and depth, using
 % geosubset to subset the data
-
-clear 
 
 %% EFDC
 url{2}='http://comt.sura.org/thredds/dodsC/data/comt_1_archive/estuarine_hypoxia/VIMS_EFDC/2004_DO3d';

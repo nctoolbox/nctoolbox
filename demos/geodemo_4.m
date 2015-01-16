@@ -1,6 +1,6 @@
+function geodemo_4
 % GEODEMO_4 Compare horizontal slices from two different CF compliant structured
 % grid models (CH3D and ROMS) at a particular time step and depth
-clear
 
 %% EFDC
 url{2}='http://comt.sura.org/thredds/dodsC/data/comt_1_archive/estuarine_hypoxia/VIMS_EFDC/2004_DO3d';

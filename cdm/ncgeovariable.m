@@ -632,6 +632,9 @@ classdef ncgeovariable < ncvariable
             % s.lon=[117 123];
             % s.h_stride=[2 2]; % Can be omitted
             % s.z_index=[1 30]; % Can be omitted
+            % or 
+            % s.z_index='top'
+            % s.z_index='bottom'
             % s.v_stride=2; % Can be omitted
             %
             % Usage:
@@ -752,7 +755,7 @@ classdef ncgeovariable < ncvariable
                         if ischar(struct.z_index)
                            e=obj.top_bot;
                            switch struct.z_index
-                                case 'surface'
+                                case 'top'
                                     struct.z_index=e(1);
                                     struct.z_index=e(1);
                                     
