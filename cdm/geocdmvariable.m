@@ -107,24 +107,21 @@ classdef geocdmvariable < cdmvariable
         end
 
         function v = time(obj)
-            v = obj.lookupAxisByType('Time');
-            if ~isempty(v)
-                v = cdmvariable(obj.dataset, v);
+            n = obj.lookupAxisByType('Time');
+            if ~isempty(n)
+                v = cdmvariable(obj.dataset, n);
+            else
+                n = value4key(obj.attributes, 'time');
+                v = cdmvariable(obj.dataset, n);
             end
         end
 
         function v = y(obj)
-            v = obj.lookupAxisByType('Lat');
-            if isempty(v)
-                v = obj.lookupAxisByType('GeoY');
-            end
+            v = obj.lookupAxisByType({'Lat', 'GeoY'});
         end
 
         function v = x(obj)
-            v = obj.lookupAxisByType('Lon');
-            if isempty(v)
-                v = obj.lookupAxisByType('GeoX');
-            end
+            v = obj.lookupAxisByType({'Lon', 'GeoX'});
         end
 
     end
@@ -248,12 +245,15 @@ classdef geocdmvariable < cdmvariable
         %% Lookup axis by type
         % Types: Lon, GeoX, Lat, GeoY, Time
         function v = lookupAxisByType(obj, t)
+            if ischar(t)
+                t = {t};
+            end
             axesVars = obj.variable.axesVariables;
             n = '';
             for i = 1:length(axesVars)
                 ja = axesVars{i};
                 at = char(ja.getAxisType());
-                if ~isempty(at) && strcmp(t, at)
+                if ~isempty(at) && any(strcmp(at, t))
                     n = obj.axes{i};
                     break;
                 end
