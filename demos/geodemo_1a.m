@@ -1,3 +1,4 @@
+function geodemo_1a
 %% NCGEODATASET GEODEMO_1A
 % Method A: Read surface salinity using geovariable syntax. 
 % Takes some extra steps since you create the geovariable object before 

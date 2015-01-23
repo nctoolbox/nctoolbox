@@ -1,25 +1,24 @@
 function runtests
 % Run tests
-tests = {'demo1', 'demo2', 'demo2a', 'demo3', 'demo3b', 'demo4', 'demo5', 'demo6' ...
-		'demo7', 'demo8', 'demo9', 'demo10', 'geodemo_1a', 'geodemo_1b', 'geodemo_1c'};
-		
 good = 0;
 bad = 0;
 failed = {};
-for t = tests
-	s = char(t);
+mydir= dir('*geodemo*.m');
+for itest=1:length(mydir);
+    ss = char(mydir(itest).name(1:end-2))
+    tests{itest}=ss;
 	try
-		fprintf(1, '\n\n==================================================================\n')
-		fprintf(1, '=== %s ===========================================================\n', s)
-		fprintf(1, '==================================================================\n')
-		eval(s);
+		fprintf(1, '\n\n===============================================================\n')
+		fprintf(1, '=== %s =====================================================\n', ss)
+		fprintf(1, '===============================================================\n')
+		eval(ss);
 		close all;
 		good = good + 1;
 	catch me
-		fprintf(1, '!!! %s failed: %s\n', s, me.identifier);
+		fprintf(1, '!!! %s failed: %s\n', ss, me.identifier);
 		fprintf(1, '%s\n', me.message);
 		bad = bad + 1;
-		failed{bad} = s;
+		failed{bad} = ss;
 	end
 end
 fprintf(1, '\n\n==========================================================\n')

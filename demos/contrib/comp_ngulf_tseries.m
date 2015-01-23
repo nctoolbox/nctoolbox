@@ -20,7 +20,7 @@ times{i}=[2012 1 6 12 0 0];
 i=i+1;
 titl{i}='AMSEAS'; %NCOM
 grid_type{i}='structured_grid';
-uris{i}='http://edac-dap3.northerngulfinstitute.org/thredds/dodsC/ncom_amseas_agg/AmSeas_Aggregation_best.ncd';
+uris{i}='http://ecowatch.ncddc.noaa.gov/thredds/dodsC/ncom_amseas_agg_20091119_20130404/Amseas_May_2010_to_Apr_04_2013_best.ncd'
 vars{i}='surf_el';
 times{i}=[2012 1 6 12 0 0];
 
@@ -59,7 +59,8 @@ for i = 1:length(uris)
       trivar_name=gridvar.attribute('face_node_connectivity');
       
       % get connnectivity array data
-      tri{i}=nc{i}{trivar_name}(:);
+      %tri{i}=nc{i}{trivar_name}(:); % ncgeovariable-style access-- fails
+      tri{i}=data(nc{i}{trivar_name}); % ncvariable-style access -- works
       [m,n]=size(tri{i});
       % check/fix orientation of connectivity array
       if m==3,
