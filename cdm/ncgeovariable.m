@@ -226,8 +226,16 @@ classdef ncgeovariable < ncvariable
                                         %                          temp = src.variable.getCoordinateSystems();
                                         griddataset = ucar.nc2.dt.grid.GridDataset.open(src.dataset.location);
                                         grid = griddataset.findGridByName(src.name);
-                                        grid = grid.getCoordinateSystem();
-                                        subgrid = grid.getVerticalTransform();
+                                            if ( length(grid) ~= 0 )
+                                            grid = grid.getCoordinateSystem();
+                                            subgrid = grid.getVerticalTransform();
+                                        else
+                                            warning('Error: type %s %s findGridByName(%s) failed',type, z_sn, src.name)
+                                            if ~ismember(tempname, ignore)
+                                                ig.(tempname) = g.(tempname);
+                                            end
+                                            continue % skip to next var
+                                        end
                                         subgrid = subgrid.subset(trange, zrange, yrange, xrange); %tempfortesting arc 10/18
                                         %
                                         % It looks like this dataset (http://geoport.whoi.edu/thredds/dodsC/usgs/vault0/models/examples/bora_feb.nc)
