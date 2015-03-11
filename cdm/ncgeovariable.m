@@ -168,10 +168,10 @@ classdef ncgeovariable < ncvariable
         
         function ig = grid_interop(src, first, last, stride, ignore)
             % NCGEOVARIABLE.GRID_INTEROP - Method to get the coordinate variables and their data as a
-            % a structure with standardized field names for lat, lon, time, and z. Other coordiante variables
+            % a structure with standardized field names for lat, lon, time, and z. Other coordinate variables
             % that are not recognized by netcdf-java as the previous four types have field names directly
             % taken from their variable names.
-            % Useage: >> gridstruct = geovar.grid_interop(1,:,:,1:2:50);
+            % Usage: >> gridstruct = geovar.grid_interop(1,:,:,1:2:50);
             if nargin < 5
                 ignore = {};
             end
@@ -226,8 +226,16 @@ classdef ncgeovariable < ncvariable
                                         %                          temp = src.variable.getCoordinateSystems();
                                         griddataset = ucar.nc2.dt.grid.GridDataset.open(src.dataset.location);
                                         grid = griddataset.findGridByName(src.name);
-                                        grid = grid.getCoordinateSystem();
-                                        subgrid = grid.getVerticalTransform();
+                                            if ( length(grid) ~= 0 )
+                                            grid = grid.getCoordinateSystem();
+                                            subgrid = grid.getVerticalTransform();
+                                        else
+                                            warning('Error: type %s %s findGridByName(%s) failed',type, z_sn, src.name)
+                                            if ~ismember(tempname, ignore)
+                                                ig.(tempname) = g.(tempname);
+                                            end
+                                            continue % skip to next var
+                                        end
                                         subgrid = subgrid.subset(trange, zrange, yrange, xrange); %tempfortesting arc 10/18
                                         %
                                         % It looks like this dataset (http://geoport.whoi.edu/thredds/dodsC/usgs/vault0/models/examples/bora_feb.nc)
