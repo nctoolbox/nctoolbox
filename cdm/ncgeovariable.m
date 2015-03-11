@@ -168,10 +168,10 @@ classdef ncgeovariable < ncvariable
         
         function ig = grid_interop(src, first, last, stride, ignore)
             % NCGEOVARIABLE.GRID_INTEROP - Method to get the coordinate variables and their data as a
-            % a structure with standardized field names for lat, lon, time, and z. Other coordiante variables
+            % a structure with standardized field names for lat, lon, time, and z. Other coordinate variables
             % that are not recognized by netcdf-java as the previous four types have field names directly
             % taken from their variable names.
-            % Useage: >> gridstruct = geovar.grid_interop(1,:,:,1:2:50);
+            % Usage: >> gridstruct = geovar.grid_interop(1,:,:,1:2:50);
             if nargin < 5
                 ignore = {};
             end
