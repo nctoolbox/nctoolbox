@@ -10,21 +10,38 @@ fpath = fileparts(which('setup_nctoolbox_java'));
 disp(sprintf('Java files in %s: ',fpath));
 ls(fpath)
 
-fpath=fileparts(which('setup_nctoolbox'));
+fpath = fileparts(mfilename('fullpath'));
+rootpath = fileparts(fpath);
+gitpath = fullfile(rootpath, '.git');
+[rv, r] = system('git --version');
+%useGit = exist(gitpath,'dir') && ~rv;
+useGit = false; % for testing without git
 
-if (exist(strcat(fpath,'/.git'),'dir'))
+if useGit
   % git information
   try
     disp 'NCtoolbox git install information:'
-    [retval,gitdescribe]= system(sprintf('cd %s ; git describe --tags',fpath));
-    if ~retval
-	disp (sprintf('git describe info (tag-commits-commitID): %s',gitdescribe));
-    end
-    [retval,gitstatus]= system(sprintf('cd %s ;git status',fpath));
-    if ~retval
-        disp (gitstatus)
-    end
+    [rv, ncDescribe] = system(sprintf('cd %s; git describe --tags', rootpath));
+    [rv, ncCommit] = system(sprintf('cd %s; git rev-parse --short HEAD', rootpath));
+    % git log behave weirdly on old version, like the one shipped by Apple.
+    % Disabled date for now
+    %[rv, ncDate] = system(sprintf('cd %s;git --no-pager log -1 --format=%cd --date=short', rootpath));
+    [rv, ncBranch] = system(sprintf('cd %s;git rev-parse --abbrev-ref HEAD', rootpath));
+    [rv, ncDate] = system(sprintf('cd %s;git --no-pager log -1 --format=%cd --date=short', rootpath));
+    fprintf(1, 'GIT COMMIT:   %s', ncCommit);
+    fprintf(1, 'GIT BRANCH:   %s', ncBranch);
+    %fprintf(1, 'GIT DATE:     %s', ncDate);
+    fprintf(1, 'GIT DESCRIBE: %s', ncDescribe);
+  catch
+      useGit = false;
   end
 end
 
+if ~useGit
+    infofile = fullfile(fpath, 'nctoolbox-version.txt');
+    if exist(infofile, 'file')
+        type(infofile);
+    end
+end
 
+fprintf(1, '\n')
