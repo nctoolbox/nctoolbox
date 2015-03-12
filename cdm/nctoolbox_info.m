@@ -6,6 +6,12 @@
 
 ver('nctoolbox')
 
-disp(sprintf('Java files in %s',fileparts(which('setup_nctoolbox_java'))));
-ls(fileparts(which('setup_nctoolbox_java')))
+fpath = fileparts(which('setup_nctoolbox_java'));
+disp(sprintf('Java files in %s',fpath));
+ls(fpath)
+
+try
+   system(sprintf('cd %s ; git describe --tags; git status',fpath));
+end
+
 
