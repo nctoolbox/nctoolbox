@@ -1,4 +1,4 @@
-% NCTOOLBOX Tools for raed-only access to Common Data Model dataset.
+% NCTOOLBOX Tools for read-only access to Common Data Model dataset.
 % Version 1.1.1rversioninfo 12-03-2015
 %
 % Files
