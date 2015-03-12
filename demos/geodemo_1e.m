@@ -5,16 +5,19 @@ function geodemo_1a
 % extracting data from it, but you then have all the geovariable 
 % methods available to you.
 
-% OPeNDAP Data URL for a CF-Compliant curvilinear ROMS model dataset
-url ='http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc';
-nc = geocdm(url)
+% OPeNDAP Data URL for a not-quite CF-Compliant curvilinear ROMS model dataset
+url ='http://barataria.tamu.edu:8080/thredds/dodsC/txla_nesting6/ocean_his_0196.nc';
+
+%this data fails to be CF compliant in that its coordinate variables do not map completely to spatial coordinates
+
+nc = ncgeodataset(url)
 
 %% Take a look at the variables available within the dataset
 % To access the properties we can use typical dot notation like with
 % ordinary Matlab structures. Here we want to get a list of the variables
 % in the dataset we are looking at.
 
-nc.variables
+ nc.variables
 
 %% Determine the shape of the selected variable
 % The size method is a method of ncgeodataset that returns the length of
@@ -30,7 +33,7 @@ nc.variables
 % this dataset. This is done by calling geovariable with the name of the
 % netcdf variable we are interested in as an argument.
 
- salt = nc.variable('salt')
+ salt = nc.geovariable('salt')
 
 % Now we can use Matlab style array indexing to subset the salt variable by
 % its indices.  We can take a look at the dimension names using the "dimensions" 
@@ -63,7 +66,7 @@ nc.variables
 % the data is CF/COARDS complaint we can take advantage of the netcdf-java
 % common data model.
 
-% The grid method for the geovariable object is designed to grab all
+% The grid method for the geovariable object is designed to grab the all
 % the coordinates associated with the geovariable for the given indices.
 % Usage is just like the data method, except the result is a Matlab
 % structure containing fields for each of the geovariable's dimensions and
@@ -72,10 +75,10 @@ nc.variables
  salinity_coords = salt.grid(1, end, :, :)
 
 %% Use |grid_interop| method to return coordinate axes with standard, interoperable names
-% A higher level option is to use the grid_interop method, which returns
-% the dimensions of our geovariable using the standardized names of lat,
+% A higher level option is to use the grid_interop method, which attempts to 
+% returns the dimensions of our geovariable using the standardized names of lat,
 % lon, time, and z instead of the original netcdf names of the coordinate
-% dimensions.
+% dimensions when possible.
 
 % In addition to a more programmatic/standardized structure returned with
 % grid_interop (interop for interoperability), the coordinate data is also
@@ -85,15 +88,22 @@ nc.variables
 % - Longitude coordinates that use a 0-360 degree scheme are converted 
 %   to the range [-180, 180].
 % - Projected x and y values are converted to geographic
-%     coordinates lat/lon.  
+%     coordinates lat/lon if possible.  
 % - Stretched vertical coordinates are converted z values. 
 
  salinity_coords = salt.grid_interop(1, end, :, :)
 
+% note that the spatial salinity coordinates are untransformed, while the time variable is
+% transformed.  The variables in this file are on a staggered grid, with the bulk properties
+% such as salinity or temperature on the (x_rho,y_rho,s_rho) points, and the fluxes on the (x_u,y_u) 
+% or (x_v,y_v) points.  In this case, the vertical coordinate remains in non-dimensional 's' coordinates.
+
+salinity_coords
+
 %% Plot using MATLAB's pcolor
-pcolor(salinity_coords.lon, salinity_coords.lat, salinity)
+pcolor(salinity_coords.x_rho, salinity_coords.y_rho, salinity)
 shading flat; colorbar; caxis([35 39]);
 
 % Add a title using the global
 % attribute 'title' and the date from our coordinate structure.  
- title({nc.attribute('title'); datestr(salinity_coords.time);nc.location},'interpreter','none')
+ title({nc.attribute('title'); datestr(salinity_coords.time)})

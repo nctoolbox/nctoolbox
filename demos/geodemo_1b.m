@@ -1,3 +1,4 @@
+function geodemo_1b
 %% NCGEODATASET GEODEMO_1B
 % Method B: Read surface salinity with corner/edge/stride syntax.
 % If you are more used to working with NetCDF in Fortran than in 

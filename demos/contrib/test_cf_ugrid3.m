@@ -13,7 +13,7 @@ vars{2}='elev';
 times{2}=[2008 9 13 06 0 0];
 
 titl{3}='FVCOM';
-uris{3}='http://comt.sura.org/thredds/dodsC/comt_1_archive_full/inundation_tropical/USF_FVCOM/Hurricane_Ike_2D_final_run_with_waves/00_dir.ncml';
+uris{3}='http://comt.sura.org/thredds/fileServer/comt_1_archive_full/inundation_tropical/USF_FVCOM/Hurricane_Ike_2D_final_run_with_waves/00_dir.ncml';
 vars{3}='zeta';
 times{3}=[2008 9 13 06 0 0];
 % bounding box for figures
@@ -42,9 +42,9 @@ for i=1:length(uris)
   trivar_name=gridvar.attribute('face_node_connectivity');
   
   % get connnectivity array data
-  tri=nc{trivar_name}(:,:); % works
+  % tri=nc{trivar_name}(:); % fails: ncgeovariable-type access on an ncvariable
   %tri=nc.data{trivar_name} ; %works
-  %tri=data(nc{trivar_name}) ; % works
+  tri=data(nc{trivar_name}) ; % works
   [m,n]=size(tri);
   % check/fix orientation of connectivity array
   if m==3,
