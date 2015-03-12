@@ -1,3 +1,4 @@
-GIT COMMIT: 3c86be0
-GIT BRANCH: (HEAD, origin/develop, develop)
-GIT DATE:   2015-03-12
+GIT COMMIT:   0ec542f
+GIT BRANCH:   (HEAD, origin/develop, develop)
+GIT DATE:     2015-03-12
+GIT DESCRIBE: 2015-03-12

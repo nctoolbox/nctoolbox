@@ -1,4 +1,5 @@
 function setup_nctoolbox
+%SETUP_NCTOOLBOX sets your path and classpath to access the nctoolbox functions
 
 home = fileparts(which(mfilename));
 addpath(fullfile(home, 'java'));
