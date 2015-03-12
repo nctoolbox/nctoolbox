@@ -14,8 +14,8 @@ fpath = fileparts(mfilename('fullpath'));
 rootpath = fileparts(fpath);
 gitpath = fullfile(rootpath, '.git');
 [rv, r] = system('git --version');
-%useGit = exist(gitpath,'dir') && ~rv;
-useGit = false; % for testing without git
+useGit = exist(gitpath,'dir') && ~rv;
+%useGit = false; % for testing without git
 
 if useGit
   % git information
