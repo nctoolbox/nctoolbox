@@ -1,4 +1,4 @@
-GIT COMMIT: e81f28f
-GIT BRANCH: (HEAD, versioninfo)
+GIT COMMIT: 8582810
+GIT BRANCH: (HEAD, github/versioninfo, versioninfo)
 GIT DATE:   2015-03-12
-GIT DESCRIBE: 1.1.1-12-ge81f28f
+GIT DESCRIBE: 1.1.1-13-g8582810
