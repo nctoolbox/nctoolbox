@@ -230,7 +230,6 @@ classdef ncgeovariable < ncvariable
                                             grid = grid.getCoordinateSystem();
                                             subgrid = grid.getVerticalTransform();
                                         else
-                                            %warning('Non-CF-compliant coordinate: type %s %s findGridByName(%s) failed',type, z_sn, src.name)
                                             if ~ismember(tempname, ignore)
                                                 ig.(tempname) = g.(tempname);
                                             end
