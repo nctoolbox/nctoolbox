@@ -1,4 +1,4 @@
-GIT COMMIT:   c33c5a4
+GIT COMMIT:   92cb78c
 GIT BRANCH:   master
 GIT DATE:     2015-03-13
-GIT DESCRIBE: nctoolbox-20140414-beta-37-gc33c5a4
+GIT DESCRIBE: nctoolbox-20140414-beta-38-g92cb78c

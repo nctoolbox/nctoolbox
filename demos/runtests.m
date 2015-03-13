@@ -1,8 +1,8 @@
 function runtests
 % Run tests
-tests = {'demo1', 'demo2', 'demo2a', 'demo3', 'demo3b', 'demo4', 'demo5', 'demo6', ...
-		'demo7', 'demo8', 'demo9', 'demo9a', 'demo11', 'geodemo_1a', 'geodemo_1b', 'geodemo_1c', ...
-		'geodemo_1d', 'geodemo_2', 'geodemo_3', 'geodemo_6', ...
+tests = {'demo1', 'demo2', 'demo2a', 'demo3', 'demo3b', 'demo3c', 'demo4', 'demo5', 'demo6', ...
+		'demo7', 'demo8', 'demo9', 'demo9a', 'demo10', 'demo11', 'geodemo_1a', 'geodemo_1b', 'geodemo_1c', ...
+		'geodemo_1d', 'geodemo_1e', 'geodemo_2', 'geodemo_3', 'geodemo_4', 'geodemo_4b','geodemo_6', ...
         'access_test1'};
 		% broken URLs: demo10 geodemo_4 geodemo_4b
 good = 0;
@@ -11,9 +11,9 @@ failed = {};
 for t = tests
 	s = char(t);
 	try
-		fprintf(1, '\n\n==================================================================\n')
-		fprintf(1, '=== %s ===========================================================\n', s)
-		fprintf(1, '==================================================================\n')
+		fprintf(1, '\n\n==================================================================\n');
+		fprintf(1, '=== %s ===========================================================\n', s);
+		fprintf(1, '==================================================================\n');
 		eval(s);
 		close all;
 		good = good + 1;
@@ -24,10 +24,10 @@ for t = tests
 		failed{bad} = s;
 	end
 end
-fprintf(1, '\n\n==========================================================\n')
-fprintf(1, 'Ran %.0f demos\n', length(tests))
-fprintf(1, '  %.0f passed\n', good)
-fprintf(1, '  %.0f failed:\n', bad)
+fprintf(1, '\n\n==========================================================\n');
+fprintf(1, 'Ran %.0f demos\n', length(tests));
+fprintf(1, '  %.0f passed\n', good);
+fprintf(1, '  %.0f failed:\n', bad);
 for f = failed
-	fprintf(1, '      %s\n', char(f))
+	fprintf(1, '      %s\n', char(f));
 end
