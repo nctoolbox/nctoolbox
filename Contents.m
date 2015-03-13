@@ -1,4 +1,5 @@
 % NCTOOLBOX Tools for read-only access to Common Data Model dataset.
+% Version 2.0-SNAPSHOT develop
 %
 % Files
 %   setup_nctoolbox - sets your path and classpath to access the nctoolbox functions
