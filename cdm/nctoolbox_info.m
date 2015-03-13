@@ -6,15 +6,17 @@
 
 % Edited by Brian Schlining 2015-03-12
 
-ver
-%ver('nctoolbox')
-fprintf(1, '\n');
-
 %% Extract paths
 fpath = fileparts(mfilename('fullpath'));
 rootpath = fileparts(fpath);
 gitpath = fullfile(rootpath, '.git');
 javapath = fullfile(rootpath, 'java');
+
+%% Display matlab and toolbox versions
+ver % Other toolboxes include jars that we may need to know about
+%ver('nctoolbox')
+fprintf(1, '\n');
+
 
 %% Display java jars
 fprintf(1, 'Java jar files included with nctoolbox:\n');
@@ -41,7 +43,7 @@ useGit = exist(gitpath,'dir') && ~rv;
 if useGit
   % git information
   try
-    disp 'nctoolbox git revision information:'
+    fprintf(1, 'nctoolbox revision in %s:\n', rootpath);
     [rv, ncDescribe] = system(sprintf('cd %s; git describe --tags', rootpath));
     [rv, ncCommit] = system(sprintf('cd %s; git rev-parse --short HEAD', rootpath));
     % git log behaves weirdly with old git versions, like the one shipped by Apple.
@@ -59,7 +61,7 @@ if useGit
 end
 
 if ~useGit
-    disp 'last known nctoolbox git revision information:';
+    fprintf(1, 'last known nctoolbox revision in %s:\n', rootpath);
     infofile = fullfile(fpath, 'nctoolbox-version.txt');
     if exist(infofile, 'file')
         type(infofile);
