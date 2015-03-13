@@ -1,10 +1,10 @@
 function runtests
 % Run tests
 tests = {'demo1', 'demo2', 'demo2a', 'demo3', 'demo3b', 'demo3c', 'demo4', 'demo5', 'demo6', ...
-		'demo7', 'demo8', 'demo9', 'demo9a', 'demo10', 'demo11', 'geodemo_1a', 'geodemo_1b', 'geodemo_1c', ...
-		'geodemo_1d', 'geodemo_1e', 'geodemo_2', 'geodemo_3', 'geodemo_4', 'geodemo_4b','geodemo_6', ...
-        'access_test1'};
+		'demo7', 'demo8', 'demo9', 'demo9a', 'demo11', 'geodemo_1a', 'geodemo_1b', 'geodemo_1c', ...
+		'geodemo_1d', 'geodemo_1e', 'geodemo_2', 'geodemo_3','geodemo_6'};
 		% broken URLs: demo10 geodemo_4 geodemo_4b
+        % Not valid on master: access_test1
 good = 0;
 bad = 0;
 failed = {};
