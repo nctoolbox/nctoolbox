@@ -1,4 +1,5 @@
 % CDM Common Data Model tools from NCTOOLBOX
+% Version 2.0-SNAPSHOT develop
 %
 % Files
 %   cfdataset         - Provide access to CF/COARDS convention datasets accessable by the

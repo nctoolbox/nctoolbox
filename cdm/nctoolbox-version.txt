@@ -1,4 +1,4 @@
-GIT COMMIT:   4e3fe37
+GIT COMMIT:   50c22f1
 GIT BRANCH:   (HEAD, origin/develop, develop)
 GIT DATE:     2015-03-12
-GIT DESCRIBE: nctoolbox-20140414-beta-75-g4e3fe37
+GIT DESCRIBE: nctoolbox-20140414-beta-76-g50c22f1
