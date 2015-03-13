@@ -2,7 +2,7 @@ NCTOOLBOX
 =========
 
 Download the latest release:
-[You can download the latest stable release at by clicking here.](https://github.com/nctoolbox/nctoolbox/tags)
+[You can download the latest stable release at by clicking here.](https://github.com/nctoolbox/nctoolbox/releases)
 
 
 ##Brief summary:
