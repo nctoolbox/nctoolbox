@@ -1,0 +1,195 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<netcdf xmlns='http://www.unidata.ucar.edu/namespaces/netcdf/ncml-2.2'
+    location='' >
+
+  <dimension name='LONGITUDE' length='1' />
+  <dimension name='LATITUDE' length='1' />
+  <dimension name='DEPTH' length='11' />
+  <dimension name='bnds' length='2' />
+  <dimension name='TIME' length='8924' isUnlimited='true' />
+
+  <attribute name='title' value='Hourly Gridded MBARI Mooring M1 Sea Water Temperature and Salinity Observations' />
+  <attribute name='summary' value='These data have been processed from the original instrument netCDF files which have individual irregular time axes.  The data in this file have been combined on a common hourly time axes and a common nominal depth axis.  Data values outside of reasonable ranges have been flagged as bad.' />
+  <attribute name='keywords' value='CTD, Sea Water Temperature, Sea Water Salinity, Monterey Bay, OASIS, CIMT, MSE, MOOS' />
+  <attribute name='standard_name_vocabulary' value='CF-1.1' />
+  <attribute name='id' value='/mbari/ssdsdata/deployments/m1/200910/OS_MBARI-M1_20091020_R_TS.nc' />
+  <attribute name='naming_authority' value='OceanSITES' />
+  <attribute name='keywords_vocabulary' value='GCMD Science Keywords' />
+  <attribute name='cdm_data_type' value='Station' />
+  <attribute name='project' value='SSDS' />
+  <attribute name='data_type' value='OceanSITES time-series data' />
+  <attribute name='format_version' value='1.2' />
+  <attribute name='platform_code' value='MBARI-M1' />
+  <attribute name='wmo_platform_code' value='46092' />
+  <attribute name='date_created' value='2011-02-23T00:39:26Z' />
+  <attribute name='date_update' value='2011-02-23T00:39:26Z' />
+  <attribute name='site_code' value='MBARI' />
+  <attribute name='institution' value='Monterey Bay Aquarium Research Institute' />
+  <attribute name='data_mode' value='R' />
+  <attribute name='quality_control_indicator' value='1' />
+  <attribute name='quality_index' value='B' />
+  <attribute name='netcdf_version' value='3.5' />
+  <attribute name='area' value='North Pacific Ocean' />
+  <attribute name='institution_references' value='http://www.mbari.org/oasis' />
+  <attribute name='contact' value='mccann at mbari.org' />
+  <attribute name='author' value='Mike McCann' />
+  <attribute name='data_assembly_center' value='MBARI' />
+  <attribute name='pi_name' value='Francisco Chavez' />
+  <attribute name='distribution_statement' value='Follows CLIVAR (Climate Varibility and Predictability)  standards, cf. http://www.clivar.org/data/data_policy.php. Data available free of charge. User assumes all risk for use of data. User must display citation in any publication or product using data. User must contact PI prior to any commercial use of data.' />
+  <attribute name='citation' value='These data were collected and made freely available by the Monterey Bay Aquarium Research Institute.' />
+  <attribute name='update_interval' value='void' />
+  <attribute name='qc_manual' value='http://www.oceansites.org/data/quality_control_manual.pdf' />
+  <attribute name='geospatial_lat_min' value='36.764' />
+  <attribute name='geospatial_lat_max' value='36.764' />
+  <attribute name='geospatial_lon_min' value='-122.046' />
+  <attribute name='geospatial_lon_max' value='-122.046' />
+  <attribute name='geospatial_vertical_min' value='1' />
+  <attribute name='geospatial_vertical_max' value='300' />
+  <attribute name='geospatial_vertical_positive' value='down' />
+  <attribute name='time_coverage_start' value='2009-10-20T19:00:00Z' />
+  <attribute name='time_coverage_end' value='2010-10-27T15:00:00Z' />
+  <attribute name='Metadata_Conventions' value='Unidata Dataset Discovery v1.0' />
+  <attribute name='Metadata_Link' value='http://dods.mbari.org/opendap/data/ssdsdata/deployments/m1/200910/OS_MBARI-M1_20091020_R_TS' />
+  <attribute name='contributor_name' value='Francisco Chavez' />
+  <attribute name='contributor_role' value='Principal Investigator' />
+  <attribute name='creator_name' value='Mike McCann' />
+  <attribute name='creator_email' value='mccann at mbari.org' />
+  <attribute name='creator_url' value='http://www.mbari.org/' />
+  <attribute name='comment' value='These data have been automatically produced by a real-time data processing system.  Please understand all the metadata and use the data appropriately.' />
+  <attribute name='time_coverage_duration' value='P371D' />
+  <attribute name='date_modified' value='2011-02-23T00:39:26Z' />
+  <attribute name='date_issued' value='2011-02-23T00:39:26Z' />
+  <attribute name='acknowledgment' value='These collection, processing, archiving and distribution of these data have been funded by the David and Lucile Packard Foundation.' />
+  <attribute name='publisher_name' value='Monterey Bay Aquarium Research Institute' />
+  <attribute name='publisher_url' value='http://www.mbari.org/' />
+  <attribute name='publisher_email' value='mccann at mbari.org' />
+  <attribute name='processing_level' value='Real-Time provisional data following the OceanSITES conventions.  Only automated range-checking quality control has been performed.' />
+  <attribute name='license' value='Follows CLIVAR (Climate Varibility and Predictability) standards, cf. http://www.clivar.org/data/data_policy.php. Data available free of charge. User assumes all risk for use of data. User must display citation in any publication or product using data. User must contact PI prior to any commercial use of data.' />
+  <attribute name='geospatial_vertical_units' value='m' />
+  <attribute name='geospatial_vertical_resolution' value='1' />
+  <attribute name='source' value='Mooring Observation' />
+  <attribute name='version' value='1.60' />
+  <attribute name='user' value='ssdsadmin' />
+  <attribute name='host' value='elvis.shore.mbari.org' />
+  <attribute name='created' value='Tue Feb 22 16:39:26 2011' />
+  <attribute name='history' value='FERRET V6.62   22-Feb-11' />
+  <attribute name='Conventions' value='CF-1.0' />
+  <attribute name='ssds_provenance' value='DC.name=OS_MBARI-M1_20091020_R_TS.nc&lt;br&gt;DC.dataContainerType=File&lt;br&gt;DC.original=false&lt;br&gt;DC.uriString=http://dods.mbari.org/opendap/data/ssdsdata/deployments/m1/200910/OS_MBARI-M1_20091020_R_TS.nc&lt;br&gt;DC.dodsAccessible=false&lt;br&gt;DC.dodsUrlString=http://dods.mbari.org/opendap/data/ssdsdata/deployments/m1/200910/OS_MBARI-M1_20091020_R_TS.nc&lt;br&gt;DC.noNetCDF=true&lt;br&gt;+DP.name=combineTS.pl run on 2011-02-23T00:39:26Z&lt;br&gt;+DP.description=combineTS.pl script executed with arguments: -mooring M1 -ssdsServer new-ssds.mbari.org -deployments 200910 -ssdsDataServer new-ssds.mbari.org -inputDir /mbari/ssdsdata/deployments&lt;br&gt;+DP.dataProducerType=ProcessRun&lt;br&gt;+DP.startDate=2011-02-23T00:39:26Z&lt;br&gt;+DP.endDate=2011-02-23T00:39:45Z&lt;br&gt;+DP.hostName=elvis.shore.mbari.org&lt;br&gt;+Software.name=combineTS.pl&lt;br&gt;+Software.description=Examine all CTD instrument netCDF files for this mooring deployment, construct a Ferret .jnl file that grids and combines all the data to common time and vertical axes.&#10;&lt;br&gt;+Software.uriString=http://moonjelly.shore.mbari.org/cgi-bin/cvsweb.cgi/DPforSSDS/cimt/combineTS.pl?rev=1.60&lt;br&gt;+Software.softwareVersion=1.60&lt;br&gt;.+DC.name=m1_ctd0001_20091020_original.nc&lt;br&gt;.+DC.dataContainerType=File&lt;br&gt;.+DC.original=false&lt;br&gt;.+DC.uriString=http://dods.mbari.org/opendap/data/ssdsdata/deployments/m1/200910/m1_ctd0001_20091020_original.nc&lt;br&gt;.+DC.dodsAccessible=false&lt;br&gt;.+DC.dodsUrlString=http://dods.mbari.org/opendap/data/ssdsdata/deployments/m1/200910/m1_ctd0001_20091020_original.nc&lt;br&gt;.+DC.noNetCDF=true&lt;br&gt;..+DP.name=DStoNetCDF.pl - ctd.pl run on 2011-02-22T22:53:40Z&lt;br&gt;..+DP.description=DStoNetCDF.pl script executed with arguments: -mooring M1 -deployment M1 - October 2009 -ssdsServer new-ssds.mbari.org -ssdsDataServer new-ssds.mbari.org -outputDir /mbari/ssdsdata/deployments -procClosed -verbose&lt;br&gt;..+DP.dataProducerType=ProcessRun&lt;br&gt;..+DP.startDate=2011-02-22T22:53:40Z&lt;br&gt;..+DP.endDate=2011-02-22T22:53:54Z&lt;br&gt;..+DP.hostName=elvis&lt;br&gt;..+Software.name=ctd.pl&lt;br&gt;..+Software.description=Salinity is calculated from C, T, and P using conductivity ratio divisor of 4.29140.&lt;br&gt;..+Software.uriString=http://moonjelly.shore.mbari.org/cgi-bin/cvsweb.cgi/DPforSSDS/cimt/ctd.pl?rev=1.54&lt;br&gt;..+Software.softwareVersion=1.54&lt;br&gt;...+DC.name=m1_ctd0001_20100616_original.nc&lt;br&gt;...+DC.dataContainerType=File&lt;br&gt;...+DC.original=false&lt;br&gt;...+DC.uriString=http://dods.mbari.org/opendap/data/ssdsdata/deployments/m1/200910/m1_ctd0001_20100616_original.nc&lt;br&gt;...+DC.dodsAccessible=false&lt;br&gt;...+DC.dodsUrlString=http://dods.mbari.org/opendap/data/ssdsdata/deployments/m1/200910/m1_ctd0001_20100616_original.nc&lt;br&gt;...+DC.noNetCDF=true&lt;br&gt;....+DP.name=DStoNetCDF.pl - ctd.pl run on 2011-02-22T23:00:59Z&lt;br&gt;....+DP.description=DStoNetCDF.pl script executed with arguments: -mooring M1 -deployment M1 - October 2009 -ssdsServer new-ssds.mbari.org -ssdsDataServer new-ssds.mbari.org -outputDir /mbari/ssdsdata/deployments -procClosed -verbose&lt;br&gt;....+DP.dataProducerType=ProcessRun&lt;br&gt;....+DP.startDate=2011-02-22T23:00:59Z&lt;br&gt;....+DP.endDate=2011-02-22T23:01:13Z&lt;br&gt;....+DP.hostName=elvis&lt;br&gt;....+Software.name=ctd.pl&lt;br&gt;....+Software.description=Salinity is calculated from C, T, and P using conductivity ratio divisor of 4.29140.&lt;br&gt;....+Software.uriString=http://moonjelly.shore.mbari.org/cgi-bin/cvsweb.cgi/DPforSSDS/cimt/ctd.pl?rev=1.54&lt;br&gt;....+Software.softwareVersion=1.54&lt;br&gt;.....+DC.name=m1_ctd0010_20091020_original.nc&lt;br&gt;.....+DC.dataContainerType=File&lt;br&gt;.....+DC.original=false&lt;br&gt;.....+DC.uriString=http://dods.mbari.org/opendap/data/ssdsdata/deployments/m1/200910/m1_ctd0010_20091020_original.nc&lt;br&gt;.....+DC.dodsAccessible=false&lt;br&gt;.....+DC.dodsUrlString=http://dods.mbari.org/opendap/data/ssdsdata/deployments/m1/200910/m1_ctd0010_20091020_original.nc&lt;br&gt;.....+DC.noNetCDF=true&lt;br&gt;......+DP.name=DStoNetCDF.pl - ctd.pl run on 2011-02-22T23:00:06Z&lt;br&gt;......+DP.description=DStoNetCDF.pl script executed with arguments: -mooring M1 -deployment M1 - October 2009 -ssdsServer new-ssds.mbari.org -ssdsDataServer new-ssds.mbari.org -outputDir /mbari/ssdsdata/deployments -procClosed -verbose&lt;br&gt;......+DP.dataProducerType=ProcessRun&lt;br&gt;......+DP.startDate=2011-02-22T23:00:06Z&lt;br&gt;......+DP.endDate=2011-02-22T23:00:35Z&lt;br&gt;......+DP.hostName=elvis&lt;br&gt;......+Software.name=ctd.pl&lt;br&gt;......+Software.description=Salinity is calculated from C, T, and P using conductivity ratio divisor of 4.29140.&lt;br&gt;......+Software.uriString=http://moonjelly.shore.mbari.org/cgi-bin/cvsweb.cgi/DPforSSDS/cimt/ctd.pl?rev=1.54&lt;br&gt;......+Software.softwareVersion=1.54&lt;br&gt;.......+DC.name=m1_ctd0010_20100802_original.nc&lt;br&gt;.......+DC.dataContainerType=File&lt;br&gt;.......+DC.original=false&lt;br&gt;.......+DC.uriString=http://dods.mbari.org/opendap/data/ssdsdata/deployments/m1/200910/m1_ctd0010_20100802_original.nc&lt;br&gt;.......+DC.dodsAccessible=false&lt;br&gt;.......+DC.dodsUrlString=http://dods.mbari.org/opendap/data/ssdsdata/deployments/m1/200910/m1_ctd0010_20100802_original.nc&lt;br&gt;.......+DC.noNetCDF=true&lt;br&gt;........+DP.name=DStoNetCDF.pl - ctd.pl run on 2011-02-22T23:01:34Z&lt;br&gt;........+DP.description=DStoNetCDF.pl script executed with arguments: -mooring M1 -deployment M1 - October 2009 -ssdsServer new-ssds.mbari.org -ssdsDataServer new-ssds.mbari.org -outputDir /mbari/ssdsdata/deployments -procClosed -verbose&lt;br&gt;........+DP.dataProducerType=ProcessRun&lt;br&gt;........+DP.startDate=2011-02-22T23:01:34Z&lt;br&gt;........+DP.endDate=2011-02-22T23:01:48Z&lt;br&gt;........+DP.hostName=elvis&lt;br&gt;........+Software.name=ctd.pl&lt;br&gt;........+Software.description=Salinity is calculated from C, T, and P using conductivity ratio divisor of 4.29140.&lt;br&gt;........+Software.uriString=http://moonjelly.shore.mbari.org/cgi-bin/cvsweb.cgi/DPforSSDS/cimt/ctd.pl?rev=1.54&lt;br&gt;........+Software.softwareVersion=1.54&lt;br&gt;.........+DC.name=m1_ctd0020_20091020_original.nc&lt;br&gt;.........+DC.dataContainerType=File&lt;br&gt;.........+DC.original=false&lt;br&gt;.........+DC.uriString=http://dods.mbari.org/opendap/data/ssdsdata/deployments/m1/200910/m1_ctd0020_20091020_original.nc&lt;br&gt;.........+DC.dodsAccessible=false&lt;br&gt;.........+DC.dodsUrlString=http://dods.mbari.org/opendap/data/ssdsdata/deployments/m1/200910/m1_ctd0020_20091020_original.nc&lt;br&gt;.........+DC.noNetCDF=true&lt;br&gt;..........+DP.name=DStoNetCDF.pl - ctd.pl run on 2011-02-22T22:54:15Z&lt;br&gt;..........+DP.description=DStoNetCDF.pl script executed with arguments: -mooring M1 -deployment M1 - October 2009 -ssdsServer new-ssds.mbari.org -ssdsDataServer new-ssds.mbari.org -outputDir /mbari/ssdsdata/deployments -procClosed -verbose&lt;br&gt;..........+DP.dataProducerType=ProcessRun&lt;br&gt;..........+DP.startDate=2011-02-22T22:54:15Z&lt;br&gt;..........+DP.endDate=2011-02-22T22:54:29Z&lt;br&gt;..........+DP.hostName=elvis&lt;br&gt;..........+Software.name=ctd.pl&lt;br&gt;..........+Software.description=Salinity is calculated from C, T, and P using conductivity ratio divisor of 4.29140.&lt;br&gt;..........+Software.uriString=http://moonjelly.shore.mbari.org/cgi-bin/cvsweb.cgi/DPforSSDS/cimt/ctd.pl?rev=1.54&lt;br&gt;..........+Software.softwareVersion=1.54&lt;br&gt;...........+DC.name=m1_ctd0040_20091020_original.nc&lt;br&gt;...........+DC.dataContainerType=File&lt;br&gt;...........+DC.original=false&lt;br&gt;...........+DC.uriString=http://dods.mbari.org/opendap/data/ssdsdata/deployments/m1/200910/m1_ctd0040_20091020_original.nc&lt;br&gt;...........+DC.dodsAccessible=false&lt;br&gt;...........+DC.dodsUrlString=http://dods.mbari.org/opendap/data/ssdsdata/deployments/m1/200910/m1_ctd0040_20091020_original.nc&lt;br&gt;...........+DC.noNetCDF=true&lt;br&gt;............+DP.name=DStoNetCDF.pl - ctd.pl run on 2011-02-22T22:54:53Z&lt;br&gt;............+DP.description=DStoNetCDF.pl script executed with arguments: -mooring M1 -deployment M1 - October 2009 -ssdsServer new-ssds.mbari.org -ssdsDataServer new-ssds.mbari.org -outputDir /mbari/ssdsdata/deployments -procClosed -verbose&lt;br&gt;............+DP.dataProducerType=ProcessRun&lt;br&gt;............+DP.startDate=2011-02-22T22:54:53Z&lt;br&gt;............+DP.endDate=2011-02-22T22:55:03Z&lt;br&gt;............+DP.hostName=elvis&lt;br&gt;............+Software.name=ctd.pl&lt;br&gt;............+Software.description=Salinity is calculated from C, T, and P using conductivity ratio divisor of 4.29140.&lt;br&gt;............+Software.uriString=http://moonjelly.shore.mbari.org/cgi-bin/cvsweb.cgi/DPforSSDS/cimt/ctd.pl?rev=1.54&lt;br&gt;............+Software.softwareVersion=1.54&lt;br&gt;.............+DC.name=m1_ctd0060_20091020_original.nc&lt;br&gt;.............+DC.dataContainerType=File&lt;br&gt;.............+DC.original=false&lt;br&gt;.............+DC.uriString=http://dods.mbari.org/opendap/data/ssdsdata/deployments/m1/200910/m1_ctd0060_20091020_original.nc&lt;br&gt;.............+DC.dodsAccessible=true&lt;br&gt;.............+DC.dodsUrlString=http://dods.mbari.org/opendap/data/ssdsdata/deployments/m1/200910/m1_ctd0060_20091020_original.nc&lt;br&gt;.............+DC.noNetCDF=true&lt;br&gt;..............+DP.name=DStoNetCDF.pl - ctd.pl run on 2011-02-22T22:55:25Z&lt;br&gt;..............+DP.description=DStoNetCDF.pl script executed with arguments: -mooring M1 -deployment M1 - October 2009 -ssdsServer new-ssds.mbari.org -ssdsDataServer new-ssds.mbari.org -outputDir /mbari/ssdsdata/deployments -procClosed -verbose&lt;br&gt;..............+DP.dataProducerType=ProcessRun&lt;br&gt;..............+DP.startDate=2011-02-22T22:55:25Z&lt;br&gt;..............+DP.endDate=2011-02-22T22:55:35Z&lt;br&gt;..............+DP.hostName=elvis&lt;br&gt;..............+Software.name=ctd.pl&lt;br&gt;..............+Software.description=Salinity is calculated from C, T, and P using conductivity ratio divisor of 4.29140.&lt;br&gt;..............+Software.uriString=http://moonjelly.shore.mbari.org/cgi-bin/cvsweb.cgi/DPforSSDS/cimt/ctd.pl?rev=1.54&lt;br&gt;..............+Software.softwareVersion=1.54&lt;br&gt;...............+DC.name=m1_ctd0080_20091020_original.nc&lt;br&gt;...............+DC.dataContainerType=File&lt;br&gt;...............+DC.original=false&lt;br&gt;...............+DC.uriString=http://dods.mbari.org/opendap/data/ssdsdata/deployments/m1/200910/m1_ctd0080_20091020_original.nc&lt;br&gt;...............+DC.dodsAccessible=false&lt;br&gt;...............+DC.dodsUrlString=http://dods.mbari.org/opendap/data/ssdsdata/deployments/m1/200910/m1_ctd0080_20091020_original.nc&lt;br&gt;...............+DC.noNetCDF=true&lt;br&gt;................+DP.name=DStoNetCDF.pl - ctd.pl run on 2011-02-22T22:56:00Z&lt;br&gt;................+DP.description=DStoNetCDF.pl script executed with arguments: -mooring M1 -deployment M1 - October 2009 -ssdsServer new-ssds.mbari.org -ssdsDataServer new-ssds.mbari.org -outputDir /mbari/ssdsdata/deployments -procClosed -verbose&lt;br&gt;................+DP.dataProducerType=ProcessRun&lt;br&gt;................+DP.startDate=2011-02-22T22:56:00Z&lt;br&gt;................+DP.endDate=2011-02-22T22:56:07Z&lt;br&gt;................+DP.hostName=elvis&lt;br&gt;................+Software.name=ctd.pl&lt;br&gt;................+Software.description=Salinity is calculated from C, T, and P using conductivity ratio divisor of 4.29140.&lt;br&gt;................+Software.uriString=http://moonjelly.shore.mbari.org/cgi-bin/cvsweb.cgi/DPforSSDS/cimt/ctd.pl?rev=1.54&lt;br&gt;................+Software.softwareVersion=1.54&lt;br&gt;.................+DC.name=m1_ctd0100_20091020_original.nc&lt;br&gt;.................+DC.dataContainerType=File&lt;br&gt;.................+DC.original=false&lt;br&gt;.................+DC.uriString=http://dods.mbari.org/opendap/data/ssdsdata/deployments/m1/200910/m1_ctd0100_20091020_original.nc&lt;br&gt;.................+DC.dodsAccessible=false&lt;br&gt;.................+DC.dodsUrlString=http://dods.mbari.org/opendap/data/ssdsdata/deployments/m1/200910/m1_ctd0100_20091020_original.nc&lt;br&gt;.................+DC.noNetCDF=true&lt;br&gt;..................+DP.name=DStoNetCDF.pl - ctd.pl run on 2011-02-22T22:56:30Z&lt;br&gt;..................+DP.description=DStoNetCDF.pl script executed with arguments: -mooring M1 -deployment M1 - October 2009 -ssdsServer new-ssds.mbari.org -ssdsDataServer new-ssds.mbari.org -outputDir /mbari/ssdsdata/deployments -procClosed -verbose&lt;br&gt;..................+DP.dataProducerType=ProcessRun&lt;br&gt;..................+DP.startDate=2011-02-22T22:56:30Z&lt;br&gt;..................+DP.endDate=2011-02-22T22:56:40Z&lt;br&gt;..................+DP.hostName=elvis&lt;br&gt;..................+Software.name=ctd.pl&lt;br&gt;..................+Software.description=Salinity is calculated from C, T, and P using conductivity ratio divisor of 4.29140.&lt;br&gt;..................+Software.uriString=http://moonjelly.shore.mbari.org/cgi-bin/cvsweb.cgi/DPforSSDS/cimt/ctd.pl?rev=1.54&lt;br&gt;..................+Software.softwareVersion=1.54&lt;br&gt;...................+DC.name=m1_ctd0150_20091020_original.nc&lt;br&gt;...................+DC.dataContainerType=File&lt;br&gt;...................+DC.original=false&lt;br&gt;...................+DC.uriString=http://dods.mbari.org/opendap/data/ssdsdata/deployments/m1/200910/m1_ctd0150_20091020_original.nc&lt;br&gt;...................+DC.dodsAccessible=false&lt;br&gt;...................+DC.dodsUrlString=http://dods.mbari.org/opendap/data/ssdsdata/deployments/m1/200910/m1_ctd0150_20091020_original.nc&lt;br&gt;...................+DC.noNetCDF=true&lt;br&gt;....................+DP.name=DStoNetCDF.pl - ctd.pl run on 2011-02-22T22:57:06Z&lt;br&gt;....................+DP.description=DStoNetCDF.pl script executed with arguments: -mooring M1 -deployment M1 - October 2009 -ssdsServer new-ssds.mbari.org -ssdsDataServer new-ssds.mbari.org -outputDir /mbari/ssdsdata/deployments -procClosed -verbose&lt;br&gt;....................+DP.dataProducerType=ProcessRun&lt;br&gt;....................+DP.startDate=2011-02-22T22:57:06Z&lt;br&gt;....................+DP.endDate=2011-02-22T22:57:17Z&lt;br&gt;....................+DP.hostName=elvis&lt;br&gt;....................+Software.name=ctd.pl&lt;br&gt;....................+Software.description=Salinity is calculated from C, T, and P using conductivity ratio divisor of 4.29140.&lt;br&gt;....................+Software.uriString=http://moonjelly.shore.mbari.org/cgi-bin/cvsweb.cgi/DPforSSDS/cimt/ctd.pl?rev=1.54&lt;br&gt;....................+Software.softwareVersion=1.54&lt;br&gt;.....................+DC.name=m1_ctd0200_20091020_original.nc&lt;br&gt;.....................+DC.dataContainerType=File&lt;br&gt;.....................+DC.original=false&lt;br&gt;.....................+DC.uriString=http://dods.mbari.org/opendap/data/ssdsdata/deployments/m1/200910/m1_ctd0200_20091020_original.nc&lt;br&gt;.....................+DC.dodsAccessible=false&lt;br&gt;.....................+DC.dodsUrlString=http://dods.mbari.org/opendap/data/ssdsdata/deployments/m1/200910/m1_ctd0200_20091020_original.nc&lt;br&gt;.....................+DC.noNetCDF=true&lt;br&gt;......................+DP.name=DStoNetCDF.pl - ctd.pl run on 2011-02-22T22:57:44Z&lt;br&gt;......................+DP.description=DStoNetCDF.pl script executed with arguments: -mooring M1 -deployment M1 - October 2009 -ssdsServer new-ssds.mbari.org -ssdsDataServer new-ssds.mbari.org -outputDir /mbari/ssdsdata/deployments -procClosed -verbose&lt;br&gt;......................+DP.dataProducerType=ProcessRun&lt;br&gt;......................+DP.startDate=2011-02-22T22:57:44Z&lt;br&gt;......................+DP.endDate=2011-02-22T22:57:55Z&lt;br&gt;......................+DP.hostName=elvis&lt;br&gt;......................+Software.name=ctd.pl&lt;br&gt;......................+Software.description=Salinity is calculated from C, T, and P using conductivity ratio divisor of 4.29140.&lt;br&gt;......................+Software.uriString=http://moonjelly.shore.mbari.org/cgi-bin/cvsweb.cgi/DPforSSDS/cimt/ctd.pl?rev=1.54&lt;br&gt;......................+Software.softwareVersion=1.54&lt;br&gt;.......................+DC.name=m1_ctd0250_20091020_original.nc&lt;br&gt;.......................+DC.dataContainerType=File&lt;br&gt;.......................+DC.original=false&lt;br&gt;.......................+DC.uriString=http://dods.mbari.org/opendap/data/ssdsdata/deployments/m1/200910/m1_ctd0250_20091020_original.nc&lt;br&gt;.......................+DC.dodsAccessible=false&lt;br&gt;.......................+DC.dodsUrlString=http://dods.mbari.org/opendap/data/ssdsdata/deployments/m1/200910/m1_ctd0250_20091020_original.nc&lt;br&gt;.......................+DC.noNetCDF=true&lt;br&gt;........................+DP.name=DStoNetCDF.pl - ctd.pl run on 2011-02-22T22:58:19Z&lt;br&gt;........................+DP.description=DStoNetCDF.pl script executed with arguments: -mooring M1 -deployment M1 - October 2009 -ssdsServer new-ssds.mbari.org -ssdsDataServer new-ssds.mbari.org -outputDir /mbari/ssdsdata/deployments -procClosed -verbose&lt;br&gt;........................+DP.dataProducerType=ProcessRun&lt;br&gt;........................+DP.startDate=2011-02-22T22:58:19Z&lt;br&gt;........................+DP.endDate=2011-02-22T22:58:28Z&lt;br&gt;........................+DP.hostName=elvis&lt;br&gt;........................+Software.name=ctd.pl&lt;br&gt;........................+Software.description=Salinity is calculated from C, T, and P using conductivity ratio divisor of 4.29140.&lt;br&gt;........................+Software.uriString=http://moonjelly.shore.mbari.org/cgi-bin/cvsweb.cgi/DPforSSDS/cimt/ctd.pl?rev=1.54&lt;br&gt;........................+Software.softwareVersion=1.54&lt;br&gt;.........................+DC.name=m1_ctd0300_20091020_original.nc&lt;br&gt;.........................+DC.dataContainerType=File&lt;br&gt;.........................+DC.original=false&lt;br&gt;.........................+DC.uriString=http://dods.mbari.org/opendap/data/ssdsdata/deployments/m1/200910/m1_ctd0300_20091020_original.nc&lt;br&gt;.........................+DC.dodsAccessible=false&lt;br&gt;.........................+DC.dodsUrlString=http://dods.mbari.org/opendap/data/ssdsdata/deployments/m1/200910/m1_ctd0300_20091020_original.nc&lt;br&gt;.........................+DC.noNetCDF=true&lt;br&gt;..........................+DP.name=DStoNetCDF.pl - ctd.pl run on 2011-02-22T22:58:50Z&lt;br&gt;..........................+DP.description=DStoNetCDF.pl script executed with arguments: -mooring M1 -deployment M1 - October 2009 -ssdsServer new-ssds.mbari.org -ssdsDataServer new-ssds.mbari.org -outputDir /mbari/ssdsdata/deployments -procClosed -verbose&lt;br&gt;..........................+DP.dataProducerType=ProcessRun&lt;br&gt;..........................+DP.startDate=2011-02-22T22:58:50Z&lt;br&gt;..........................+DP.endDate=2011-02-22T22:59:00Z&lt;br&gt;..........................+DP.hostName=elvis&lt;br&gt;..........................+Software.name=ctd.pl&lt;br&gt;..........................+Software.description=Salinity is calculated from C, T, and P using conductivity ratio divisor of 4.29140.&lt;br&gt;..........................+Software.uriString=http://moonjelly.shore.mbari.org/cgi-bin/cvsweb.cgi/DPforSSDS/cimt/ctd.pl?rev=1.54&lt;br&gt;..........................+Software.softwareVersion=1.54&lt;br&gt;...........................+DC.name=CTD (2009-10-21T10:06:18Z) DataStream from device UUID=9570983e-c41d-11d9-8c1e-00306e389969&lt;br&gt;...........................+DC.description=IM CTD data stream with pressure&lt;br&gt;...........................+DC.dataContainerType=Stream&lt;br&gt;...........................+DC.startDate=2009-10-21T10:06:18Z&lt;br&gt;...........................+DC.original=false&lt;br&gt;...........................+DC.uriString=http://new-ssds.mbari.org:8080/servlet/GetOriginalDataServlet?deviceID=1437&amp;startTimestampSeconds=1256119578&amp;startPacketSubType=1&amp;lastNumberOfPackets=10&amp;isi=1&lt;br&gt;...........................+DC.dodsAccessible=false&lt;br&gt;...........................+DC.noNetCDF=true&lt;br&gt;............................+DP.name=CTD (2009-10-21T10:06:18Z - 361) UUID=9570983e-c41d-11d9-8c1e-00306e389969&lt;br&gt;............................+DP.description=&lt;br&gt;............................+DP.dataProducerType=Deployment&lt;br&gt;............................+DP.startDate=2009-10-20T19:00:00Z&lt;br&gt;............................+DP.endDate=2010-10-27T20:30:00Z&lt;br&gt;............................+DP.role=instrument&lt;br&gt;............................+DP.nominalDepth=300.0&lt;br&gt;.............................+Device.id=1437&lt;br&gt;.............................+Device.uuid=9570983e-c41d-11d9-8c1e-00306e389969&lt;br&gt;.............................+Device.name=MicroCAT Inductive CTD&lt;br&gt;.............................+Device.mfgName=Sea-Bird Electronics&lt;br&gt;.............................+Device.mfgModel=SBE37IM&lt;br&gt;.............................+Device.mfgSerialNumber=37IM20000-01251&lt;br&gt;' />
+  <attribute name='_CoordSysBuilder' value='ucar.nc2.dataset.conv.CF1Convention' />
+
+  <variable name='DEPTH_bnds' type='double' shape='DEPTH bnds' />
+  <variable name='TIME_QC' type='float' shape='TIME' >
+    <attribute name='missing_value' value='-1.0E34 ' type='float' />
+    <attribute name='_FillValue' value='-1.0E34 ' type='float' />
+    <attribute name='long_name' value='Quality flag for time axis, 1: Good data' />
+    <attribute name='units' value='flag' />
+  </variable>
+  <variable name='POSITION_QC' type='float' shape='LONGITUDE' >
+    <attribute name='missing_value' value='-1.0E34 ' type='float' />
+    <attribute name='_FillValue' value='-1.0E34 ' type='float' />
+    <attribute name='long_name' value='Quality flag for Latitude and Longitude axes, 1: Good data' />
+  </variable>
+  <variable name='DEPTH_QC' type='float' shape='DEPTH' >
+    <attribute name='missing_value' value='-1.0E34 ' type='float' />
+    <attribute name='_FillValue' value='-1.0E34 ' type='float' />
+    <attribute name='long_name' value='Quality flag for depth axis, 1: Good data' />
+  </variable>
+  <variable name='PSAL' type='float' shape='TIME DEPTH LATITUDE LONGITUDE' >
+    <attribute name='_CoordinateAxes' value='TIME DEPTH LATITUDE LONGITUDE ' />
+    <attribute name='missing_value' value='-1.0E34 ' type='float' />
+    <attribute name='_FillValue' value='-1.0E34 ' type='float' />
+    <attribute name='long_name' value='Hourly sea_water_salinity' />
+    <attribute name='units' value='1' />
+    <attribute name='standard_name' value='sea_water_salinity' />
+    <attribute name='uncertainty' value='0.02 ' type='float' />
+    <attribute name='valid_min' value='30.0 ' type='float' />
+    <attribute name='valid_max' value='36.0 ' type='float' />
+    <attribute name='cell_methods' value='time: mean' />
+    <attribute name='history' value='From m1_ctd0001_20091020_original' />
+  </variable>
+  <variable name='PSAL_QC' type='float' shape='TIME DEPTH LATITUDE LONGITUDE' >
+    <attribute name='_CoordinateAxes' value='TIME DEPTH LATITUDE LONGITUDE ' />
+    <attribute name='missing_value' value='-1.0E34 ' type='float' />
+    <attribute name='_FillValue' value='-1.0E34 ' type='float' />
+    <attribute name='long_name' value='quality flag' />
+    <attribute name='conventions' value='OceanSITES reference table 2' />
+    <attribute name='flag_values' value='0.0  1.0  2.0  3.0  4.0  5.0  6.0  7.0  8.0  9.0 ' type='float' />
+    <attribute name='flag_meanings' value='No_QC_was_performed Good_data Probably_good_data Bad_data_that_are_potentially_correctable Bad_data Value_changed Not_used Nominal_value Interpolated_value Missing_value' />
+    <attribute name='history' value='From m1_ctd0001_20091020_original' />
+  </variable>
+  <variable name='TEMP' type='float' shape='TIME DEPTH LATITUDE LONGITUDE' >
+    <attribute name='_CoordinateAxes' value='TIME DEPTH LATITUDE LONGITUDE ' />
+    <attribute name='missing_value' value='-1.0E34 ' type='float' />
+    <attribute name='_FillValue' value='-1.0E34 ' type='float' />
+    <attribute name='long_name' value='Hourly sea_water_temperature' />
+    <attribute name='units' value='celsius' />
+    <attribute name='standard_name' value='sea_water_temperature' />
+    <attribute name='uncertainty' value='0.002 ' type='float' />
+    <attribute name='valid_min' value='0.0 ' type='float' />
+    <attribute name='valid_max' value='35.0 ' type='float' />
+    <attribute name='cell_methods' value='time: mean' />
+    <attribute name='history' value='From m1_ctd0001_20091020_original' />
+  </variable>
+  <variable name='TEMP_QC' type='float' shape='TIME DEPTH LATITUDE LONGITUDE' >
+    <attribute name='_CoordinateAxes' value='TIME DEPTH LATITUDE LONGITUDE ' />
+    <attribute name='missing_value' value='-1.0E34 ' type='float' />
+    <attribute name='_FillValue' value='-1.0E34 ' type='float' />
+    <attribute name='long_name' value='quality flag' />
+    <attribute name='conventions' value='OceanSITES reference table 2' />
+    <attribute name='flag_values' value='0.0  1.0  2.0  3.0  4.0  5.0  6.0  7.0  8.0  9.0 ' type='float' />
+    <attribute name='flag_meanings' value='No_QC_was_performed Good_data Probably_good_data Bad_data_that_are_potentially_correctable Bad_data Value_changed Not_used Nominal_value Interpolated_value Missing_value' />
+    <attribute name='history' value='From m1_ctd0001_20091020_original' />
+  </variable>
+  <variable name='LONGITUDE' type='double' shape='LONGITUDE' >
+    <attribute name='point_spacing' value='even' />
+    <attribute name='axis' value='X' />
+    <attribute name='units' value='degrees_east' />
+    <attribute name='long_name' value='Longitude' />
+    <attribute name='standard_name' value='longitude' />
+    <attribute name='QC_procedure' value='5' />
+    <attribute name='uncertainty' value='1.0E-4 ' type='float' />
+    <attribute name='valid_min' value='-180.0 ' type='float' />
+    <attribute name='valid_max' value='180.0 ' type='float' />
+    <attribute name='modulo' value=' ' />
+    <attribute name='_CoordinateAxisType' value='Lon' />
+  </variable>
+  <variable name='LATITUDE' type='double' shape='LATITUDE' >
+    <attribute name='point_spacing' value='even' />
+    <attribute name='axis' value='Y' />
+    <attribute name='units' value='degrees_north' />
+    <attribute name='long_name' value='Latitude' />
+    <attribute name='standard_name' value='latitude' />
+    <attribute name='QC_procedure' value='5' />
+    <attribute name='uncertainty' value='1.0E-4 ' type='float' />
+    <attribute name='valid_min' value='-90.0 ' type='float' />
+    <attribute name='valid_max' value='90.0 ' type='float' />
+    <attribute name='_CoordinateAxisType' value='Lat' />
+  </variable>
+  <variable name='DEPTH' type='double' shape='DEPTH' >
+    <attribute name='units' value='METERS' />
+    <attribute name='point_spacing' value='uneven' />
+    <attribute name='axis' value='Z' />
+    <attribute name='bounds' value='DEPTH_bnds' />
+    <attribute name='positive' value='down' />
+    <attribute name='long_name' value='Depth' />
+    <attribute name='standard_name' value='depth' />
+    <attribute name='QC_procedure' value='5' />
+    <attribute name='uncertainty' value='0.1 ' type='float' />
+    <attribute name='valid_min' value='0.0 ' type='float' />
+    <attribute name='valid_max' value='5000.0 ' type='float' />
+    <attribute name='_CoordinateAxisType' value='Height' />
+    <attribute name='_CoordinateZisPositive' value='down' />
+  </variable>
+  <variable name='TIME' type='double' shape='TIME' >
+    <attribute name='units' value='DAYS since 1950-01-01 00:00:00' />
+    <attribute name='axis' value='T' />
+    <attribute name='time_origin' value='01-JAN-1950 00:00:00' />
+    <attribute name='long_name' value='Time' />
+    <attribute name='standard_name' value='time' />
+    <attribute name='QC_procedure' value='1' />
+    <attribute name='uncertainty' value='0.5 ' type='float' />
+    <attribute name='valid_min' value='13000.0 ' type='float' />
+    <attribute name='valid_max' value='60000.0 ' type='float' />
+    <attribute name='_CoordinateAxisType' value='Time' />
+  </variable>
+</netcdf>

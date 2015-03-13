@@ -5,8 +5,11 @@ function geodemo_1a
 % extracting data from it, but you then have all the geovariable 
 % methods available to you.
 
-% OPeNDAP Data URL for a CF-Compliant curvilinear ROMS model dataset
-url ='http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc';
+% OPeNDAP Data URL for a not-quite CF-Compliant curvilinear ROMS model dataset
+url ='http://barataria.tamu.edu:8080/thredds/dodsC/txla_nesting6/ocean_his_0196.nc';
+
+%this data fails to be CF compliant in that its coordinate variables do not map completely to spatial coordinates
+
 nc = ncgeodataset(url)
 
 %% Take a look at the variables available within the dataset
@@ -72,10 +75,10 @@ nc = ncgeodataset(url)
  salinity_coords = salt.grid(1, end, :, :)
 
 %% Use |grid_interop| method to return coordinate axes with standard, interoperable names
-% A higher level option is to use the grid_interop method, which returns
-% the dimensions of our geovariable using the standardized names of lat,
+% A higher level option is to use the grid_interop method, which attempts to 
+% returns the dimensions of our geovariable using the standardized names of lat,
 % lon, time, and z instead of the original netcdf names of the coordinate
-% dimensions.
+% dimensions when possible.
 
 % In addition to a more programmatic/standardized structure returned with
 % grid_interop (interop for interoperability), the coordinate data is also
@@ -85,15 +88,22 @@ nc = ncgeodataset(url)
 % - Longitude coordinates that use a 0-360 degree scheme are converted 
 %   to the range [-180, 180].
 % - Projected x and y values are converted to geographic
-%     coordinates lat/lon.  
+%     coordinates lat/lon if possible.  
 % - Stretched vertical coordinates are converted z values. 
 
  salinity_coords = salt.grid_interop(1, end, :, :)
 
+% note that the spatial salinity coordinates are untransformed, while the time variable is
+% transformed.  The variables in this file are on a staggered grid, with the bulk properties
+% such as salinity or temperature on the (x_rho,y_rho,s_rho) points, and the fluxes on the (x_u,y_u) 
+% or (x_v,y_v) points.  In this case, the vertical coordinate remains in non-dimensional 's' coordinates.
+
+salinity_coords
+
 %% Plot using MATLAB's pcolor
-pcolor(salinity_coords.lon, salinity_coords.lat, salinity)
+pcolor(salinity_coords.x_rho, salinity_coords.y_rho, salinity)
 shading flat; colorbar; caxis([35 39]);
 
 % Add a title using the global
 % attribute 'title' and the date from our coordinate structure.  
- title({nc.attribute('title'); datestr(salinity_coords.time);nc.location},'interpreter','none')
+ title({nc.attribute('title'); datestr(salinity_coords.time)})

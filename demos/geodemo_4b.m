@@ -1,27 +1,27 @@
-%% GEODEMO_4b Compare horizontal slice subsets from two different CF compliant structured
-% grid models (CH3D and ROMS) at a particular time step and depth, using
+function geodemo_4b
+%% GEODEMO_4b
+% Compare horizontal slices from two different CF compliant structured
+% grid models (EFDC and CBOFS) at a particular time step and depth, using
 % geosubset to subset the data
 
-clear 
-
-%% CH3D salinity
-url{1}='http://testbedapps.sura.org/thredds/dodsC/estuarine_hypoxia/ch3d/agg.nc';
-var{1}='salinity';
-titl{1}='CH3D';
-
-%% ROMS salt
-url{2}='http://testbedapps.sura.org/thredds/dodsC/estuarine_hypoxia/chesroms_1tdo/agg.nc';
+%% EFDC
+url{2}='http://comt.sura.org/thredds/dodsC/data/comt_1_archive/estuarine_hypoxia/VIMS_EFDC/2004_DO3d';
 var{2}='salt';
-titl{2}='CHESROMS';
+titl{2}='EFDC';
+
+%% ROMS
+url{1}='http://comt.sura.org/thredds/dodsC/data/comt_1_archive/estuarine_hypoxia/VIMS_CBOFS/2004-2005';
+var{1}='salt';
+titl{1}='CBOFS';
 
 %% Create geosubset object
-dat=[2005 1 10 0 0 0];  % Jan 10, 2005 00:00 UTC
+dat=[2004 4 10 6 0 0];  % Apr 4, 2004 06:00 UTC
 depth=-5;  % horizontal slice 5 m from surface
 ax=[ -76.5220  -75.7105   36.8248   37.7850]; %lon/lat range
 cax=[0 33];  %color range
 lat_mid=38; % for scaling plots
 
-s.time=dat;
+s.time=datenum(dat);
 s.lon=ax(1:2);
 s.lat=ax(3:4);
 

@@ -1,0 +1,4 @@
+GIT COMMIT:   3161fee
+GIT BRANCH:   master
+GIT DATE:     2014-04-24
+GIT DESCRIBE: nctoolbox-20140414-beta-10-g3161fee
