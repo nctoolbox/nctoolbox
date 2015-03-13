@@ -4,6 +4,8 @@
 % David Forrest <drf@vims.edu>
 % 2015-03-12
 
+% Edited by Brian Schlining 2015-03-12
+
 ver
 %ver('nctoolbox')
 fprintf(1, '\n');
