@@ -3,17 +3,34 @@
 % Useful to look at 2d, 3d, and 4d variables from gridded model netcdf files.
 %
 % Usage : >> modellook(daplink, datevec)
-%             >> modellook(daplink, datenum)
+%         >> modellook(daplink, datenum)
+%         >> modellook('uri',daplink,'date',datenum,'level',1)
 %
 % NCTOOLBOX (https://github.com/nctoolbox/nctoolbox)
 %
 function [] = modellook(varargin)
-input_hash = arg2hash(varargin);
 
-dap = value4key(input_hash, 'uri'); % Required
-date = value4key(input_hash, 'date'); % Required
-level = value4key(input_hash, 'level'); % Default to 1
+if(length(varargin) > 3) % assume is a hash
+    input_hash = arg2hash(varargin);
 
+    dap = value4key(input_hash, 'uri'); % Required
+    date = value4key(input_hash, 'date'); % Required
+    level = value4key(input_hash, 'level'); % Default to 1
+else % otherwise straight arguments
+    if(nargin >=2 )
+    dap = varargin{1};
+    date = varargin{2};
+    if (nargin == 3)
+        level = varargin{3};
+    else
+        level = 1;
+    end
+    else
+        error('not enough arguments');
+    end
+end
+
+    
 if isempty(level)
     level = 1;
 end
