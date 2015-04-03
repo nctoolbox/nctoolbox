@@ -1,4 +1,4 @@
-GIT COMMIT:   c797e60
-GIT BRANCH:   master
-GIT DATE:     2015-03-13
-GIT DESCRIBE: nctoolbox-20140414-beta-39-gc797e60
+GIT COMMIT: 29541b3
+GIT BRANCH: (HEAD, upstream/master, upstream/integration, upstream/HEAD, modellook, master)
+GIT DATE:   2015-03-13
+GIT DESCRIBE: nctoolbox-20140414-beta-40-g29541b3
