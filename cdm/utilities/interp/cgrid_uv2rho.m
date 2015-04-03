@@ -69,7 +69,11 @@ avar = nc.geovariable(aname);
 % depth from uvar
 if nargin < 7
     usize = size(uvar);
-    klev = 1:usize(2);
+  if ( length(usize) == 4)
+    klev = usize(2);
+  else
+    klev = 1;
+  end
 end
 
 % get lon,lat size from hvar

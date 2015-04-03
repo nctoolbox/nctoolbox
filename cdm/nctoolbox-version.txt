@@ -1,4 +1,4 @@
-GIT COMMIT: 96fc702
-GIT BRANCH: (HEAD, 3d_cgrid_uv2rho)
+GIT COMMIT: bacca7b
+GIT BRANCH: (HEAD, github/3d_cgrid_uv2rho, 3d_cgrid_uv2rho)
 GIT DATE:   2015-04-02
-GIT DESCRIBE: nctoolbox-20140414-beta-41-g96fc702
+GIT DESCRIBE: nctoolbox-20140414-beta-41-gbacca7b
