@@ -9,8 +9,8 @@ function [ U, g ] = cgrid_uv2rho(ncRef, uname, vname, hname, aname,...
 %   vname - v variable to slice
 %   hname - rho-centered variable to slice (e.g. 'h')
 %   aname - rho-centered angle variable (e.g. 'angle')
-%   itime = time step to extract data. Use -1 for last time step.
-%   klev  = vertical level  Use -1 for last level.
+  %   itime = time step to extract data. Use -1 for last time step. (ignored for static variables)
+  %   klev  = vertical level  Use -1 for last level. (ignored for 2d variables)
 %   [jj] =  jindex range (subset) [optional, default is entire dimension]
 %   [ii] =  iindex range (subset) [optional, default is entire dimension]
 %
@@ -24,14 +24,18 @@ function [ U, g ] = cgrid_uv2rho(ncRef, uname, vname, hname, aname,...
 % nc=ncgeodataset(url);
 % itime=3; % 3rd time step
 % klev=-1; % last (top) layer
-% Whole domain:
+%  % Whole domain:
 % [ U,g ] = cgrid_uv2rho(nc,uname,vname,hname,aname,itime,klev);
-% Subset to jj,ii range:
+% % Subset to jj,ii range:
+% [ U,g ] = cgrid_uv2rho(nc,uname,vname,hname,aname,itime,klev,1:58,1:70);
+% % 3D variable:
+% hname='h'; uname='ubar'; vname='vbar'; aname='angle';
 % [ U,g ] = cgrid_uv2rho(nc,uname,vname,hname,aname,itime,klev,1:58,1:70);
 % pcolorjw(g.lon,g.lat,abs(U));colorbar;dasp(44);
 % arrows(g.lon(1:2:end,1:2:end),g.lat(1:2:end,1:2:end),...
 %     U(1:2:end,1:2:end),0.08,'black');
 %  title(datestr(g.time));dasp(44);
+
 
 % Note: this routine assumes that the C grid has variables arranged:
 %
@@ -88,8 +92,16 @@ uii = ii(1):ii(end) - 1;
 vjj = jj(1):jj(end) - 1;
 vii = (ii(1) + 1):(ii(end) - 1);
 
-u = double(squeeze(uvar.data(itime, klev, ujj, uii))); % get u
-v = double(squeeze(vvar.data(itime, klev, vjj, vii))); % get v
+if (length(size(uvar))==4)
+   u = double(squeeze(uvar.data(itime, klev, ujj, uii))); % get u
+   v = double(squeeze(vvar.data(itime, klev, vjj, vii))); % get v
+elseif (length(size(uvar))==3)
+   u = double(squeeze(uvar.data(itime, ujj, uii))); % get u
+   v = double(squeeze(vvar.data(itime, vjj, vii))); % get v
+elseif (length(size(uvar))==2)
+   u = double(squeeze(uvar.data(ujj, uii))); % get u
+   v = double(squeeze(vvar.data(vjj, vii))); % get v
+end
 g = hvar.grid_interop(jj, ii); % get lon,lat from rho-point variable (like 'h' in ROMS)
 ang = avar.data(jj, ii); % get angle
 U = ones(size(g.lon)) * nan; % template for U at rho points
