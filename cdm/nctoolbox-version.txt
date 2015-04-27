@@ -1,4 +1,4 @@
-GIT COMMIT:   a30c72d
-GIT BRANCH:   integration
-GIT DATE:     2015-04-03
-GIT DESCRIBE: nctoolbox-20140414-beta-42-ga30c72d
+GIT COMMIT:   b350cf0
+GIT BRANCH:   master
+GIT DATE:     2015-04-27
+GIT DESCRIBE: nctoolbox-20140414-beta-43-gb350cf0
