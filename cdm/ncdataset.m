@@ -465,24 +465,11 @@ classdef ncdataset < handle
             
             if (nargin == 2)
                 array = v.read();
-                try
+                if v.getSize == 1
+                    d = array.copyToNDJavaArray();
+                else
                     d = array.copyToNDJavaArray(); % this fails if the variable has no java shape/no dimension was assigned
-                catch me1
-                    warning('NCTOOLBOX:ncdataset:readdata', ['An error occurred while reading "' char(variable) ...
-                        '" in ' obj.location '. Cause: \n' getReport(me1)]);
-                    try
-                        % TODO (Alex added this code) Where is a file where
-                        % this code section gets called?
-                        d = array.toString;  % different way to get single value out of java array
-                        d = d.toCharArray';  % must transpose
-                        d = str2double(d);   % matlab string to matlab numeric
-                    catch me2
-                        ex = MException('NCTOOLBOX:ncdataset:data', ['Failed to open "' char(variable) '" in ' obj.location]);
-                        ex = ex.addCause(me2);
-                        ex.throw;
-                    end
                 end
-                %           d = double(d);
             else
                 s = obj.size(variable);
                 

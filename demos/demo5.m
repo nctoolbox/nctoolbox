@@ -6,7 +6,7 @@ echo('on')
 %% ---- Open local and remote datasets
 ds = {  ...
     ncdataset('m1_pco2.nc'), ... % ---- Open local NetCDF
-    ncdataset('http://www.mbari.org/staff/brian/pub/m1_pco2.nc') ... % ---- Open NetCDF on webserver
+    ncdataset('http://www3.mbari.org/staff/brian/pub/m1_pco2.nc') ... % ---- Open NetCDF on webserver
 };
 
 %% ---- Plot them together
