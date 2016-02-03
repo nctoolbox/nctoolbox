@@ -466,7 +466,7 @@ classdef ncdataset < handle
             if (nargin == 2)
                 array = v.read();
                 if v.getSize == 1
-                    d = array.copyToNDJavaArray();
+                    d = array.copyTo1DJavaArray();
                 else
                     d = array.copyToNDJavaArray(); % this fails if the variable has no java shape/no dimension was assigned
                 end
