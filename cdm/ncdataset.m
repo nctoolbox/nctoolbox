@@ -422,8 +422,9 @@ classdef ncdataset < handle
             % in legacy njtbx code...
         end
         
-        function delete(obj)
+        function B = delete(obj)
             % NCDATASET.DELETE Closes netcdf files when object NCDATASET object is disposed or leaves scope
+            B = 0;
             try
                 %fprintf(1, 'Closed\n');
                 obj.netcdf.close()
