@@ -66,7 +66,7 @@ This sets up nctoolbox for the current Matlab session only. You will need to add
 
 ### Citing
 
-If you use `nctoolbox` for your research please kindly consider adding a reference for it to your work/paper/etc. The formal citation for this project will be like:
+If you use `nctoolbox` for your research please kindly consider adding a reference for it to your work/paper/etc. The formal citation for this project varies depending on your publisher, but it will be something like:
 
 ```
 B. Schlining, R. Signell, A. Crosby, nctoolbox (2009), Github repository, 
