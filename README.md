@@ -64,3 +64,11 @@ This sets up nctoolbox for the current Matlab session only. You will need to add
   * Several of the [demos](https://github.com/nctoolbox/nctoolbox/tree/master/demos) are rendered in the [demos gallery](http://nctoolbox.github.io/nctoolbox/demos.html).
 
 
+### Citing
+
+If you use `nctoolbox` for your research please kindly consider adding a reference for it to your work/paper/etc. The formal citation for this project will be like:
+
+```
+B. Schlining, R. Signell, A. Crosby, nctoolbox (2009), Github repository, 
+    https://github.com/nctoolbox/nctoolbox
+```
