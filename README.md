@@ -4,6 +4,8 @@ NCTOOLBOX
 Download the latest release:
 [You can download the latest stable release at by clicking here.](https://github.com/nctoolbox/nctoolbox/releases)
 
+Docs are also available in Chinese (Thanks to [@tfoerye](https://github.com/tfoterye)): [Nctoolbox 使用说明中文版.pdf](docs/Nctoolbox.zh.pdf)
+
 
 ## Brief summary:
 
